@@ -6,6 +6,8 @@ import { AppService } from './app.service';
 
 // import envConfig from '../env';
 import { getDBConf } from './config/db.config';
+import { ArticleModule } from './modules/article/article.module';
+import { UserModule } from './modules/user/user.module';
 
 @Module({
   imports: [
@@ -20,6 +22,8 @@ import { getDBConf } from './config/db.config';
         configService: ConfigService,
       ): Promise<TypeOrmModuleOptions> => getDBConf(),
     }),
+    ArticleModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],
