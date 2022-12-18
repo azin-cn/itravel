@@ -23,19 +23,19 @@ export class User {
   @Column({ length: 20 })
   description: string;
 
-  @Column()
-  last_time: number;
-
   @Column({ default: false })
   isDeleted: boolean;
 
+  @UpdateDateColumn()
+  lastTime: Date;
+
   @CreateDateColumn()
-  created_time: number;
+  createdTime: Date;
 
   @UpdateDateColumn()
-  updated_time: number;
+  updateTime: Date;
 
-  // 一对多
-  @OneToMany(() => Article, (article: Article) => article.author)
+  // 一对多，回调返回的类型，注入关联的属性
+  @OneToMany(() => Article, (article) => article.author)
   articles: Article[];
 }
