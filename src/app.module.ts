@@ -13,7 +13,7 @@ import { UserModule } from './modules/user/user.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true, // 设置为全局
-      // envFilePath: [envConfig.path], 采用 ts 文件配置形式
+      // envFilePath: [envConfig.path], 采用 ts 文件配置形式，nest会默认读取根路径下的env文件
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
