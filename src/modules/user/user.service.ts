@@ -4,6 +4,7 @@ import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 
 import { User } from 'src/entities/user.entity';
 import { UserCreateDTO, UserEditDTO } from 'src/modules/user/dto/user.dto';
+import { NotBlank } from 'src/shared/decorators';
 
 @Injectable()
 export class UserService {
@@ -15,23 +16,24 @@ export class UserService {
     private userRepository: Repository<User>,
   ) {}
 
-  create(user: UserCreateDTO): Promise<User> {
+  async create(user: UserCreateDTO): Promise<User> {
     return this.userRepository.save(user);
   }
 
-  remove(id: string): Promise<DeleteResult> {
+  async remove(id: string): Promise<DeleteResult> {
     return this.userRepository.delete(id);
   }
 
-  update(id: string, user: UserEditDTO): Promise<UpdateResult> {
+  async update(id: string, user: UserEditDTO): Promise<UpdateResult> {
     return this.userRepository.update(id, user);
   }
 
-  getAll(): Promise<User[]> {
+  async getAll(): Promise<User[]> {
     return this.userRepository.find();
   }
 
-  getUserById(id: string): Promise<User> {
+  @NotBlank()
+  async getUserById(id: string): Promise<User> {
     return this.userRepository.findOneBy({ id });
   }
 }
