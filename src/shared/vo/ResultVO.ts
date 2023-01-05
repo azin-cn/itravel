@@ -19,16 +19,16 @@ type IResult<T = object> = InstanceType<typeof ResultVO<T>>;
 
 export class ResultVO<T = object> {
   constructor(
-    private code?: number,
-    private msg?: string,
+    private errCode?: number,
+    private errMsg?: string,
     private data?: IData<T>,
   ) {}
 
-  public setCode(code: number) {
-    this.code = code;
+  public setCode(errCode: number) {
+    this.errCode = errCode;
   }
-  public setMsg(msg: string) {
-    this.msg = msg;
+  public setMsg(errMsg: string) {
+    this.errMsg = errMsg;
   }
   public setData(data: IData<T>) {
     this.data = data;
