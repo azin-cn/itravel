@@ -1,3 +1,5 @@
+import { BlankException } from '../exceptions';
+
 // maybe you can write Array<null | undefined | {} | 0 | T>, but it is dynamic
 const tags = ['null', 'undefined', '{}', '', '0'] as const;
 export const NotBlank =
@@ -51,11 +53,10 @@ export const NotBlank =
       const res = await fn.apply(this, args);
       const { isBlank, msg } = check(res);
       if (isBlank) {
-        throw new Error(
-          `\n@NotBlankError: function ${String(
-            method,
-          )} was correctly executed, but it returns a blank! The blank result is ${msg}`,
-        );
+        // `\n@NotBlankError: function ${String(
+        //   method,
+        // )} was correctly executed, but it returns a blank! The blank result is ${msg}`,
+        throw new BlankException();
       }
       return res;
     };
