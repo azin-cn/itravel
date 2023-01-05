@@ -1,14 +1,35 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
 
-export enum ExceptionStatus {
-  NOT_FOUND = 40040,
-}
+export type IException = Record<
+  string,
+  {
+    errCode: number;
+    errMsg: string;
+  }
+>;
 
-export class BlankException extends HttpException {
+
+
+export class BasicException extends HttpException {
   constructor(
-    private errmsg = '未找到对应资源',
-    private errcode = ExceptionStatus.NOT_FOUND,
+    errCode: number,
+    errMsg: string = 'Internal server error',
+    httpCode: number = HttpStatus.INTERNAL_SERVER_ERROR, // server_error 500
   ) {
-    super({ errcode, errmsg }, HttpStatus.OK);
+    super({ errCode, errMsg }, httpCode);
   }
 }
+
+// export class BlankException extends HttpException {
+//   constructor(
+//     private errMsg = '未找到对应资源',
+//     private errCode = ExceptionStatus.NOT_FOUND,
+//   ) {
+//     super({ errCode, errMsg }, HttpStatus.OK);
+//   }
+// }
+
+export const registeExcetion =
+  (Exception: IException, key: string) => (errMsg: string, errCode: number) => {
+    Exception[key] = { errCode, errMsg };
+  };
