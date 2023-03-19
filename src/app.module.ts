@@ -8,6 +8,8 @@ import { AppService } from './app.service';
 import { getDBConf } from './config/db.config';
 import { ArticleModule } from './modules/article/article.module';
 import { UserModule } from './modules/user/user.module';
+import { TitleModule } from './modules/title/title.module';
+import { TagModule } from './modules/tag/tag.module';
 
 @Module({
   imports: [
@@ -24,6 +26,8 @@ import { UserModule } from './modules/user/user.module';
     }),
     ArticleModule,
     UserModule,
+    TitleModule,
+    TagModule,
   ],
   controllers: [AppController],
   providers: [AppService],
