@@ -1,10 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Repository, UpdateResult } from 'typeorm';
-
 import { User } from 'src/entities/user.entity';
-import { UserCreateDTO, UserEditDTO } from 'src/modules/user/dto/user.dto';
-import { NotBlank } from 'src/shared/decorators';
+import { Title } from 'src/entities/title.entity';
+import { BizException } from 'src/shared/exceptions/BizException';
 
 @Injectable()
 export class UserService {
@@ -14,26 +13,31 @@ export class UserService {
     // 所以nestjs在TypeOrm.forFeature中标识了需要存储这一类型，在InjectRepository中将这一类型依赖注入
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    @InjectRepository(Title)
+    private titleRepository: Repository<Title>,
   ) {}
 
-  async create(user: UserCreateDTO): Promise<User> {
+  async create(user: Partial<User>): Promise<User> {
     return this.userRepository.save(user);
   }
 
-  async remove(id: string): Promise<DeleteResult> {
+  async delete(id: string): Promise<DeleteResult> {
     return this.userRepository.delete(id);
   }
 
-  async update(id: string, user: UserEditDTO): Promise<UpdateResult> {
-    return this.userRepository.update(id, user);
+  async update(user: Partial<User>): Promise<UpdateResult> {
+    if (user.title) {
+      const title = this.titleRepository.findOneBy({ id: user.title.id });
+      if (!title) throw new BizException('头衔设置错误，没有此头衔！');
+    }
+    return this.userRepository.update(user.id, user);
   }
 
-  async getAll(): Promise<User[]> {
+  async findAll(): Promise<User[]> {
     return this.userRepository.find();
   }
 
-  @NotBlank()
-  async getUserById(id: string): Promise<User> {
+  async findUserById(id: string): Promise<User> {
     return this.userRepository.findOneBy({ id });
   }
 }
