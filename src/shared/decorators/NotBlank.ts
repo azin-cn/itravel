@@ -1,4 +1,4 @@
-import { BlankException } from '../exceptions';
+import { BlankException } from '../exceptions/BlankException';
 
 // maybe you can write Array<null | undefined | {} | 0 | T>, but it is dynamic
 const tags = ['null', 'undefined', '{}', '', '0'] as const;
@@ -56,7 +56,7 @@ export const NotBlank =
         // `\n@NotBlankError: function ${String(
         //   method,
         // )} was correctly executed, but it returns a blank! The blank result is ${msg}`,
-        throw new BlankException();
+        throw new BlankException(500);
       }
       return res;
     };
