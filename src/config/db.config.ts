@@ -1,4 +1,5 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 
 export const getDBConf = (): TypeOrmModuleOptions => ({
   // type: configService.get('DB_TYPE', 'mysql'), error，ts 类型检测
@@ -11,6 +12,7 @@ export const getDBConf = (): TypeOrmModuleOptions => ({
   logging: 'all',
   entities: [],
   autoLoadEntities: true,
+  namingStrategy: new SnakeNamingStrategy(), // 将实体中的小驼峰变为蛇形
   timezone: '+08:00', // 时区
   synchronize: true, //根据实体自动创建数据库表， 生产环境建议关闭
 });
