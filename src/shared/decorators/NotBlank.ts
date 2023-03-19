@@ -3,13 +3,13 @@ import { BlankException } from '../exceptions/BlankException';
 // maybe you can write Array<null | undefined | {} | 0 | T>, but it is dynamic
 const tags = ['null', 'undefined', '{}', '', '0'] as const;
 export const NotBlank =
-  (...args: ReadonlyArray<typeof tags[number]>) =>
+  (...args: ReadonlyArray<(typeof tags)[number]>) =>
   (target: any, method: string | symbol, descriptor: PropertyDescriptor) => {
     if (args.length === 0) {
       args = tags;
     }
 
-    const fn = descriptor.value as Function;
+    const fn = descriptor.value;
 
     const check = (value: any): { isBlank: boolean; msg: string } => {
       let tag: string, msg: string;
