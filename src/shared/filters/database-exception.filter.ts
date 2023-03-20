@@ -4,13 +4,16 @@ import {
   ExceptionFilter,
   HttpStatus,
 } from '@nestjs/common';
-import { QueryFailedError } from 'typeorm';
+import { QueryFailedError, ConnectionNotFoundError } from 'typeorm';
 import { ResultVO } from '../vo/ResultVO';
 import { ResultCode } from '../vo/ResultHelp';
 
-@Catch(QueryFailedError)
+@Catch(QueryFailedError, ConnectionNotFoundError)
 export class DatabaseQueryExceptionFilter implements ExceptionFilter {
-  catch(exception: QueryFailedError, host: ArgumentsHost) {
+  catch(
+    exception: QueryFailedError | ConnectionNotFoundError,
+    host: ArgumentsHost,
+  ) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();
     const errCode = ResultCode.DATABASEFAIL;
