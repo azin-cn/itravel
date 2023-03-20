@@ -48,3 +48,10 @@ export class TransformUserPipe implements PipeTransform {
     return user;
   }
 }
+
+@Injectable()
+export class TransformUserRegisterPipe implements PipeTransform {
+  async transform(value: any) {
+    // plainToClass()
+  }
+}

@@ -12,7 +12,10 @@ import { UserService } from './user.service';
 import { User } from 'src/entities/user.entity';
 import { ResultVO } from 'src/shared/vo/ResultVO';
 import { BizException } from 'src/shared/exceptions/BizException';
-import { TransformUserPipe } from 'src/shared/pipes/user.pipe';
+import {
+  TransformUserPipe,
+  TransformUserRegisterPipe,
+} from 'src/shared/pipes/user.pipe';
 
 @Controller('user')
 export class UserController {
@@ -28,7 +31,7 @@ export class UserController {
   }
 
   @Post()
-  @UsePipes(new TransformUserPipe())
+  @UsePipes(new TransformUserRegisterPipe())
   async postUser(@Body() user: User): Promise<User> {
     console.log(user instanceof User, 'user instanceof User');
     return await this.userService.create(user);

@@ -10,11 +10,14 @@ import {
   Length,
 } from 'class-validator';
 
+export class UserBaseDTO {}
+
 export class UserDTO {
   /**
    * uuid
    */
-  @IsNotEmpty({ message: '用户ID必须存在' })
+  // @IsNotEmpty({ message: '用户ID必须存在' })
+  @IsOptional()
   @IsUUID(undefined, { message: '用户ID必须是UUID形式' })
   id: string;
 
@@ -81,5 +84,5 @@ export class UserDTO {
    */
   @IsOptional()
   @IsUUID(undefined, { message: '头衔 ID 必须是 UUID 形式' })
-  titleId?: string;
+  title?: string;
 }
