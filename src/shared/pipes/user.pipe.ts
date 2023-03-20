@@ -40,9 +40,9 @@ export class TransformUserPipe implements PipeTransform {
     user.scenicArea = u.scenicArea;
 
     // uuid string, not number 0
-    if (u.titleId) {
+    if (u.title) {
       const title = new Title();
-      title.id = u.titleId;
+      title.id = u.title;
       user.title = title;
     }
     return user;
