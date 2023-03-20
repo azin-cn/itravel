@@ -40,13 +40,13 @@ export class Tag {
    * 创建时间
    */
   @CreateDateColumn()
-  createTime: Date;
+  createdTime: Date;
 
   /**
    * 更新时间
    */
   @UpdateDateColumn()
-  updateTime: Date;
+  updatedTime: Date;
 
   /**
    * 是否删除
