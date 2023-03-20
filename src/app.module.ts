@@ -1,4 +1,3 @@
-import { APP_FILTER, APP_PIPE } from '@nestjs/core';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -12,8 +11,8 @@ import { UserModule } from './modules/user/user.module';
 import { TitleModule } from './modules/title/title.module';
 import { TagModule } from './modules/tag/tag.module';
 
-import { HttpExceptionFilter } from 'src/shared/filters/http-exception.filter';
-import { DatabaseQueryExceptionFilter } from 'src/shared/filters/database-exception.filter';
+import { GLOBAL_FILTERS } from './shared/filters';
+import { GLOBAL_PIPES } from './shared/pipes';
 
 @Module({
   imports: [
@@ -34,16 +33,6 @@ import { DatabaseQueryExceptionFilter } from 'src/shared/filters/database-except
     TagModule,
   ],
   controllers: [AppController],
-  providers: [
-    AppService,
-    {
-      provide: APP_FILTER,
-      useClass: HttpExceptionFilter,
-    },
-    {
-      provide: APP_FILTER,
-      useClass: DatabaseQueryExceptionFilter,
-    },
-  ],
+  providers: [AppService, ...GLOBAL_FILTERS, ...GLOBAL_PIPES],
 })
 export class AppModule {}
