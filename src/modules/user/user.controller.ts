@@ -21,7 +21,10 @@ export class UserController {
   @Get(':id')
   async getUserById(@Param('id') id: string): Promise<ResultVO<User>> {
     const user = await this.userService.findUserById(id);
-    return ResultVO.info(user);
+    if (user) {
+      return ResultVO.info(user);
+    }
+    throw new BizException('用户不存在或已注销');
   }
 
   @Post()
