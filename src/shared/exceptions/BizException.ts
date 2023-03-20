@@ -1,7 +1,8 @@
 import { HttpException } from '@nestjs/common';
+import { ResultCode } from '../vo/ResultHelp';
 
 export class BizException extends HttpException {
-  constructor(private msg = '系统业务异常', private code = 500) {
+  constructor(private msg = '系统业务异常', private code = ResultCode.FAIL) {
     super(msg, code);
   }
 
