@@ -69,7 +69,7 @@ export class Article {
    * 创建时间
    */
   @CreateDateColumn()
-  createdTIme: Date;
+  createdTime: Date;
 
   /**
    * 更新时间
