@@ -24,7 +24,7 @@ export class User {
   /**
    * 用户名称
    */
-  @Column({ length: 20 })
+  @Column()
   username: string;
 
   /**
@@ -42,7 +42,7 @@ export class User {
   /**
    * 用户简介
    */
-  @Column({ length: 20 })
+  @Column()
   description: string;
 
   /**
@@ -58,15 +58,15 @@ export class User {
   phone: string;
 
   /**
-   * 是否为园区，0，1，2，方便以后拓展
+   * 是否为园区，0 标识普通游客，1，2，方便以后拓展景区等级
    */
-  @Column()
+  @Column({ default: 0 })
   scenicArea: number;
 
   /**
    * 访客数量
    */
-  @Column()
+  @Column({ default: 0 })
   visitors: number;
 
   /**

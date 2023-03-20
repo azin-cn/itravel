@@ -22,7 +22,7 @@ export class Article {
   /**
    * 文章title
    */
-  @Column({ length: 50 })
+  @Column()
   title: string;
 
   /**
@@ -34,7 +34,7 @@ export class Article {
   /**
    * 文章缩略图
    */
-  @Column({ default: '' })
+  @Column()
   thumbUrl: string;
 
   /**
@@ -46,7 +46,7 @@ export class Article {
   /**
    * 浏览量
    */
-  @Column()
+  @Column({ default: 0 })
   pageViews: number;
 
   /**
