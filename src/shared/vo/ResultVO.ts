@@ -34,8 +34,8 @@ export class ResultVO<T = object> {
     this.data = data;
   }
 
-  public static fail() {
-    return new ResultVO();
+  public static fail(msg = 'fail', code = ResultCode.FAIL) {
+    return new ResultVO(code, msg);
   }
 
   public static success<T = object>(
