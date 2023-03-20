@@ -58,7 +58,7 @@ export class UserService {
   async update(user: User): Promise<UpdateResult> {
     if (user.title) {
       const title = await this.titleService.findOneById(user.title.id);
-      if (!title) throw new BizException('头衔设置错误，没有此头衔！');
+      if (!title) throw new BizException('头衔设置错误，没有此头衔');
       user.title = title;
     }
     return this.userRepository.update(user.id, user);
