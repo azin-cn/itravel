@@ -13,8 +13,22 @@ export class TitleService {
     private userRepository: Repository<User>,
   ) {}
 
+  async findOneById(id: string) {
+    return this.titleRepository.findOneBy({ id, isDeleted: false });
+  }
+  async findOneByIdAdmin(id: string) {
+    return this.titleRepository.findOneBy({ id });
+  }
   async findAll() {
-    // isDeleted: false
-    return await this.titleRepository.findAndCount();
+    return this.titleRepository.find({ where: { isDeleted: false } });
+  }
+  async findAllAdmin() {
+    return this.titleRepository.find();
+  }
+  async udpate(title: Title) {
+    return this.titleRepository.update(title.id, title);
+  }
+  async delete(id: string) {
+    return this.titleRepository.delete(id);
   }
 }
