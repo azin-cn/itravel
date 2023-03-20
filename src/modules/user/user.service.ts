@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { User } from 'src/entities/user.entity';
 import { Title } from 'src/entities/title.entity';
 import { BizException } from 'src/shared/exceptions/BizException';
+import { TitleService } from '../title/title.service';
 
 @Injectable()
 export class UserService {
@@ -15,9 +16,38 @@ export class UserService {
     private userRepository: Repository<User>,
     @InjectRepository(Title)
     private titleRepository: Repository<Title>,
+    @Inject(TitleService)
+    private titleService: TitleService,
   ) {}
 
-  async create(user: Partial<User>): Promise<User> {
+  async findAll(): Promise<User[]> {
+    return this.userRepository.find({
+      where: { isDeleted: false },
+    });
+  }
+
+  async findUserById(id: string): Promise<User> {
+    return this.userRepository.findOneBy({ id, isDeleted: false });
+  }
+
+  /**
+   *
+   * @returns 所有用户，包括已删除
+   */
+  async findAllAdmin() {
+    return this.userRepository.findAndCount();
+  }
+
+  /**
+   *
+   * @param id
+   * @returns 寻找用户，包括已删除
+   */
+  async findUserByIdAdmin(id: string) {
+    return this.userRepository.findOneBy({ id });
+  }
+
+  async create(user: User): Promise<User> {
     return this.userRepository.save(user);
   }
 
@@ -25,19 +55,12 @@ export class UserService {
     return this.userRepository.delete(id);
   }
 
-  async update(user: Partial<User>): Promise<UpdateResult> {
+  async update(user: User): Promise<UpdateResult> {
     if (user.title) {
-      const title = this.titleRepository.findOneBy({ id: user.title.id });
+      const title = await this.titleService.findOneById(user.title.id);
       if (!title) throw new BizException('头衔设置错误，没有此头衔！');
+      user.title = title;
     }
     return this.userRepository.update(user.id, user);
-  }
-
-  async findAll(): Promise<User[]> {
-    return this.userRepository.find();
-  }
-
-  async findUserById(id: string): Promise<User> {
-    return this.userRepository.findOneBy({ id, isDeleted: false });
   }
 }
