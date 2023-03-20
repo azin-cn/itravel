@@ -38,6 +38,6 @@ export class UserService {
   }
 
   async findUserById(id: string): Promise<User> {
-    return this.userRepository.findOneBy({ id });
+    return this.userRepository.findOneBy({ id, isDeleted: false });
   }
 }

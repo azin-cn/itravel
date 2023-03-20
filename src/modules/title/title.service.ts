@@ -14,6 +14,7 @@ export class TitleService {
   ) {}
 
   async findAll() {
+    // isDeleted: false
     return await this.titleRepository.findAndCount();
   }
 }
