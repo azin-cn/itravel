@@ -58,9 +58,9 @@ await roleRepository.save(role);
 
 ### 记录一次 DTO，Pipe，class-validator 结合使用过程中 class-validator 不生效的原因
 
-先说解决方法：
+### 解决方法
 
-1. 自定义 transform 方法中的 value 是一个来自前端的 json obj，需要将其转换成你用 class-validator 的装饰器修饰的 class，如 class UserDTO 或 class User（用 @IsNotEmpty 装饰器修饰字段/类的 class），**只有转换后校验才会生效！** 转换方法：
+1. 自定义 transform 方法中的 value 是一个来自前端的 `json obj`，需要将其转换成你用 `class-validator` 的装饰器修饰的 `class`，如 class UserDTO 或 class User（用 @IsNotEmpty 装饰器修饰字段/类的 class），**只有转换后校验才会生效！** 转换方法：
 
 ```ts
 @Injectable()
@@ -72,7 +72,7 @@ export class TransformUserPipe implements PipeTransform {
 }
 ```
 
-2. 使用 validate 方法校验数据
+2. 使用 `validate` 方法校验数据
 
 ```ts
 @Injectable()
@@ -103,7 +103,7 @@ async postUser(@Body(new TransformUserPipe()) user: User): Promise<User> {
 }
 ```
 
-4. 检查一下是否开启了 ValidationType
+4. 检查一下是否开启了 ValidationPipe
 
 最好在 main.ts 中开启一下 `app.useGlobalPipes(new ValidationPipe());`，如果你能保证在每一个接口都能保持需要的数据类型，那么开不开没多大的意义。
 
