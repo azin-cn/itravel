@@ -7,11 +7,16 @@ import {
   OneToMany,
   OneToOne,
   JoinColumn,
+  BeforeInsert,
+  BeforeUpdate,
 } from 'typeorm';
+import * as bcrypt from 'bcryptjs';
 
 import { Article } from './article.entity';
 import { Title } from './title.entity';
 import { Tag } from './tag.entity';
+import { Exclude } from 'class-transformer';
+import { ClassSerializerInterceptor } from '@nestjs/common';
 
 @Entity('user')
 export class User {
@@ -24,37 +29,63 @@ export class User {
   /**
    * 用户名称
    */
-  @Column()
+  @Column({ nullable: true })
   username: string;
+
+  /**
+   * 用户角色
+   * 0：普通游客
+   * 1：作者
+   * 2：管理员
+   * 3：超级管理员
+   */
+  @Column('simple-enum', { enum: [0, 1, 2, 3] })
+  role: string;
 
   /**
    * 用户头像
    */
-  @Column()
+  @Column({
+    default:
+      'https://th.bing.com/th/id/OIP.37mLTapohqg7soL2wzLFyQAAAA?pid=ImgDet&rs=1',
+  })
   avatar: string;
 
   /**
    * 用户密码
+   * @Exclude() 结合 ClassSerializerInterceptor 拦截器使用能将密码字段排除后返回
    */
-  @Column()
+  @Exclude()
+  @Column({ nullable: true })
   password: string;
+
+  /**
+   *
+   */
+  @BeforeInsert()
+  @BeforeUpdate()
+  async encryptPwd() {
+    if (this.password) {
+      this.password = bcrypt.hashSync(this.password, 10);
+    }
+  }
 
   /**
    * 用户简介
    */
-  @Column()
+  @Column({ nullable: true })
   description: string;
 
   /**
    * 用户邮箱
    */
-  @Column()
+  @Column({ nullable: true })
   email: string;
 
   /**
    * 用户号码
    */
-  @Column()
+  @Column({ nullable: true })
   phone: string;
 
   /**
@@ -91,12 +122,23 @@ export class User {
   /**
    * 上一次登录时间
    */
-  @Column()
+  @Column({ nullable: true })
   lastTime: Date;
 
   /**
-   * 是否删除
+   * 是否激活
+   * 主要用于邮箱链接激活
+   * 未激活：0
+   * 已激活：1
    */
+  @Column({ default: 1 })
+  status: number;
+
+  /**
+   * 是否删除
+   * @Exclude() 结合 ClassSerializerInterceptor 拦截器使用能将密码字段排除后返回
+   */
+  @Exclude()
   @Column({ default: false })
   isDeleted: boolean;
 
