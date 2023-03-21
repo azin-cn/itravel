@@ -34,15 +34,15 @@ export class ResultVO<T = object> {
     this.data = data;
   }
 
-  public static fail(msg = 'fail', code = ResultCode.FAIL) {
-    return new ResultVO(code, msg);
+  public static fail(errMsg = 'fail', errCode = ResultCode.FAIL) {
+    return new ResultVO(errCode, errMsg);
   }
 
   public static success<T = object>(
-    msg = 'success',
-    code = ResultCode.SUCCESS,
+    errMsg = 'success',
+    errCode = ResultCode.SUCCESS,
   ): IResult<T> {
-    return new ResultVO<T>(code, msg);
+    return new ResultVO<T>(errCode, errMsg);
   }
 
   public static info<T = object>(info: T): IResult<T> {
