@@ -1,34 +1,39 @@
-import { BadRequestException, Injectable, PipeTransform } from '@nestjs/common';
+import { Injectable, PipeTransform } from '@nestjs/common';
 import { Title } from 'src/entities/title.entity';
 import { User } from 'src/entities/user.entity';
-import { UserDTO } from 'src/modules/user/dto/user.dto';
-import { BizException } from '../exceptions/BizException';
-import { validate } from 'class-validator';
+import { UserAuthDTO, UserDTO } from 'src/modules/user/dto/user.dto';
 import { plainToClass } from 'class-transformer';
+import { Assert } from 'utils/Assert';
+import { Validator } from './utils';
 
+/**
+ * User认证Pipe
+ */
+@Injectable()
+export class TransformUserAuthPipe implements PipeTransform {
+  async transform(u: UserAuthDTO): Promise<UserAuthDTO> {
+    // 转换class
+    u = plainToClass(UserAuthDTO, u);
+    // 校验数据
+    await Validator.validate(u);
+
+    return u;
+  }
+}
+
+/**
+ * User Update Pipe
+ */
 @Injectable()
 export class TransformUserPipe implements PipeTransform {
   // 如果参数名称和原有的一样，那么可以直接使用 ClassTransformerPipe
-  async transform(u: Partial<UserDTO>): Promise<User> {
+  async transform(u: UserDTO): Promise<User> {
+    console.log(u);
+
     // 将来自请求的数据进项转换
     u = plainToClass(UserDTO, u);
 
-    // 开始校验转换类型后的数据
-    const errors = await validate(u);
-
-    if (errors.length) {
-      const errMsg = errors
-        .map((e) => {
-          const constrains = e.constraints;
-          return Object.values(constrains).join('; \n');
-        })
-        // 为避免返回过多数据，限制10条
-        .filter((_, i) => i < 10)
-        // 再次格式化换行
-        .join('; \n');
-      // log
-      throw new BadRequestException(errMsg);
-    }
+    await Validator.validate(u);
 
     const user = new User();
     user.id = u.id;
@@ -46,12 +51,5 @@ export class TransformUserPipe implements PipeTransform {
       user.title = title;
     }
     return user;
-  }
-}
-
-@Injectable()
-export class TransformUserRegisterPipe implements PipeTransform {
-  async transform(value: any) {
-    // plainToClass()
   }
 }
