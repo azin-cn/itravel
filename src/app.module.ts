@@ -13,6 +13,7 @@ import { TagModule } from './modules/tag/tag.module';
 
 import { GLOBAL_FILTERS } from './shared/filters';
 import { GLOBAL_PIPES } from './shared/pipes';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { GLOBAL_PIPES } from './shared/pipes';
     UserModule,
     TitleModule,
     TagModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService, ...GLOBAL_FILTERS, ...GLOBAL_PIPES],

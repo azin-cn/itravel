@@ -1,7 +1,7 @@
 import { BadRequestException, PipeTransform } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
 import { Validator } from './utils';
-import { AuthTypeDTO } from 'src/modules/user/dto/auth.dto';
+import { AuthTypeDTO } from 'src/modules/auth/dto/auth.dto';
 
 export class TrasnformAuthPipe implements PipeTransform {
   async transform(value: AuthTypeDTO): Promise<AuthTypeDTO> {

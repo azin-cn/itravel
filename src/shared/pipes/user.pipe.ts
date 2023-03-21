@@ -1,10 +1,10 @@
 import { Injectable, PipeTransform } from '@nestjs/common';
 import { Title } from 'src/entities/title.entity';
 import { User } from 'src/entities/user.entity';
-import { UserAuthDTO, UserDTO } from 'src/modules/user/dto/user.dto';
+import { UserDTO } from 'src/modules/user/dto/user.dto';
 import { plainToClass } from 'class-transformer';
-import { Assert } from 'utils/Assert';
 import { Validator } from './utils';
+import { UserAuthDTO } from 'src/modules/auth/dto/auth.dto';
 
 /**
  * User认证Pipe

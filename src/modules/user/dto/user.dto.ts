@@ -6,14 +6,8 @@ import {
   IsUrl,
   IsNumber,
   IsOptional,
-  IsNotEmpty,
-  IsIn,
   Length,
-  Validate,
-  IsPhoneNumber,
 } from 'class-validator';
-import { IsAccount } from 'src/shared/validators/isAccount.validator';
-import { AUTH_TYPE } from 'src/shared/constants/auth.constant';
 
 /**
  * @class 用户常用信息
@@ -52,25 +46,6 @@ export class UserBaseDTO {
   @IsOptional()
   @IsEmail({}, { message: '请输入正确的邮箱地址！' })
   email?: string;
-}
-
-/**
- * @class 用户认证类型
- */
-export class UserAuthDTO extends UserBaseDTO {
-  /**
-   * 账户如手机、邮箱、用户名
-   */
-  @IsNotEmpty({ message: '请输入账户名如手机、邮箱、用户名' })
-  @Validate(IsAccount)
-  account: string;
-
-  /**
-   * 验证码
-   */
-  @IsOptional()
-  @IsNumber()
-  captcha?: number;
 }
 
 /**
