@@ -56,7 +56,7 @@ role.users = [user];
 await roleRepository.save(role);
 ```
 
-### 记录一次 DTO，Pipe，class-validator 结合使用过程中 class-validator 不生效的原因
+## 记录一次 DTO，Pipe，class-validator 结合使用过程中 class-validator 不生效的原因
 
 ### 解决方法
 
@@ -225,3 +225,79 @@ export class TransformUserPipe implements PipeTransform {
 ```
 
 最后，最好在 main.ts 中开启一下 `app.useGlobalPipes(new ValidationPipe());`，如果你能保证在每一个接口都能保持需要的数据类型，那么开不开没多大的意义。
+
+## 记录数据库 TypeOrm 的使用
+
+在个人构建一个查询时，需要查出 username、phone、email 其中配对，且并未删除的用户，刚开始看其他博客创建一个查询 handle，这里我没有指定表明，按照 TypeOrm 的默认方式查询，但是这引发了一个问题。
+
+> 来自 chatgpt 的解释
+> 在 NestJS 中使用 TypeORM 进行查询时，TypeORM 会默认自动将实体类中的属性名转换为数据库表的列名，并添加别名以便在查询结果中正确映射。例如，如果您有一个名为 User 的实体类，其中包含一个名为 username 的属性，则在查询中，TypeORM 将自动将 User.username 转换为 User_username，并将其用作查询结果的列名。
+> 如果您不想使用 TypeORM 的默认列名转换逻辑，可以使用 QueryBuilder 对象手动指定要查询的列名。
+>
+> ```ts
+> import { getRepository } from 'typeorm';
+> import { User } from './user.entity';
+> const userRepository = getRepository(User);
+> const users = await userRepository
+>   .createQueryBuilder('user')
+>   .select(['user.id', 'user.name'])
+>   .getMany();
+> ```
+
+也就是说如果不用 `where andWere orWhere` 这些 TypeOrm 提供的函数，而是使用自定义的 `user.username`，那么需要指定一下表明或者是选择的列。
+
+```ts
+/**
+ * 通过唯一条件查找用户，管理员模式
+ * @param _user
+ * @param isDeleted
+ * @returns
+ */
+async findUserByUniqueParamAdmin(_user: User, isDeleted = true) {
+  const { username, phone, email } = _user;
+  const handle = this.userRepository.createQueryBuilder('user');
+  // .select(['username', 'phone', 'email']);
+  handle.where(
+    '(user.username = :username OR user.phone = :phone OR user.email = :email)',
+    { username, phone, email },
+  );
+  if (!isDeleted) {
+    // isDeleted 只在 为false时起效，不代表不查询已删除
+    handle.andWhere('user.is_deleted = :isDeleted', { isDeleted });
+  }
+  return handle.getOne();
+}
+```
+
+## class-validator 验证数据问题
+
+```ts
+import { ValidationPipe } from '@nestjs/common';
+
+如果手动 validate，如果加上这条语句则会验证两次
+
+app.useGlobalPipes(new ValidationPipe())
+```
+
+## 忽略全局拦截器
+
+- 在指定的 Control 或 Route 上添加 `@SkipGlobalInterceptors()`
+- 在指定的 Control 或 Route 上添加空数组覆盖全局拦截器 `@UseInterceptors([])`，如果希望加入其他的拦截器，可以有以下写法
+
+```ts
+@UseInterceptor([])
+@UseInterceptor(interceptor1, interceptor2)
+@Get(":id")
+async getUserById() {}
+```
+
+## Nestjs 使用拦截器统一返回数据
+
+可以选择每一个路由生成 ResultVO 对象返回，也可以使用拦截器统一的返回 ResultVO 形式
+```ts
+export class HttpResponseInterceptor implement NestInterceptor {
+  intercept(ctc: ExecutionContext, next: CallHandle) {
+    
+  }
+}
+```
