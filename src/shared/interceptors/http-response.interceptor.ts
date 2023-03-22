@@ -4,9 +4,10 @@ import { ResultVO } from '../vo/ResultVO';
 
 export class HttpResponseInterceptor<T> implements NestInterceptor {
   intercept(ctx: ExecutionContext, next: CallHandler): Observable<ResultVO<T>> {
-    // 异常并不会走到interceptor
+    // 异常并不会走到interceptor，此时的data已经失去了class信息
     return next.handle().pipe(
       map((data: T) => {
+        console.log(Object.getPrototypeOf(data));
         if (data instanceof ResultVO) {
           return data;
         }

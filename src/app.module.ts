@@ -18,8 +18,8 @@ import { AuthModule } from './modules/auth/auth.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      isGlobal: true, // 设置为全局
-      // envFilePath: [envConfig.path], 采用 ts 文件配置形式，nest会默认读取根路径下的env文件
+      isGlobal: true, // 设置为全局，并自动读取配置文件
+      // envFilePath: [envConfig.path], 采用 ts 文件配置形式，dotenv会默认读取根路径下的env文件
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
