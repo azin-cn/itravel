@@ -329,3 +329,15 @@ export class HttpResponseInterceptor implement NestInterceptor {
   - https://juejin.cn/post/6937618804767719460
   - https://juejin.cn/post/7175937839069134903
 - 当遇到 Can't resolve ...的问题时，可以尝试添加到 lazyImports 中。
+
+### 使用 webpack 打包时会有很多意想不到的 bug，比如会发生依赖注入错误错误，所以还是选择默认的打包方式，用 cross-env 加以区分环境
+
+特别注意：两条命令之间请不要加上 `&&`
+
+```json
+{
+  "start": "cross-env NODE_ENV=production nest start",
+  "start:prod": "cross-env NODE_ENV=production node dist/main",
+  "build:prod": "cross-env NODE_ENV=production nest build"
+}
+```
