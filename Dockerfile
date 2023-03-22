@@ -5,14 +5,19 @@ FROM node:18
 EXPOSE 7000
 
 # 工作目录
-WORKDIR ~/www
+WORKDIR /www
+
+# 缓存镜像层，只要 package.json无变化，docker就会从这一个缓存镜像层中直接复制node_modules
+COPY package.json /www/package.json
+
+# 安装依赖
+RUN npm install --no-frozen-lockfile --ignore-scripts
 
 # 复制文件到容器 ~/www
-COPY /opt/docker/dev-itravel/www/* ./
+COPY . .
 
-# 安装依赖并构建
-RUN pnpm install --no-frozen-lockfile --ignore-scripts
-RUN pnpm build:prod
+# 构建项目
+RUN npm run build:prod
 
 # 启动命令
-CMD ["pnpm", "start:prod"]
+CMD ["npm", "run", "start:prod"]
