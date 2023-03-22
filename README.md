@@ -322,3 +322,10 @@ export class HttpResponseInterceptor implement NestInterceptor {
 ### 遇到的问题二： ERROR [ExceptionsHandler] Expected "payload" to be a plain object.
 
 只能是一个普通的 JSON 对象，使用 instanceToPlain 即可
+
+## Nestjs 打包问题
+
+- 使用 webpack 进行打包，进行一定的 webpack 配置
+  - https://juejin.cn/post/6937618804767719460
+  - https://juejin.cn/post/7175937839069134903
+- 当遇到 Can't resolve ...的问题时，可以尝试添加到 lazyImports 中。
