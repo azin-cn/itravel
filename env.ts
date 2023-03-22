@@ -16,14 +16,16 @@ const isProd = process.env.NODE_ENV === 'production';
  * 在项目根目录或者 src 目录下创建 config 文件夹，内部可选择性的创建 database.config.ts | global.config.ts 等
  */
 export function parseEnv() {
-  const localEnv = path.resolve('./.env');
+  // const localEnv = path.resolve('./.env');
+  const devEnv = path.resolve('./.env.development');
   const prodEnv = path.resolve('./.env.production');
+  // console.log('env = ', process.env.NODE_ENV);
 
-  if (!fs.existsSync(localEnv) && !fs.existsSync(prodEnv)) {
+  if (!fs.existsSync(devEnv) && !fs.existsSync(prodEnv)) {
     throw new Error('配置文件不存在，请在根目录下创建配置文件！');
   }
 
-  const filePath = isProd && fs.existsSync(prodEnv) ? prodEnv : localEnv;
+  const filePath = isProd && fs.existsSync(prodEnv) ? prodEnv : devEnv;
 
   return { path: filePath };
 }
