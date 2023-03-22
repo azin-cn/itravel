@@ -341,3 +341,26 @@ export class HttpResponseInterceptor implement NestInterceptor {
   "build:prod": "cross-env NODE_ENV=production nest build"
 }
 ```
+
+## Nestjs 打包 .env 问题
+
+Nestjs 不会打包非 `ts, js` 的文件，所以在选择配置文件类型时，`.env.production, .env.development` 不会被打包到 dist 目录。
+
+- 选择 ts、js 的配置文件形式
+- 或者选择修改 nest-cli:complierOptions，注意 `include` 一定要包含 `../` 否则会多出一层 config
+
+```json
+{
+  "$schema": "https://json.schemastore.org/nest-cli",
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "src",
+  "compilerOptions": {
+    "assets": [
+      {
+        "include": "../config/*.env*",
+        "outDir": "./dist/config"
+      }
+    ]
+  }
+}
+```
