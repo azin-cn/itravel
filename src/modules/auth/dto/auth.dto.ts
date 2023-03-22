@@ -36,3 +36,30 @@ export class UserAuthDTO extends UserBaseDTO {
   @IsNumber()
   captcha?: number;
 }
+
+export class JwtPayload {
+  constructor(
+    private id?: string,
+    private role?: number,
+    private status?: number,
+  ) {}
+
+  public getId() {
+    return this.id;
+  }
+  public setId(id: string) {
+    this.id = id;
+  }
+  public getRole() {
+    return this.role;
+  }
+  public setRole(role: number) {
+    this.role = role;
+  }
+  public getStatus() {
+    return this.status;
+  }
+  public setStatus(status: number) {
+    this.status = status;
+  }
+}
