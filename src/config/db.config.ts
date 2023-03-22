@@ -1,5 +1,6 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
+import { getOrdefault } from './utils';
 
 export const getDBConf = (): TypeOrmModuleOptions => ({
   // type: configService.get('DB_TYPE', 'mysql'), error，ts 类型检测
@@ -17,16 +18,3 @@ export const getDBConf = (): TypeOrmModuleOptions => ({
   synchronize: true, //根据实体自动创建数据库表， 生产环境建议关闭
 });
 export default getDBConf();
-
-function getOrdefault(token: string, defaultValue: number): number;
-function getOrdefault(token: string, defaultValue: string): string;
-function getOrdefault(
-  token: string,
-  defaultValue: number | string,
-): number | string {
-  const value = process.env[token] || defaultValue;
-  if (typeof defaultValue === 'number') {
-    return Number(value);
-  }
-  return value;
-}
