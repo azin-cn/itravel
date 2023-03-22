@@ -10,7 +10,7 @@ import { AuthTypeDTO, UserAuthDTO } from './dto/auth.dto';
 import { TrasnformAuthPipe } from 'src/shared/pipes/auth.pipe';
 import { TransformUserAuthPipe } from 'src/shared/pipes/user.pipe';
 import { AuthService } from './auth.service';
-import { User } from 'src/entities/user.entity';
+import { ResultVO } from 'src/shared/vo/ResultVO';
 
 @Controller('auth')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -21,18 +21,19 @@ export class AuthController {
   async userLogin(
     @Body(TransformUserAuthPipe) userDTO: UserAuthDTO,
     @Query(TrasnformAuthPipe) query: AuthTypeDTO,
-  ): Promise<User> {
-    // 校验用户
+  ): Promise<ResultVO> {
     const { type } = query;
-    return await this.authService.login(userDTO, type);
+    const res = await this.authService.login(userDTO, type);
+    return ResultVO.success(res);
   }
 
   @Post('register')
   async userRegiser(
     @Body(TransformUserAuthPipe) userDTO: UserAuthDTO,
     @Query(TrasnformAuthPipe) query: AuthTypeDTO,
-  ) {
+  ): Promise<ResultVO> {
     const { type } = query;
-    return await this.authService.register(userDTO, type);
+    const { id } = await this.authService.register(userDTO, type);
+    return ResultVO.success({ id });
   }
 }
