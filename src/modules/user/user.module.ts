@@ -3,16 +3,19 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from 'src/entities/user.entity';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
-import { Title } from 'src/entities/title.entity';
-import { Article } from 'src/entities/article.entity';
-import { Tag } from 'src/entities/tag.entity';
-import { TitleService } from '../title/title.service';
-import { AuthService } from '../auth/auth.service';
+import { TitleModule } from '../title/title.module';
+import { ArticleModule } from '../article/article.module';
+import { TagModule } from '../tag/tag.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, Title, Article, Tag])], // dynamic module
+  imports: [
+    TypeOrmModule.forFeature([User]),
+    ArticleModule,
+    TagModule,
+    TitleModule,
+  ], // dynamic module
   controllers: [UserController],
-  providers: [UserService, TitleService, AuthService],
-  exports: [TypeOrmModule],
+  providers: [UserService],
+  exports: [UserService, TypeOrmModule.forFeature([User])],
 })
 export class UserModule {}

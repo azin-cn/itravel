@@ -10,10 +10,6 @@ export class TagService {
   constructor(
     @InjectRepository(Tag)
     private tagRepository: Repository<Tag>,
-    @InjectRepository(User)
-    private userRepository: Repository<User>,
-    @InjectRepository(Article)
-    private articleRepository: Repository<Article>,
   ) {}
 
   async findAll() {

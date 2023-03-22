@@ -9,8 +9,6 @@ export class TitleService {
   constructor(
     @InjectRepository(Title)
     private titleRepository: Repository<Title>,
-    @InjectRepository(User)
-    private userRepository: Repository<User>,
   ) {}
 
   async findOneById(id: string) {

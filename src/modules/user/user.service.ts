@@ -5,7 +5,6 @@ import { User } from 'src/entities/user.entity';
 import { Title } from 'src/entities/title.entity';
 import { BizException } from 'src/shared/exceptions/BizException';
 import { TitleService } from '../title/title.service';
-import { AuthService } from '../auth/auth.service';
 
 @Injectable()
 export class UserService {
