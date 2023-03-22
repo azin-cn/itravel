@@ -16,6 +16,9 @@ RUN npm install --no-frozen-lockfile --ignore-scripts
 # 复制文件到容器 ~/www
 COPY . .
 
+# 复制配置文件
+COPY ../config/* ./
+
 # 构建项目
 RUN npm run build:prod
 
