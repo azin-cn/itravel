@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { User } from 'src/entities/user.entity';
 import { isEmail, isMobilePhone } from 'class-validator';
-import { Assert } from 'utils/Assert';
+import { Assert } from 'src/utils/Assert';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { BizException } from 'src/shared/exceptions/BizException';
