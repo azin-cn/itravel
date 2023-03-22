@@ -5,6 +5,6 @@ import { HttpResponseInterceptor } from './shared/interceptors/http-response.int
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   // app.useGlobalInterceptors(new HttpResponseInterceptor());
-  await app.listen(3000);
+  await app.listen(process.env.PORT);
 }
 bootstrap();
