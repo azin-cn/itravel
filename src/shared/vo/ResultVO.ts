@@ -39,10 +39,11 @@ export class ResultVO<T = object> {
   }
 
   public static success<T = object>(
+    data?: T,
     errMsg = 'success',
     errCode = ResultCode.SUCCESS,
   ): IResult<T> {
-    return new ResultVO<T>(errCode, errMsg);
+    return new ResultVO<T>(errCode, errMsg, data);
   }
 
   public static info<T = object>(info: T): IResult<T> {
