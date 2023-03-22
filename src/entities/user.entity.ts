@@ -40,7 +40,7 @@ export class User {
    * 3：超级管理员
    */
   @Column('simple-enum', { enum: [0, 1, 2, 3] })
-  role: string;
+  role: number;
 
   /**
    * 用户头像
