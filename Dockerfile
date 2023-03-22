@@ -10,8 +10,9 @@ WORKDIR ~/www
 # 复制文件到容器 ~/www
 COPY /opt/docker/dev-itravel/www/* ./
 
-# 安装依赖
+# 安装依赖并构建
 RUN pnpm install --no-frozen-lockfile --ignore-scripts
+RUN pnpm build:prod
 
 # 启动命令
 CMD ["pnpm", "start:prod"]
