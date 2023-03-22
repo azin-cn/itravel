@@ -16,8 +16,8 @@ RUN npm install --no-frozen-lockfile --ignore-scripts
 # 复制文件到容器 ~/www
 COPY . .
 
-# 复制配置文件
-COPY ../config/* ./
+# 复制配置文件，docker复制宿主机的文件最好是在Dockerfile以下的目录
+COPY ./config/* ./
 
 # 构建项目
 RUN npm run build:prod
