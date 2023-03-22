@@ -17,12 +17,12 @@ const isProd = process.env.NODE_ENV === 'production';
  */
 export function parseEnv() {
   // const localEnv = path.resolve('./.env');
-  const devEnv = path.resolve('./.env.development');
-  const prodEnv = path.resolve('./.env.production');
+  const devEnv = path.resolve(__dirname, './.env.development');
+  const prodEnv = path.resolve(__dirname, './.env.production');
   // console.log('env = ', process.env.NODE_ENV);
 
   if (!fs.existsSync(devEnv) && !fs.existsSync(prodEnv)) {
-    throw new Error('配置文件不存在，请在根目录下创建配置文件！');
+    throw new Error('配置文件不存在，请在 src/config 下创建配置文件！');
   }
 
   const filePath = isProd && fs.existsSync(prodEnv) ? prodEnv : devEnv;
