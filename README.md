@@ -294,10 +294,31 @@ async getUserById() {}
 ## Nestjs 使用拦截器统一返回数据
 
 可以选择每一个路由生成 ResultVO 对象返回，也可以使用拦截器统一的返回 ResultVO 形式
+
 ```ts
 export class HttpResponseInterceptor implement NestInterceptor {
   intercept(ctc: ExecutionContext, next: CallHandle) {
-    
+
   }
 }
 ```
+
+## Nestjs 使用 passport 和 @nestjs/passport 和 @nestjs/jwt 进行 jwt 认证
+
+### 遇到的问题一：secretOrPrivateKey must have a value
+
+首先寻找到的解决方法：不要在其他未导入 JwtModule 的模块中使用 JwtService
+
+> JwtService 导入其他模块。您只能在已注册 JWTModule 的模块上使用它
+> 查看链接：https://codesti.com/issue/nestjs/jwt/1063
+
+其次寻找自身的原因：按照规范导入需要的 Module，而不是乱导入 Service。
+
+如本人此次问题是在 UserModule 中导入了 JwtService，但是做的验证是在 AuthModule 中，所以就会出现这个问题。需要正确的依赖关系才不会出现奇奇怪怪的问题，如我需要在 AuthModule 中用到 UserService 的服务，那么有两种方式：
+
+- 在 AuthModule 的 providers 中导入 UserService，如果使用的 UserService 使用了 TypeOrm，那么还需要在 AuthModule 的 imports 中导入 TypeOrm 的 UserModule (TypeOrmModule.forFeature([User]))，甚至 UserService 用了其他模块的 Service，那么 AuthModule 也需要导入其他模块 Service。从导入方式就可知道，这是一个非常复杂的依赖管理。
+- 在各自的 Module 的 exports 中导出其他模块可能需要用的 Module 或者 Service，如 UserModule 使用了 TagModule，AuthModule 使用了 User Module 和 TagModule，只要在 TagModule 的 exports 中导出 TagService、TypeOrmModule.forFeature([Tag])，UserModule 的 exports 中导出 UserService，TypeOrmModule.forFeature([User])，无需再次导出 TagModule 或 TagService，AuthModule 只导入 UserModule 就能正常使用。特别注意，最好将每一个 entity 的 Module 的 TypeOrmModule.forFeature([Entity]) 导出，否则其他模块需要用到该模块的 Repository 时还需要导入该模块 Repository： TypeOrmModule.forFeature([xxx, yyy])
+
+### 遇到的问题二： ERROR [ExceptionsHandler] Expected "payload" to be a plain object.
+
+只能是一个普通的 JSON 对象，使用 instanceToPlain 即可
