@@ -44,6 +44,11 @@ export class AuthService {
     }
   }
 
+  async validateUser(payload: JwtPayload): Promise<User> {
+    const user = await this.userService.findUserById(payload.getId());
+    return user;
+  }
+
   /**
    * 实现从 UserAuthDTO 获取 User
    * @param u

@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   Put,
+  UseGuards,
   UseInterceptors,
   UsePipes,
 } from '@nestjs/common/decorators';
@@ -14,6 +15,7 @@ import { ResultVO } from 'src/shared/vo/ResultVO';
 import { BizException } from 'src/shared/exceptions/BizException';
 import { TransformUserPipe } from 'src/shared/pipes/user.pipe';
 import { TransformUUIDPipe } from 'src/shared/pipes/uuid.pipe';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('user')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -21,6 +23,7 @@ export class UserController {
   constructor(private userService: UserService) {}
 
   @Get(':id')
+  @UseGuards(AuthGuard('jwt'))
   async getUserById(
     @Param('id', TransformUUIDPipe) id: string,
   ): Promise<ResultVO<User>> {
@@ -30,6 +33,9 @@ export class UserController {
     }
     throw new BizException('用户不存在或已注销');
   }
+
+  @Get('info')
+  async getUserInfo() {}
 
   @Put()
   @UsePipes(new TransformUserPipe())
