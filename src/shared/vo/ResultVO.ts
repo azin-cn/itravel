@@ -7,7 +7,7 @@ export declare class IPagination {
   limit: number;
 }
 
-export declare class IData<T = object> {
+export declare class IDataPagination<T extends unknown = unknown> {
   info?: T;
   list?: T[];
   pagination?: IPagination;
@@ -15,9 +15,11 @@ export declare class IData<T = object> {
   [properties: string]: any;
 }
 
-type IResult<T = object> = InstanceType<typeof ResultVO<T>>;
+type IData<T extends unknown = unknown> = IDataPagination<T> | string | number;
 
-export class ResultVO<T = object> {
+type IResult<T extends unknown = unknown> = InstanceType<typeof ResultVO<T>>;
+
+export class ResultVO<T extends unknown = unknown> {
   constructor(
     private errCode?: number,
     private errMsg?: string,
@@ -38,7 +40,7 @@ export class ResultVO<T = object> {
     return new ResultVO(errCode, errMsg);
   }
 
-  public static success<T = object>(
+  public static success<T extends unknown = unknown>(
     data?: T,
     errMsg = 'success',
     errCode = ResultCode.SUCCESS,
@@ -46,13 +48,13 @@ export class ResultVO<T = object> {
     return new ResultVO<T>(errCode, errMsg, data);
   }
 
-  public static info<T = object>(info: T): IResult<T> {
+  public static info<T extends unknown = unknown>(info: T): IResult<T> {
     const result = ResultVO.success<T>();
     result.data = { info };
     return result;
   }
 
-  public static list<T = object>(
+  public static list<T extends unknown = unknown>(
     list: T[],
     pagination?: IPagination,
   ): IResult<T> {
