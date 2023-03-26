@@ -1,5 +1,6 @@
 import { BadRequestException, HttpException } from '@nestjs/common';
 import { isMobilePhone, isEmail } from 'class-validator';
+import { User } from 'src/entities/user.entity';
 import { isAccount } from 'src/shared/validators/IsAccount.validator';
 
 export class Assert {
@@ -36,5 +37,9 @@ export class Assert {
 
   static isAccount(val: string): asserts val is string {
     if (isAccount(val)) throw new BadRequestException('请输入正确的账号');
+  }
+
+  static isNotEmtpyUser(user: User): asserts user is User {
+    if (!user) throw new BadRequestException('用户不存在或已删除');
   }
 }
