@@ -12,6 +12,7 @@ import { IsAccount } from 'src/shared/validators/IsAccount.validator';
 export class AuthTypeDTO {
   /**
    * 注册类型
+   * AUTH_TYPE constraints
    */
   @IsNotEmpty({ message: '注册 type 不能为空' })
   @IsIn(AUTH_TYPE.getAll(), { message: '注册类型错误' })

@@ -6,12 +6,16 @@ import { getJWTConf } from 'src/config/auth.config';
 import { UserModule } from '../user/user.module';
 import { JwtStrategy } from './jwt.strategy';
 import { PassportModule } from '@nestjs/passport';
+import { MailerModule } from '../mailer/mailer.module';
 
 @Module({
   imports: [
     forwardRef(() => UserModule), // 异步加载，防止循环依赖
     PassportModule.register({ defaultStrategy: 'jwt' }),
-    JwtModule.register(getJWTConf()),
+    JwtModule.registerAsync({
+      useFactory: getJWTConf,
+    }),
+    MailerModule,
   ],
   providers: [AuthService, JwtStrategy],
   controllers: [AuthController],
