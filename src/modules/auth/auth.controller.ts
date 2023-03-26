@@ -19,7 +19,8 @@ export class AuthController {
   constructor(private authService: AuthService) {}
   @Get('activate')
   async userActive(@Query('token') token: string): Promise<ResultVO> {
-    return ResultVO.success(token);
+    const user = this.authService.activateUserByToken(token);
+    return ResultVO.success(user);
   }
 
   @Post('login')

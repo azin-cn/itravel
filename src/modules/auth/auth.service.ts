@@ -16,8 +16,9 @@ import { AUTH_TYPE } from 'src/shared/constants/auth.constant';
 import { JwtPayload, UserAuthDTO } from './dto/auth.dto';
 import { JwtService } from '@nestjs/jwt';
 import { LoginResponseDTO } from './dto/token.dto';
-import { instanceToPlain } from 'class-transformer';
+import { instanceToPlain, plainToClass } from 'class-transformer';
 import { MailerService } from '../mailer/mailer.service';
+import { USER_STATUS } from 'src/shared/constants/user.constant';
 
 @Injectable()
 export class AuthService {
@@ -76,6 +77,20 @@ export class AuthService {
   }
 
   /**
+   * 通过 token 激活用户
+   * @param token
+   * @returns
+   */
+  async activateUserByToken(token: string) {
+    const user = plainToClass(User, this.jwtService.verify(token));
+    const userRep = await this.userService.findUserById(user.id);
+    Assert.isNotEmtpyUser(userRep);
+    userRep.status = USER_STATUS.ACTIVE;
+    this.userService.update(userRep);
+    return userRep;
+  }
+
+  /**
    * 注册用户
    * @param u
    * @param type
@@ -88,15 +103,15 @@ export class AuthService {
       throw new BadRequestException('用户已存在');
     }
 
-    if (type === 3) {
+    if (type === AUTH_TYPE.THIRD) {
       /**
        * 第三方注册
        */
-    } else if (type === 2) {
+    } else if (type === AUTH_TYPE.MOBILE) {
       /**
        * 手机号注册
        */
-    } else if (type === 1) {
+    } else if (type === AUTH_TYPE.ACCOUNT) {
       /**
        * 通过注册页面手动注册即邮件注册
        */
@@ -167,6 +182,7 @@ export class AuthService {
          * 若密码不匹配则抛出异常
          * 若密码匹配则返回用户信息
          */
+        console.log(user.password, userRep.password);
         const isPwdMatch = bcrypt.compareSync(user.password, userRep.password);
         if (!isPwdMatch) throw new BizException('账户或密码错误');
         const { id, role, status } = userRep;
