@@ -370,3 +370,20 @@ Nestjs 不会打包非 `ts, js` 的文件，所以在选择配置文件类型时
 在项目的配置中，个人单独将认证模块抽出形成 AuthModule 和 UserModule，但是在 AuthModule 中需要 UserModule 的服务，如 UserRepository 和 UserService 进行用户的索引和认证，因而在 AuthModule 的 imports 中必须要导入 UserModule，但是在用户信息的控制中，需要使用 Guard 进行守护，如通过 Id 获取用户信息，所以需要使用到 JwtModule 的相关装饰器/注解。
 
 为了方便，将 JwtModule 注入 AuthModule 中进行 token 生成和认证，而在 UserModule 中用到的 `@UserGuard(AuthGuard('jwt'))` 这些装饰器，则必须要将 JwtModule、PassportModule 中注入 UserModule 中，所以需要将 AuthModule 中加入 UserModule 的 imports，当然也可以单独的将 JwtModule、PassportModule 导入 UserModule 的 imports。如果将 AuthModule 导入 UserModule，而 UserModule 之前就已经导入 AuthModule，这就会形成一个循环依赖，需要用到 NestJS 提供的 `forwardRef` 函数进行延迟导入，如 `forwardRef(() => UserModule)`
+
+## Nestjs .env 等配置文件的加载需要使用 Async 形式，而不是.forRoot
+
+Nestjs 加载配置文件时，如果使用的是非 .js .ts 的配置文件进行配置，那么应该使用 Async 的形式进行配置，如：
+
+- TypeOrmModule.forRootAsync()
+- JwtModule.registerAsync(),
+
+将其传入后，使用 Async 中的 useFactory 即可异步获取配置文件信息，如何从配置文件中获取信息呢，可以使用 ConfigModule 进行获取
+
+```ts
+  imports: [ConfigModule],
+  inject: [ConfigService],
+  useFactory: async (): Promise<XXXModuleOptions> => ({})
+```
+
+我通常的做法是将配置选项再次抽离，如在.env 文件中配置 DATABASE 环境，而 db.config.ts 则是获取.env 的变量，形成对应的 ModuleOptions
