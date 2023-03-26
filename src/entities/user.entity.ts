@@ -11,12 +11,11 @@ import {
   BeforeUpdate,
 } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
-
+import { Exclude } from 'class-transformer';
+import strRandom from 'string-random';
 import { Article } from './article.entity';
 import { Title } from './title.entity';
 import { Tag } from './tag.entity';
-import { Exclude } from 'class-transformer';
-import { ClassSerializerInterceptor } from '@nestjs/common';
 
 @Entity('user')
 export class User {
@@ -54,9 +53,10 @@ export class User {
   /**
    * 用户密码
    * @Exclude() 结合 ClassSerializerInterceptor 拦截器使用能将密码字段排除后返回
+   * 如果注册时没有提供密码，则设置一个随机的密码作为默认密码
    */
   @Exclude()
-  @Column({ nullable: true })
+  @Column({ nullable: true, default: strRandom(32) })
   password: string;
 
   /**
