@@ -7,7 +7,7 @@ export declare class IPagination {
   limit: number;
 }
 
-export declare class IDataPagination<T extends unknown = unknown> {
+export declare class IDataPagination<T = unknown> {
   info?: T;
   list?: T[];
   pagination?: IPagination;
@@ -15,11 +15,17 @@ export declare class IDataPagination<T extends unknown = unknown> {
   [properties: string]: any;
 }
 
-type IData<T extends unknown = unknown> = IDataPagination<T> | string | number;
+type IData<T = unknown> =
+  | IDataPagination<T>
+  | string
+  | number
+  | boolean
+  | null
+  | undefined;
 
-type IResult<T extends unknown = unknown> = InstanceType<typeof ResultVO<T>>;
+type IResult<T = unknown> = InstanceType<typeof ResultVO<T>>;
 
-export class ResultVO<T extends unknown = unknown> {
+export class ResultVO<T = unknown> {
   constructor(
     private errCode?: number,
     private errMsg?: string,
@@ -40,7 +46,7 @@ export class ResultVO<T extends unknown = unknown> {
     return new ResultVO(errCode, errMsg);
   }
 
-  public static success<T extends unknown = unknown>(
+  public static success<T = unknown>(
     data?: T,
     errMsg = 'success',
     errCode = ResultCode.SUCCESS,
@@ -48,13 +54,13 @@ export class ResultVO<T extends unknown = unknown> {
     return new ResultVO<T>(errCode, errMsg, data);
   }
 
-  public static info<T extends unknown = unknown>(info: T): IResult<T> {
+  public static info<T = unknown>(info: T): IResult<T> {
     const result = ResultVO.success<T>();
     result.data = { info };
     return result;
   }
 
-  public static list<T extends unknown = unknown>(
+  public static list<T = unknown>(
     list: T[],
     pagination?: IPagination,
   ): IResult<T> {
