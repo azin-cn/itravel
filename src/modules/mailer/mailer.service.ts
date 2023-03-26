@@ -27,8 +27,6 @@ export class MailerService {
     }
   }
 
-  async sendMail(type: string) {}
-
   async sendEMailForRegisterToken(to: string, token: string) {
     const { hostname } = getCommonConf();
 
