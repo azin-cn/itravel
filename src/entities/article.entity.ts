@@ -38,6 +38,12 @@ export class Article {
   thumbUrl: string;
 
   /**
+   * 文章的简要
+   */
+  @Column({ type: 'text', default: null })
+  summary: string;
+
+  /**
    * 文章内容
    */
   @Column('text')
