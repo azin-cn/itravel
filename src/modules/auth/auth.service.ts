@@ -17,6 +17,7 @@ import { JwtPayload, UserAuthDTO } from './dto/auth.dto';
 import { JwtService } from '@nestjs/jwt';
 import { LoginResponseDTO } from './dto/token.dto';
 import { instanceToPlain } from 'class-transformer';
+import { MailerService } from '../mailer/mailer.service';
 
 @Injectable()
 export class AuthService {
@@ -27,10 +28,18 @@ export class AuthService {
     private userService: UserService,
     @Inject(JwtService)
     private jwtService: JwtService,
+    @Inject(MailerService)
+    private mailerService: MailerService,
   ) {}
 
   async generateToken(payload: any): Promise<string> {
-    console.log(this.jwtService);
+    if (Object.getPrototypeOf(payload) !== Object.prototype) {
+      /**
+       * 如果不是一个普通对象，则转成一个普通对象
+       */
+      payload = instanceToPlain(payload);
+    }
+
     const token = this.jwtService.sign(payload);
     return token;
   }
@@ -78,7 +87,52 @@ export class AuthService {
     if (userRep) {
       throw new BadRequestException('用户已存在');
     }
+
+    if (type === 3) {
+      /**
+       * 第三方注册
+       */
+    } else if (type === 2) {
+      /**
+       * 手机号注册
+       */
+    } else if (type === 1) {
+      /**
+       * 通过注册页面手动注册即邮件注册
+       */
+      return this.registerWithEmail(user);
+    }
+
     return await this.userRepository.save(user);
+  }
+
+  /**
+   * 邮箱注册激活
+   * @param user
+   * @returns
+   */
+  async registerWithEmail(user: User) {
+    const { username, password, email } = user;
+    Assert.assertNotNil(username);
+    Assert.assertNotNil(password);
+    Assert.assertNotNil(email);
+    /**
+     * 将用户名、密码、邮箱等数据保存在 Redis 中，形成以 token 为 key，User 为 value的结构
+     * 目前将用户直接存入MySQL中，根据user数据生成token，最后active验证用户即可
+     *
+     * 更完善的功能是使用 redis 将注册用户的 token 设置为key，用户名、用户邮箱、密码设置为 value
+     */
+    user.status = 0;
+    const userRep = await this.userRepository.save(user);
+    const token = await this.generateToken(
+      new JwtPayload(userRep.id, userRep.role, userRep.status),
+    );
+
+    /**
+     * 通过 token 将邮件发送给注册用户
+     */
+    await this.mailerService.sendEMailForRegisterToken(email, token);
+    return user;
   }
 
   /**
@@ -106,6 +160,7 @@ export class AuthService {
        */
       Assert.assertNotNil(user.password, '密码不能为空');
       const userRep = await this.userService.findUserByUniqueParam(user);
+      Assert.isNotEmtpyUser(userRep);
       if (userRep) {
         /**
          * 登陆时用户存在，验证密码
@@ -119,11 +174,6 @@ export class AuthService {
           instanceToPlain(new JwtPayload(id, role, status)),
         );
         return new LoginResponseDTO(token, user);
-      } else {
-        /**
-         * 若登录用户不不存在
-         */
-        throw new BizException('用户不存在');
       }
     }
   }
@@ -134,7 +184,7 @@ export class AuthService {
    * @param u
    * @returns
    */
-  async loginWithMOBILE(user: User, u: UserAuthDTO): Promise<User> {
+  async loginWithMobile(user: User, u: UserAuthDTO): Promise<User> {
     const { phone, captcha } = u;
     Assert.isMobilePhone(phone);
     Assert.assertNotNil(captcha);

@@ -2,6 +2,7 @@ import {
   Body,
   ClassSerializerInterceptor,
   Controller,
+  Get,
   Post,
   Query,
   UseInterceptors,
@@ -16,6 +17,10 @@ import { ResultVO } from 'src/shared/vo/ResultVO';
 @UseInterceptors(ClassSerializerInterceptor)
 export class AuthController {
   constructor(private authService: AuthService) {}
+  @Get('activate')
+  async userActive(@Query('token') token: string): Promise<ResultVO> {
+    return ResultVO.success(token);
+  }
 
   @Post('login')
   async userLogin(
