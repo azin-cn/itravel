@@ -364,3 +364,9 @@ Nestjs 不会打包非 `ts, js` 的文件，所以在选择配置文件类型时
   }
 }
 ```
+
+## Nestjs 的 AuthModule 和 UserModule 的模块依赖问题
+
+在项目的配置中，个人单独将认证模块抽出形成 AuthModule 和 UserModule，但是在 AuthModule 中需要 UserModule 的服务，如 UserRepository 和 UserService 进行用户的索引和认证，因而在 AuthModule 的 imports 中必须要导入 UserModule，但是在用户信息的控制中，需要使用 Guard 进行守护，如通过 Id 获取用户信息，所以需要使用到 JwtModule 的相关装饰器/注解。
+
+为了方便，将 JwtModule 注入 AuthModule 中进行 token 生成和认证，而在 UserModule 中用到的 `@UserGuard(AuthGuard('jwt'))` 这些装饰器，则必须要将 JwtModule、PassportModule 中注入 UserModule 中，所以需要将 AuthModule 中加入 UserModule 的 imports，当然也可以单独的将 JwtModule、PassportModule 导入 UserModule 的 imports。如果将 AuthModule 导入 UserModule，而 UserModule 之前就已经导入 AuthModule，这就会形成一个循环依赖，需要用到 NestJS 提供的 `forwardRef` 函数进行延迟导入，如 `forwardRef(() => UserModule)`
