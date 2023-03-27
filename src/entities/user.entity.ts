@@ -17,6 +17,7 @@ import { Article } from './article.entity';
 import { Title } from './title.entity';
 import { Tag } from './tag.entity';
 import { USER_ROLES } from 'src/shared/constants/user.constant';
+import { Category } from './category.entity';
 
 @Entity('user')
 export class User {
@@ -107,6 +108,12 @@ export class User {
   @OneToOne(() => Title, (title) => title.user)
   @JoinColumn()
   title: Title;
+
+  /**
+   * 用户创建的文章分类
+   */
+  @OneToMany(() => Category, (category) => category.user)
+  categories: Category[];
 
   /**
    * 用户创建的文章标签
