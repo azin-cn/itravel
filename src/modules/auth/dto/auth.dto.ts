@@ -1,3 +1,4 @@
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsIn,
   IsNotEmpty,
@@ -14,6 +15,7 @@ export class AuthTypeDTO {
    * 注册类型
    * AUTH_TYPE constraints
    */
+  @ApiProperty({ name: '注册类型', enum: AUTH_TYPE.getAll() })
   @IsNotEmpty({ message: '注册 type 不能为空' })
   @IsIn(AUTH_TYPE.getAll(), { message: '注册类型错误' })
   type: number;
@@ -26,6 +28,7 @@ export class UserAuthDTO extends UserBaseDTO {
   /**
    * 账户如手机、邮箱、用户名
    */
+  @ApiProperty({ name: '账户如手机、邮箱、用户名' })
   @IsNotEmpty({ message: '请输入账户名如手机、邮箱、用户名' })
   @Validate(IsAccount)
   account: string;
@@ -33,6 +36,7 @@ export class UserAuthDTO extends UserBaseDTO {
   /**
    * 验证码
    */
+  @ApiProperty({ name: '验证码' })
   @IsOptional()
   @IsNumber()
   captcha?: number;
