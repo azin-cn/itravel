@@ -1,6 +1,5 @@
 import { SetMetadata } from '@nestjs/common';
-
-export const ROLES_KEY = 'roles';
+import { ROLES_KEY } from '../constants/role.constant';
 
 /**
  * 在当前的请求对象中附加数据
