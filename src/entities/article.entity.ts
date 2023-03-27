@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 import { User } from './user.entity';
 import { Tag } from './tag.entity';
+import { ARTICLE_STATUS } from 'src/shared/constants/article.constant';
 
 @Entity('article')
 export class Article {
@@ -53,7 +54,19 @@ export class Article {
    * 浏览量
    */
   @Column({ default: 0 })
-  pageViews: number;
+  viewCount: number;
+
+  /**
+   * 点赞量
+   */
+  @Column({ default: 0 })
+  likeCount: number;
+
+  /**
+   * 收藏量
+   */
+  @Column({ default: 0 })
+  favCount: number;
 
   /**
    * 文章标签，@JoinTable标识字段为被所有者方，当前类为所有者一方
@@ -64,6 +77,18 @@ export class Article {
   @ManyToMany(() => Tag, (tag) => tag.id)
   @JoinTable()
   tags: Tag[];
+
+  /**
+   * 发布时间
+   */
+  @Column({ nullable: true })
+  publishTime: Date;
+
+  /**
+   * 文章状态
+   */
+  @Column('simple-enum', { enum: ARTICLE_STATUS.getAll() })
+  status: number;
 
   /**
    * 是否删除
