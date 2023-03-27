@@ -15,6 +15,7 @@ import { GLOBAL_FILTERS } from './shared/filters';
 import { GLOBAL_PIPES } from './shared/pipes';
 import { AuthModule } from './modules/auth/auth.module';
 import { MailerModule } from './modules/mailer/mailer.module';
+import { CategoryModule } from './modules/category/category.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { MailerModule } from './modules/mailer/mailer.module';
     TagModule,
     AuthModule,
     MailerModule,
+    CategoryModule,
   ],
   controllers: [AppController],
   providers: [AppService, ...GLOBAL_FILTERS, ...GLOBAL_PIPES],
