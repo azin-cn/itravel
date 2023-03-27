@@ -387,3 +387,13 @@ Nestjs 加载配置文件时，如果使用的是非 .js .ts 的配置文件进�
 ```
 
 我通常的做法是将配置选项再次抽离，如在.env 文件中配置 DATABASE 环境，而 db.config.ts 则是获取.env 的变量，形成对应的 ModuleOptions
+
+## Nestjs JwtModule 结合其他守卫使用
+
+在查看他人的教程中，很多人也是一直半解，从这个博客抄到另外一个博客，没有解释清楚为什么要这样给使用，今天查了一下 JwtStrategy 中 validate 方法的参数和为什么很多例子中都会从 request 对象获取 user。
+
+- jwtStrategy 会自动从请求头中获取 Authorization 字段，然后根据这个字段进行 token 校验解码，得到 token 的 payload，这个 payload 也就是在生成 token 的时候加入的 payload。
+- 解析完成后，jwtStrategy 默认会将 payload 加入到请求对象中，属性名是 `user`，如果需要与数据库关联，需要进行数据库查询！
+- validate 方法中，默认传入的参数就是 payload
+
+## Nestjs 角色管理问题
