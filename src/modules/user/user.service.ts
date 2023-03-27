@@ -11,9 +11,11 @@ import { Assert } from 'src/utils/Assert';
 @Injectable()
 export class UserService {
   constructor(
-    // 此语句只是适配Repository的返回存储库类型，并且加入到nest中，因而显得很多步骤
-    // 其实流程很简单，Repository是typeorm提供的存储库类型，而nestjs需要动态的管理这一个存储库类型，
-    // 所以nestjs在TypeOrm.forFeature中标识了需要存储这一类型，在InjectRepository中将这一类型依赖注入
+    /**
+     * 此语句只是适配Repository的返回存储库类型，并且加入到nest中，因而显得很多步骤
+     * 其实流程很简单，Repository是typeorm提供的存储库类型，而nestjs需要动态的管理这一个存储库类型，
+     * 所以nestjs在TypeOrm.forFeature中标识了需要存储这一类型，在InjectRepository中将这一类型依赖注入
+     */
     @InjectRepository(User)
     private userRepository: Repository<User>,
     @InjectRepository(Title)
@@ -21,6 +23,10 @@ export class UserService {
     @Inject(TitleService)
     private titleService: TitleService,
   ) {}
+
+  /**
+   *  *UserService 仅有管理员模式才可以同时查询未删除和已删除*
+   */
 
   /**
    * 查找所有用户
@@ -35,7 +41,15 @@ export class UserService {
   }
 
   /**
-   * 通过ID查找用户
+   * 查找所有用户，管理员模式
+   * @returns 所有用户，包括未激活、已删除
+   */
+  async findAllAdmin(): Promise<User[]> {
+    return this.userRepository.find();
+  }
+
+  /**
+   * 通过ID查找用户，只能查询未删除的用户
    * @param id
    * @returns
    */
@@ -43,16 +57,7 @@ export class UserService {
     return this.userRepository.findOneBy({
       id,
       isDeleted: false,
-      status: USER_STATUS.ACTIVE,
     });
-  }
-
-  /**
-   * 查找所有用户，管理员模式
-   * @returns 所有用户，包括未激活、已删除
-   */
-  async findAllAdmin() {
-    return this.userRepository.find();
   }
 
   /**
@@ -60,8 +65,32 @@ export class UserService {
    * @param id
    * @returns 寻找用户，包括未激活、已删除
    */
-  async findUserByIdAdmin(id: string) {
+  async findUserByIdAdmin(id: string): Promise<User> {
     return this.userRepository.findOneBy({ id });
+  }
+
+  /**
+   * 通过ID查找未删除、未激活用户
+   * 注册查询时使用，搭配 findUserById 在更新 User 时使用
+   * @param id
+   * @returns
+   */
+  async findNotActiveUserById(id: string) {
+    return this.userRepository.findOneBy({
+      id,
+      status: USER_STATUS.NO_ACTIVE,
+      isDeleted: false,
+    });
+  }
+
+  /**
+   * 查找所有未激活、未删除的用户
+   * @returns
+   */
+  async findAllNotActiveUser() {
+    return this.userRepository.find({
+      where: { status: USER_STATUS.NO_ACTIVE, isDeleted: false },
+    });
   }
 
   /**
@@ -142,7 +171,7 @@ export class UserService {
    * @param user
    * @returns
    */
-  async update(user: User): Promise<UpdateResult> {
+  async update(user: User): Promise<User> {
     if (user.title) {
       /**
        * 更新中有头衔更新
@@ -152,22 +181,15 @@ export class UserService {
       user.title = title;
     }
 
-    const userRep = await this.findUserById(user.id);
-
-    if (!userRep) {
-      /**
-       * 更新用户不存在
-       */
-      throw new BadRequestException('更新用户不存在');
-    }
-
     /**
      * isDeleted 等高级权限不允许 update，在 Pipe 中已经去除
      */
-    return this.userRepository.update(user.id, user);
+    const { affected } = await this.userRepository.update(user.id, user);
+    Assert.isNotZero(affected, '更新失败，无此用户');
+    return this.findUserById(user.id);
   }
 
-  async updateAdmin(user: User): Promise<UpdateResult> {
+  async updateAdmin(user: User): Promise<User> {
     if (user.title) {
       /**
        * 更新中有头衔更新
@@ -180,6 +202,8 @@ export class UserService {
     /**
      * Admin 的权限可以更新所有的字段
      */
-    return this.userRepository.update(user.id, user);
+    const { affected } = await this.userRepository.update(user.id, user);
+    Assert.isNotZero(affected, '更新失败，无此用户');
+    return this.findUserById(user.id);
   }
 }
