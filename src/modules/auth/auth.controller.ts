@@ -12,7 +12,9 @@ import { TrasnformAuthPipe } from 'src/shared/pipes/auth.pipe';
 import { TransformUserAuthPipe } from 'src/shared/pipes/user.pipe';
 import { AuthService } from './auth.service';
 import { ResultVO } from 'src/shared/vo/ResultVO';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Auth')
 @Controller('auth')
 @UseInterceptors(ClassSerializerInterceptor)
 export class AuthController {

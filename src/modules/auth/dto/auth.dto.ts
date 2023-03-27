@@ -15,7 +15,7 @@ export class AuthTypeDTO {
    * 注册类型
    * AUTH_TYPE constraints
    */
-  @ApiProperty({ name: '注册类型', enum: AUTH_TYPE.getAll() })
+  @ApiProperty({ description: '注册类型', enum: AUTH_TYPE.getAll() })
   @IsNotEmpty({ message: '注册 type 不能为空' })
   @IsIn(AUTH_TYPE.getAll(), { message: '注册类型错误' })
   type: number;
@@ -28,7 +28,7 @@ export class UserAuthDTO extends UserBaseDTO {
   /**
    * 账户如手机、邮箱、用户名
    */
-  @ApiProperty({ name: '账户如手机、邮箱、用户名' })
+  @ApiProperty({ description: '账户如手机、邮箱、用户名' })
   @IsNotEmpty({ message: '请输入账户名如手机、邮箱、用户名' })
   @Validate(IsAccount)
   account: string;
@@ -36,7 +36,7 @@ export class UserAuthDTO extends UserBaseDTO {
   /**
    * 验证码
    */
-  @ApiProperty({ name: '验证码' })
+  @ApiPropertyOptional({ description: '验证码' })
   @IsOptional()
   @IsNumber()
   captcha?: number;
@@ -49,18 +49,27 @@ export class JwtPayload {
     private status?: number,
   ) {}
 
+  @ApiPropertyOptional()
   public getId() {
     return this.id;
   }
+
+  @ApiPropertyOptional()
   public setId(id: string) {
     this.id = id;
   }
+
+  @ApiPropertyOptional()
   public getRole() {
     return this.role;
   }
+
+  @ApiPropertyOptional()
   public setRole(role: number) {
     this.role = role;
   }
+
+  @ApiPropertyOptional()
   public getStatus() {
     return this.status;
   }
