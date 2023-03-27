@@ -58,7 +58,7 @@ export class AuthorGuard implements CanActivate {
       /**
        * token user_id 与 article author_id 比较
        */
-      Assert.isEqual(user.getId(), article.author);
+      Assert.isEqual(user.getId(), article.author.id);
 
       return true;
     } else if (authorScene === AUTHOR_SCENE.TITLE) {

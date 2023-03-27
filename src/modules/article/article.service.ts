@@ -44,7 +44,7 @@ export class ArticleService {
    */
   async findArticleByUser(uid: string): Promise<Article[]> {
     const articles = await this.articleRepository.find({
-      where: { author: uid, isDeleted: false },
+      where: { author: { id: uid }, isDeleted: false },
     });
     return articles;
   }

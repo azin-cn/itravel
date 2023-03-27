@@ -29,7 +29,7 @@ export class TransformArticlePipe implements PipeTransform {
     article.thumbUrl = articleDTO.thumbUrl;
     const author = await this.userService.findUserById(articleDTO.author);
     Assert.isNotEmptyUser(author, '作者不存在或已删除');
-    article.author = articleDTO.author; // id
+    article.author = author;
 
     return article;
   }
