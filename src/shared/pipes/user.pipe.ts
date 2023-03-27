@@ -14,10 +14,12 @@ export class TransformUserAuthPipe implements PipeTransform {
   async transform(u: UserAuthDTO): Promise<UserAuthDTO> {
     // 转换class
     u = plainToClass(UserAuthDTO, u);
-    u.email = u.email.toLowerCase();
-    u.username = u.username.toLowerCase();
     // 校验数据
     await Validator.validate(u);
+
+    u.email = u.email?.toLowerCase();
+    u.username = u.username?.toLowerCase();
+    u.account = u.account?.toLowerCase();
 
     return u;
   }
