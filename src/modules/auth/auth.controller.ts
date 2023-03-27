@@ -19,7 +19,7 @@ export class AuthController {
   constructor(private authService: AuthService) {}
   @Get('activate')
   async userActive(@Query('token') token: string): Promise<ResultVO> {
-    const user = this.authService.activateUserByToken(token);
+    const user = await this.authService.activateUserByToken(token);
     return ResultVO.success(user);
   }
 

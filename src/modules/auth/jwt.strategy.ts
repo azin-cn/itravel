@@ -20,6 +20,12 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
       secretOrKey: getJWTConf().secret,
+
+      /**
+       * 指定将JWT解析后的数据存储到请求对象中的属性名，默认为user
+       * 可在当前请求的后续处理步骤中获取该部分数据 request.user
+       */
+      property: 'user',
     } as StrategyOptions);
   }
 

@@ -81,13 +81,12 @@ export class AuthService {
    * @param token
    * @returns
    */
-  async activateUserByToken(token: string) {
+  async activateUserByToken(token: string): Promise<User> {
     const user = plainToClass(User, this.jwtService.verify(token));
-    const userRep = await this.userService.findUserById(user.id);
+    const userRep = await this.userService.findNotActiveUserById(user.id);
     Assert.isNotEmtpyUser(userRep);
     userRep.status = USER_STATUS.ACTIVE;
-    this.userService.update(userRep);
-    return userRep;
+    return this.userService.update(userRep);
   }
 
   /**
