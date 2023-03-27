@@ -13,33 +13,53 @@ export class Assert {
       throw new BadRequestException(msg);
     }
   }
+
   static isNotEmpty<T>(val: T | null | undefined): asserts val is T {
     Assert.assertNotNil(val);
   }
 
-  static isNotNull<T>(val: T | undefined): asserts val is T {
-    if (val === null) throw new BadRequestException('参数不能为 null');
+  static isNotNull<T>(
+    val: T | undefined,
+    msg = '参数不能为 null',
+  ): asserts val is T {
+    if (val === null) throw new BadRequestException(msg);
   }
 
-  static isNotUndefiend<T>(val: T | undefined): asserts val is T {
-    if (val === null) throw new BadRequestException('参数不能为 undefined');
+  static isNotUndefiend<T>(
+    val: T | undefined,
+    msg = '参数不能为 undefined',
+  ): asserts val is T {
+    if (val === null) throw new BadRequestException(msg);
   }
 
-  static isMobilePhone<T>(val: T): asserts val is T {
+  static isNotZero(val: number, msg = '参数不能为0'): asserts val is number {
+    if (val === 0) throw new BadRequestException(msg);
+  }
+
+  static isMobilePhone<T>(
+    val: T,
+    msg = '请输入正确的手机号',
+  ): asserts val is T {
     if (!isMobilePhone(val)) {
-      throw new BadRequestException('请输入正确的手机号');
+      throw new BadRequestException(msg);
     }
   }
 
-  static isEmail(val: string): asserts val is string {
-    if (!isEmail(val)) throw new BadRequestException('请输入正确的邮箱');
+  static isEmail(val: string, msg = '请输入正确的邮箱'): asserts val is string {
+    if (!isEmail(val)) throw new BadRequestException(msg);
   }
 
-  static isAccount(val: string): asserts val is string {
-    if (isAccount(val)) throw new BadRequestException('请输入正确的账号');
+  static isAccount(
+    val: string,
+    msg = '请输入正确的账号',
+  ): asserts val is string {
+    if (isAccount(val)) throw new BadRequestException(msg);
   }
 
-  static isNotEmtpyUser(user: User): asserts user is User {
-    if (!user) throw new BadRequestException('用户不存在或已删除');
+  static isNotEmtpyUser(
+    user: User,
+    msg = '用户不存在或已删除',
+  ): asserts user is User {
+    if (!user) throw new BadRequestException(msg);
   }
 }
