@@ -84,7 +84,7 @@ export class AuthService {
   async activateUserByToken(token: string): Promise<User> {
     const user = plainToClass(User, this.jwtService.verify(token));
     const userRep = await this.userService.findNotActiveUserById(user.id);
-    Assert.isNotEmtpyUser(userRep);
+    Assert.isNotEmptyUser(userRep);
     userRep.status = USER_STATUS.ACTIVE;
     return this.userService.update(userRep);
   }
@@ -174,7 +174,7 @@ export class AuthService {
        */
       Assert.assertNotNil(user.password, '密码不能为空');
       const userRep = await this.userService.findUserByUniqueParam(user);
-      Assert.isNotEmtpyUser(userRep);
+      Assert.isNotEmptyUser(userRep);
       if (userRep) {
         /**
          * 登陆时用户存在，验证密码
