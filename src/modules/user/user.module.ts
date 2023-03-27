@@ -11,8 +11,8 @@ import { AuthModule } from '../auth/auth.module';
 @Module({
   imports: [
     TypeOrmModule.forFeature([User]),
-    ArticleModule,
-    TagModule,
+    // ArticleModule,
+    // TagModule,
     TitleModule,
     AuthModule,
     // 延迟加载问题，循环依赖问题

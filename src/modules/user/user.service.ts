@@ -138,6 +138,17 @@ export class UserService {
   }
 
   /**
+   * 通过id验证用户是否存在，失败则抛出异常
+   * @param id
+   * @returns
+   */
+  async validateUserById(id: string): Promise<User> {
+    const user = await this.findUserById(id);
+    Assert.isNotEmptyUser(user);
+    return user;
+  }
+
+  /**
    * 创建新用户
    * @param user
    * @returns
@@ -153,7 +164,7 @@ export class UserService {
    */
   async delete(id: string): Promise<UpdateResult> {
     const user = await this.findUserById(id);
-    Assert.isNotEmtpyUser(user);
+    Assert.isNotEmptyUser(user);
     return this.userRepository.update(id, { isDeleted: true });
   }
 

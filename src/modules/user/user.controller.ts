@@ -30,7 +30,6 @@ import {
 
 @ApiTags('User')
 @Controller('user')
-@UseGuards(AuthGuard('jwt'))
 @UseInterceptors(ClassSerializerInterceptor)
 export class UserController {
   constructor(private userService: UserService) {}
@@ -50,6 +49,7 @@ export class UserController {
 
   @ApiOperation({ summary: '更新用户信息' })
   @Put()
+  @UseGuards(AuthGuard('jwt'))
   @UsePipes(new TransformUserPipe())
   async putUser(@Body() user: User): Promise<ResultVO> {
     // const { affected } = await this.userService.update(user);
