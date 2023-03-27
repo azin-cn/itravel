@@ -11,6 +11,7 @@ import {
 import { User } from './user.entity';
 import { Tag } from './tag.entity';
 import { ARTICLE_STATUS } from 'src/shared/constants/article.constant';
+import { Exclude } from 'class-transformer';
 
 @Entity('article')
 export class Article {
@@ -79,32 +80,33 @@ export class Article {
   tags: Tag[];
 
   /**
-   * 发布时间
-   */
-  @Column({ nullable: true })
-  publishTime: Date;
-
-  /**
    * 文章状态
    */
   @Column('simple-enum', { enum: ARTICLE_STATUS.getAll() })
   status: number;
 
   /**
+   * 发布时间
+   */
+  @Column({ nullable: true, type: 'timestamp' })
+  publishTime: Date;
+
+  /**
    * 是否删除
    */
+  @Exclude()
   @Column({ default: false })
   isDeleted: boolean;
 
   /**
    * 创建时间
    */
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamp' })
   createdTime: Date;
 
   /**
    * 更新时间
    */
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: 'timestamp' })
   updatedTime: Date;
 }

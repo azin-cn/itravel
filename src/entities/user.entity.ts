@@ -123,7 +123,7 @@ export class User {
   /**
    * 上一次登录时间
    */
-  @Column({ nullable: true })
+  @Column({ nullable: true, type: 'timestamp' })
   lastTime: Date;
 
   /**
@@ -146,12 +146,12 @@ export class User {
   /**
    * 创建时间
    */
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamp' })
   createdTime: Date;
 
   /**
    * 更新时间
    */
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: 'timestamp' })
   updatedTime: Date;
 }

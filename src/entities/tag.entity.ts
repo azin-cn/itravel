@@ -39,13 +39,13 @@ export class Tag {
   /**
    * 创建时间
    */
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamp' })
   createdTime: Date;
 
   /**
    * 更新时间
    */
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: 'timestamp' })
   updatedTime: Date;
 
   /**
