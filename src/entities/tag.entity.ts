@@ -27,13 +27,13 @@ export class Tag {
   /**
    * 由谁创建
    */
-  @ManyToOne((type) => User, (user) => user.tags)
+  @ManyToOne(() => User, (user) => user.tags)
   user: User;
 
   /**
    * tag 文章
    */
-  @ManyToMany((type) => Article, (article) => article.tags)
+  @ManyToMany(() => Article, (article) => article.tags)
   articles: Article[];
 
   /**

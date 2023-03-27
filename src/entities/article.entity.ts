@@ -12,6 +12,7 @@ import { User } from './user.entity';
 import { Tag } from './tag.entity';
 import { ARTICLE_STATUS } from 'src/shared/constants/article.constant';
 import { Exclude } from 'class-transformer';
+import { Category } from './category.entity';
 
 @Entity('article')
 export class Article {
@@ -31,7 +32,7 @@ export class Article {
    * 文章作者
    */
   @ManyToOne((type) => User, (user) => user.articles) // 注入User，user.articles 关联的属性
-  author: string; // uuid 为 key
+  author: User;
 
   /**
    * 文章缩略图
@@ -70,12 +71,18 @@ export class Article {
   favCount: number;
 
   /**
+   * 文章分类
+   */
+  @ManyToOne(() => Category, (category) => category.articles)
+  category: Category;
+
+  /**
    * 文章标签，@JoinTable标识字段为被所有者方，当前类为所有者一方
    * @JoinTable()是@ManyToMany关系所必需的，无论是单项关系还是双向关系，只存在一边
    * 保存时需要先生成/保存主实体，因为主实体的id需要作为其他实体的索引依赖
    * 然后生成/设置其他实体中主实体的属性，最后保存其他实体
    */
-  @ManyToMany(() => Tag, (tag) => tag.id)
+  @ManyToMany(() => Tag, (tag) => tag.articles)
   @JoinTable()
   tags: Tag[];
 
