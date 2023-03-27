@@ -14,6 +14,8 @@ export class TransformUserAuthPipe implements PipeTransform {
   async transform(u: UserAuthDTO): Promise<UserAuthDTO> {
     // 转换class
     u = plainToClass(UserAuthDTO, u);
+    u.email = u.email.toLowerCase();
+    u.username = u.username.toLowerCase();
     // 校验数据
     await Validator.validate(u);
 
@@ -37,8 +39,8 @@ export class TransformUserPipe implements PipeTransform {
 
     const user = new User();
     user.id = u.id;
-    user.username = u.username;
-    user.email = u.email;
+    user.username = u.username?.toLowerCase();
+    user.email = u.email?.toLowerCase();
     user.phone = u.phone;
     user.password = u.password;
     user.avatar = u.avatar;
