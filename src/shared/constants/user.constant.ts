@@ -17,21 +17,18 @@ export class USER_ROLES {
   static VISITOR = 0;
 
   /**
-   * 作者
-   */
-  static AUTHOR = 1;
-
-  /**
    * 管理员
    */
-  static ADMIN = 2;
+  static ADMIN = 1;
 
   /**
    * 超级管理员
    */
-  static ROOT = 3;
+  static ROOT = 2;
 
   static getAll(): number[] {
-    return [this.VISITOR, this.AUTHOR, this.ADMIN, this.ROOT];
+    return [this.VISITOR, this.ADMIN, this.ROOT];
   }
 }
+
+export const USER_KEY = 'userId';
