@@ -23,12 +23,12 @@ export class TransformArticlePipe implements PipeTransform {
     await Validator.validate(articleDTO);
 
     const article = new Article();
-    article.title = articleDTO.title;
-    article.content = articleDTO.content;
-    article.summary = articleDTO.summary;
-    article.thumbUrl = articleDTO.thumbUrl;
+    article.title = articleDTO.title?.trim();
+    article.content = articleDTO.content?.trim();
+    article.summary = articleDTO.summary?.trim();
+    article.thumbUrl = articleDTO.thumbUrl?.trim();
     const author = await this.userService.findUserById(articleDTO.author);
-    Assert.isNotEmptyUser(author, '作者不存在或已删除');
+    Assert.isNotEmptyUser(author, '用户不存在或已注销');
     article.author = author;
 
     return article;

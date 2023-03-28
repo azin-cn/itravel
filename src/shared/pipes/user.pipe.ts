@@ -17,9 +17,11 @@ export class TransformUserAuthPipe implements PipeTransform {
     // 校验数据
     await Validator.validate(u);
 
-    u.email = u.email?.toLowerCase();
-    u.username = u.username?.toLowerCase();
-    u.account = u.account?.toLowerCase();
+    u.email = u.email?.toLowerCase().trim();
+    u.username = u.username?.toLowerCase().trim();
+    u.account = u.account?.toLowerCase().trim();
+    u.phone = u.phone?.trim();
+    u.password = u.password?.trim();
 
     return u;
   }
