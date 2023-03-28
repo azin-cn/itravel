@@ -181,7 +181,6 @@ export class AuthService {
          * 若密码不匹配则抛出异常
          * 若密码匹配则返回用户信息
          */
-        console.log(user.password, userRep.password);
         const isPwdMatch = bcrypt.compareSync(user.password, userRep.password);
         if (!isPwdMatch) throw new BizException('账户或密码错误');
         const { id, role, status } = userRep;

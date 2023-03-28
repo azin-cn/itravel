@@ -8,6 +8,11 @@ import { TitleService } from '../title/title.service';
 import { USER_STATUS } from 'src/shared/constants/user.constant';
 import { Assert } from 'src/utils/Assert';
 
+export declare class UniqueParamOptions {
+  status?: number;
+  isDeleted?: false;
+}
+
 @Injectable()
 export class UserService {
   constructor(
@@ -96,10 +101,30 @@ export class UserService {
   /**
    * 通过唯一条件查找用户
    * 唯一条件：用户名、手机、邮箱
-   * @param _user
+   * @param user
+   * @param options
    */
-  async findUserByUniqueParam(user: User): Promise<User> {
-    return this.findUserByUniqueParamAdmin(user, USER_STATUS.ACTIVE, false);
+  async findUserByUniqueParam(
+    user: User,
+    options: UniqueParamOptions = {},
+  ): Promise<User> {
+    options = Object.assign({ isDeleted: false }, options);
+
+    return this.findUserByUniqueParamAdmin(
+      user,
+      options.status,
+      options.isDeleted,
+    );
+  }
+
+  /**
+   * 通过唯一条件查询非激活用户
+   * 唯一条件：用户名、手机号、邮箱
+   * @param user
+   * @returns
+   */
+  async findNotActiveUserByUniqueParam(user: User): Promise<User> {
+    return this.findUserByUniqueParamAdmin(user, USER_STATUS.NO_ACTIVE, false);
   }
 
   /**
@@ -110,25 +135,28 @@ export class UserService {
    */
   async findUserByUniqueParamAdmin(
     _user: User,
-    status = USER_STATUS.NO_ACTIVE,
-    isDeleted = true,
+    status?: number,
+    isDeleted?: boolean,
   ) {
     const { username, phone, email } = _user;
-    const handle = this.userRepository.createQueryBuilder('user');
-    // .select(['username', 'phone', 'email']);
-    handle.where(
-      '(user.username = :username OR user.phone = :phone OR user.email = :email)',
-      { username, phone, email },
-    );
+    const handle = this.userRepository
+      .createQueryBuilder('user')
+      .addSelect('user.*');
 
-    if (status === USER_STATUS.ACTIVE) {
+    handle.where('(username = :username OR phone = :phone OR email = :email)', {
+      username,
+      phone,
+      email,
+    });
+
+    if (status !== undefined) {
       /**
        * status 仅在 查询活跃时起效，不代表 Admin 仅查询一种情况
        */
       handle.andWhere('user.status = :status', { status });
     }
 
-    if (!isDeleted) {
+    if (isDeleted !== undefined) {
       /**
        * isDeleted 只在 为false时起效，不代表不查询已删除
        */
