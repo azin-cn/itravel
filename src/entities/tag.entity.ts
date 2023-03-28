@@ -6,6 +6,7 @@ import {
   ManyToMany,
   CreateDateColumn,
   UpdateDateColumn,
+  JoinColumn,
 } from 'typeorm';
 import { Article } from './article.entity';
 import { User } from './user.entity';
@@ -26,8 +27,10 @@ export class Tag {
 
   /**
    * 由谁创建
+   * 将User的主键作为Tag的user字段的值，即user字段是外键
    */
   @ManyToOne(() => User, (user) => user.tags)
+  @JoinColumn()
   user: User;
 
   /**

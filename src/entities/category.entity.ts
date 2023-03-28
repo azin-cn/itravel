@@ -2,6 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -20,8 +21,10 @@ export class Category {
 
   /**
    * 创建用户
+   * 将User的主键作为Category的user字段的值即user字段是外键
    */
   @ManyToOne(() => User, (user) => user.categories)
+  @JoinColumn()
   user: User;
 
   /**

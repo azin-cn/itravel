@@ -7,6 +7,7 @@ import {
   ManyToOne,
   ManyToMany,
   JoinTable,
+  JoinColumn,
 } from 'typeorm';
 import { User } from './user.entity';
 import { Tag } from './tag.entity';
@@ -30,14 +31,16 @@ export class Article {
 
   /**
    * 文章作者
+   * 将user的主键作为article中的外键
    */
   @ManyToOne((type) => User, (user) => user.articles) // 注入User，user.articles 关联的属性
+  @JoinColumn()
   author: User;
 
   /**
    * 文章缩略图
    */
-  @Column()
+  @Column({ nullable: true })
   thumbUrl: string;
 
   /**
@@ -72,8 +75,10 @@ export class Article {
 
   /**
    * 文章分类
+   * 将category的主键作为article中的外键
    */
   @ManyToOne(() => Category, (category) => category.articles)
+  @JoinColumn()
   category: Category;
 
   /**
@@ -88,8 +93,13 @@ export class Article {
 
   /**
    * 文章状态
+   * ARTICLE.DRAFT 0 未发布、草稿箱
+   * ARTICLE.PUBLISH 1 已发布
    */
-  @Column('simple-enum', { enum: ARTICLE_STATUS.getAll() })
+  @Column('simple-enum', {
+    enum: ARTICLE_STATUS.getAll(),
+    default: ARTICLE_STATUS.DRAFT,
+  })
   status: number;
 
   /**
