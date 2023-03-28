@@ -1,5 +1,5 @@
 import { SetMetadata } from '@nestjs/common';
-import { AUTHOR_SCENE } from '../constants/author.constant';
+import { AUTHOR_KEY } from '../constants/author.constant';
 
 /**
  * 在当前的请求对象中附加数据
@@ -9,4 +9,4 @@ import { AUTHOR_SCENE } from '../constants/author.constant';
  * @param author
  * @returns
  */
-export const Author = (author: string) => SetMetadata(AUTHOR_SCENE, author);
+export const Author = (author: string) => SetMetadata(AUTHOR_KEY, author);
