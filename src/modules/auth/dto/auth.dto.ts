@@ -15,9 +15,9 @@ export class AuthTypeDTO {
    * 注册类型
    * AUTH_TYPE constraints
    */
-  @ApiProperty({ description: '注册类型', enum: AUTH_TYPE.getAll() })
-  @IsNotEmpty({ message: '注册 type 不能为空' })
-  @IsIn(AUTH_TYPE.getAll(), { message: '注册类型错误' })
+  @ApiProperty({ description: '登录/注册类型', enum: AUTH_TYPE.getAll() })
+  @IsNotEmpty({ message: '登录/注册 type 不能为空' })
+  @IsIn(AUTH_TYPE.getAll(), { message: '登录/注册类型错误' })
   type: number;
 }
 
