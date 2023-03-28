@@ -10,6 +10,9 @@ import { USER_KEY } from '../constants/user.constant';
 import { ArticleService } from 'src/modules/article/article.service';
 import { AUTHOR_KEY, AUTHOR_SCENE } from '../constants/author.constant';
 
+/**
+ * 只允许对应的User进入
+ */
 @Injectable()
 export class AuthorGuard implements CanActivate {
   constructor(

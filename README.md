@@ -396,4 +396,6 @@ Nestjs 加载配置文件时，如果使用的是非 .js .ts 的配置文件进�
 - 解析完成后，jwtStrategy 默认会将 payload 加入到请求对象中，属性名是 `user`，如果需要与数据库关联，需要进行数据库查询！
 - validate 方法中，默认传入的参数就是 payload
 
-## Nestjs 角色管理问题
+## Nestjs 查询问题
+
+用户信息只返回基础的用户信息，有关于文章的需要通过文章来查询，如通过/article/userid 的形式查询用户的所有信息，这是因为 user 的 id 作为 article 中 author 的外键，所以在 Article 路由中查询更好

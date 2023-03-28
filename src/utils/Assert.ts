@@ -103,7 +103,7 @@ export class Assert {
    */
   static isNotEmptyUser(
     user: User,
-    msg = '用户不存在或已删除',
+    msg = '用户不存在或已注销',
   ): asserts user is User {
     if (!user) throw new BadRequestException(msg);
   }
