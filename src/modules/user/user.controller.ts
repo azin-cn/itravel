@@ -27,6 +27,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { Assert } from 'src/utils/Assert';
 
 @ApiTags('User')
 @Controller('user')
@@ -40,11 +41,9 @@ export class UserController {
   async getUserById(
     @Param('id', TransformUUIDPipe) id: string,
   ): Promise<ResultVO<User>> {
-    const user = await this.userService.findUserById(id);
-    if (user) {
-      return ResultVO.info(user);
-    }
-    throw new BizException('用户不存在或已注销');
+    const user = await this.userService.findActiveUserById(id);
+    Assert.isNotEmptyUser(user);
+    return ResultVO.success(user);
   }
 
   @ApiOperation({ summary: '更新用户信息' })
@@ -68,9 +67,7 @@ export class UserController {
      * 通过设置 isDeleted 来指定删除
      */
     const { affected } = await this.userService.delete(id);
-    if (affected === 0) {
-      throw new BadRequestException('无此用户，删除失败！');
-    }
+    Assert.isNotZero(affected, '无此用户，删除失败！');
     return ResultVO.success();
   }
 }

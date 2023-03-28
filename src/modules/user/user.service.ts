@@ -80,6 +80,24 @@ export class UserService {
    * @param id
    * @returns
    */
+  async findActiveUserById(id: string): Promise<User> {
+    const user = await this.userRepository.findOneBy({
+      id,
+      status: USER_STATUS.ACTIVE,
+      isDeleted: false,
+    });
+
+    Assert.isNotEmptyUser(user, '用户不存在或已注销');
+
+    return user;
+  }
+
+  /**
+   * 通过ID查找未删除、未激活用户
+   * 注册查询时使用，搭配 findUserById 在更新 User 时使用
+   * @param id
+   * @returns
+   */
   async findNotActiveUserById(id: string) {
     return this.userRepository.findOneBy({
       id,
