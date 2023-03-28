@@ -175,6 +175,7 @@ export class AuthService {
       Assert.assertNotNil(user.password, '密码不能为空');
       const userRep = await this.userService.findUserByUniqueParam(user);
       Assert.isNotEmptyUser(userRep);
+
       if (userRep) {
         /**
          * 登陆时用户存在，验证密码
@@ -182,7 +183,7 @@ export class AuthService {
          * 若密码匹配则返回用户信息
          */
         const isPwdMatch = bcrypt.compareSync(user.password, userRep.password);
-        if (!isPwdMatch) throw new BizException('账户或密码错误');
+        if (!isPwdMatch) throw new BadRequestException('账户或密码错误');
         const { id, role, status } = userRep;
         const token = await this.generateToken(
           instanceToPlain(new JwtPayload(id, role, status)),

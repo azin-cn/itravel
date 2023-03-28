@@ -62,12 +62,13 @@ export class User {
   password: string;
 
   /**
-   *
+   * 需要密码存在，且密码未加密或hash已修改时才进行加密
+   * 未加密、已需改返回NaN
    */
   @BeforeInsert()
   @BeforeUpdate()
   async encryptPwd() {
-    if (this.password) {
+    if (this.password && isNaN(bcrypt.getRounds(this.password))) {
       this.password = bcrypt.hashSync(this.password, 10);
     }
   }
