@@ -48,8 +48,7 @@ export class ArticleController {
    */
   @ApiOperation({ summary: '创建文章' })
   @Post()
-  @Author(AUTHOR_SCENE.ARTICLE)
-  @UseGuards(AuthGuard('jwt'), AuthorGuard)
+  @UseGuards(AuthGuard('jwt'))
   async postArticle(
     @Body(TransformArticlePipe) article: Article,
   ): Promise<ResultVO> {

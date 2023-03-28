@@ -18,10 +18,21 @@ export class ArticleService {
    * @returns
    */
   async findArticleById(id: string) {
-    const article = await this.articleRepository.findOneBy({
-      id,
-      isDeleted: false,
-    });
+    // const article = await this.articleRepository.findOneBy({
+    //   id,
+    //   isDeleted: false,
+    // });
+
+    const qb = this.articleRepository
+      .createQueryBuilder('article')
+      // .addSelect('article.*')
+      .leftJoinAndSelect('article.author', 'author')
+      .leftJoinAndSelect('article.category', 'category')
+      .leftJoinAndSelect('article.tags', 'tags')
+      .where('article.id = :id', { id });
+
+    const article = await qb.getOne();
+
     Assert.isNotEmptyArticle(article);
     return article;
   }
@@ -58,7 +69,7 @@ export class ArticleService {
     /**
      * 文章的创建并没有过多的限制
      */
-    return this.articleRepository.create(article);
+    return this.articleRepository.save(article);
   }
 
   async update(id: string, article: Article): Promise<Article> {
