@@ -1,4 +1,3 @@
-import { Length, MinLength } from 'class-validator';
 import {
   Column,
   CreateDateColumn,
@@ -29,7 +28,6 @@ export class Comment {
    * 评论内容
    */
   @Column('text')
-  @Length(1, 300, { message: '评论长度须在 $constraint1 到 $constraint2 之间' })
   content: string;
 
   /**
