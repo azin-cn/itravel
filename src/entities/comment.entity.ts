@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 import { Article } from './article.entity';
 import { User } from './user.entity';
+import { Exclude } from 'class-transformer';
 
 /**
  * 评论系统分为两种角色
@@ -69,6 +70,7 @@ export class Comment {
   /**
    * 是否删除
    */
+  @Exclude()
   @Column({ default: false })
   isDeleted: boolean;
 
