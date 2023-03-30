@@ -1,4 +1,4 @@
-import { BadRequestException, HttpException } from '@nestjs/common';
+import { BadRequestException, HttpException, NotFoundException } from '@nestjs/common';
 import { isMobilePhone, isEmail } from 'class-validator';
 import { Article } from 'src/entities/article.entity';
 import { User } from 'src/entities/user.entity';
@@ -105,7 +105,7 @@ export class Assert {
     user: User,
     msg = '用户不存在或已注销',
   ): asserts user is User {
-    if (!user) throw new BadRequestException(msg);
+    if (!user) throw new NotFoundException(msg);
   }
 
   /**
@@ -117,7 +117,7 @@ export class Assert {
     article: Article,
     msg = '文章不存在或已删除',
   ): asserts article is Article {
-    if (!article) throw new BadRequestException(msg);
+    if (!article) throw new NotFoundException(msg);
   }
 
   /**
