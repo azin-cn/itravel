@@ -14,18 +14,29 @@ export class CommentService {
     private articleRepository: Repository<Article>,
   ) {}
 
+  /**
+   * 通过ID查找评论/回复
+   * @param id
+   * @returns
+   */
+  async findCommentById(id: string): Promise<Comment> {
+    return this.commentRepository.findOneBy({
+      id,
+      isDeleted: false,
+    });
+  }
 
   /**
    * 创建评论
-   * @param comment 
-   * @returns 
+   * @param comment
+   * @returns
    */
   async create(comment: Comment): Promise<Comment> {
     return this.commentRepository.save(comment);
   }
 
   /**
-   * 通过commentId查找文章
+   * TODO: 通过commentId查找文章
    * 当用户点击消息列表时，跳转文章
    * @param id
    * @returns
@@ -43,28 +54,5 @@ export class CommentService {
 
     Assert.isNotEmptyArticle(article);
     return article;
-  }
-
-  /**
-   * 通过id查找文章，管理员模式
-   * @param id
-   * @returns
-   */
-  async findArticleByIdAdmin(id: string): Promise<Article> {
-    const article = await this.articleRepository.findOneBy({ id });
-    Assert.isNotEmptyArticle(article);
-    return article;
-  }
-
-  /**
-   * 通过用户id查找文章
-   * @param uid
-   * @returns
-   */
-  async findArticleByUser(uid: string): Promise<Article[]> {
-    const articles = await this.articleRepository.find({
-      where: { author: { id: uid }, isDeleted: false },
-    });
-    return articles;
   }
 }
