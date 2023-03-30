@@ -3,22 +3,17 @@ import {
   ClassSerializerInterceptor,
   Controller,
   Get,
-  Inject,
   Param,
   ParseUUIDPipe,
   Post,
   Put,
   UseGuards,
   UseInterceptors,
-  UsePipes,
 } from '@nestjs/common';
 import { ArticleService } from './article.service';
 import { ApiOperation, ApiProperty, ApiTags } from '@nestjs/swagger';
 import { TransformUUIDPipe } from 'src/shared/pipes/uuid.pipe';
-import { Roles } from 'src/shared/decorators/role.decorator';
-import { USER_ROLES } from 'src/shared/constants/user.constant';
 import { AuthGuard } from '@nestjs/passport';
-import { RolesGuard } from 'src/shared/guards/roles.guard';
 import { ResultVO } from 'src/shared/vo/ResultVO';
 import { TransformArticlePipe } from 'src/shared/pipes/article.pipe';
 import { Article } from 'src/entities/article.entity';

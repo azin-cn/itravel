@@ -18,17 +18,15 @@ export class ArticleService {
    * @returns
    */
   async findArticleById(id: string) {
-    // const article = await this.articleRepository.findOneBy({
-    //   id,
-    //   isDeleted: false,
-    // });
-
     const qb = this.articleRepository
       .createQueryBuilder('article')
       // .addSelect('article.*')
       .leftJoinAndSelect('article.author', 'author')
       .leftJoinAndSelect('article.category', 'category')
       .leftJoinAndSelect('article.tags', 'tags')
+      .leftJoinAndSelect('article.comments', 'comment')
+      .leftJoinAndSelect('comment.parent', 'parent')
+      .orderBy('comment.updatedTime', 'DESC')
       .where('article.id = :id', { id });
 
     const article = await qb.getOne();
