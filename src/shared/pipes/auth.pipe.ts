@@ -1,8 +1,9 @@
-import { BadRequestException, PipeTransform } from '@nestjs/common';
+import { BadRequestException, Injectable, PipeTransform } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
 import { Validator } from './utils';
 import { AuthTypeDTO } from 'src/modules/auth/dto/auth.dto';
 
+@Injectable()
 export class TrasnformAuthPipe implements PipeTransform {
   async transform(value: AuthTypeDTO): Promise<AuthTypeDTO> {
     // 默认情况下，query参数是字符串

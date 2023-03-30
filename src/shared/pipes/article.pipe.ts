@@ -1,4 +1,9 @@
-import { ArgumentMetadata, Inject, PipeTransform } from '@nestjs/common';
+import {
+  ArgumentMetadata,
+  Inject,
+  Injectable,
+  PipeTransform,
+} from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
 import { ArticleDTO } from 'src/modules/article/dto/article.dto';
 import { Validator } from './utils';
@@ -6,11 +11,9 @@ import { Article } from 'src/entities/article.entity';
 import { UserService } from 'src/modules/user/user.service';
 import { Assert } from 'src/utils/Assert';
 
+@Injectable()
 export class TransformArticlePipe implements PipeTransform {
-  constructor(
-    @Inject(UserService)
-    private userService: UserService,
-  ) {}
+  constructor(private userService: UserService) {}
   async transform(articleDTO: ArticleDTO, metadata: ArgumentMetadata) {
     /**
      * 转换数据类型
