@@ -18,6 +18,7 @@ import { Title } from './title.entity';
 import { Tag } from './tag.entity';
 import { USER_ROLES } from 'src/shared/constants/user.constant';
 import { Category } from './category.entity';
+import { Comment } from './comment.entity';
 
 @Entity('user')
 export class User {
@@ -129,10 +130,24 @@ export class User {
   articles: Article[];
 
   /**
+   * 发起的评论/回复
+   */
+  @OneToMany(() => Comment, (comment) => comment.user)
+  comments: Comment[];
+
+  /**
+   * receivedComments
+   * 收到的评论/回复
+   */
+  @OneToMany(() => Comment, (comment) => comment.toUser)
+  receivedComments: Comment[];
+
+  /**
    * 上一次登录时间
+   * YYYY-MM-DD HH:mm:ss
    */
   @Column({ nullable: true, type: 'timestamp' })
-  lastTime: Date;
+  lastTime: string;
 
   /**
    * 是否激活
@@ -155,11 +170,11 @@ export class User {
    * 创建时间
    */
   @CreateDateColumn({ type: 'timestamp' })
-  createdTime: Date;
+  createdTime: string;
 
   /**
    * 更新时间
    */
   @UpdateDateColumn({ type: 'timestamp' })
-  updatedTime: Date;
+  updatedTime: string;
 }

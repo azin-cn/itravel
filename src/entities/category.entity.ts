@@ -43,11 +43,11 @@ export class Category {
    * 创建时间
    */
   @CreateDateColumn({ type: 'timestamp' })
-  createdTime: Date;
+  createdTime: string;
 
   /**
    * 更新时间
    */
   @UpdateDateColumn({ type: 'timestamp' })
-  updatedTime: Date;
+  updatedTime: string;
 }

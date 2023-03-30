@@ -33,13 +33,14 @@ export class Title {
 
   /**
    * 创建时间
+   * YYYY-MM-DD HH:mm:ss
    */
-  @CreateDateColumn({type: 'timestamp'})
-  createdTime: Date;
+  @CreateDateColumn({ type: 'timestamp' })
+  createdTime: string;
 
   /**
    * 更新时间
    */
-  @UpdateDateColumn({type: 'timestamp'})
-  updatedTime: Date;
+  @UpdateDateColumn({ type: 'timestamp' })
+  updatedTime: string;
 }

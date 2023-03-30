@@ -8,12 +8,14 @@ import {
   ManyToMany,
   JoinTable,
   JoinColumn,
+  OneToMany,
 } from 'typeorm';
 import { User } from './user.entity';
 import { Tag } from './tag.entity';
 import { ARTICLE_STATUS } from 'src/shared/constants/article.constant';
 import { Exclude } from 'class-transformer';
 import { Category } from './category.entity';
+import { Comment } from './comment.entity';
 
 @Entity('article')
 export class Article {
@@ -54,6 +56,12 @@ export class Article {
    */
   @Column('text')
   content: string;
+
+  /**
+   * 文章评论
+   */
+  @OneToMany(() => Comment, (comment) => comment.article)
+  comments: Comment[];
 
   /**
    * 浏览量
@@ -117,13 +125,14 @@ export class Article {
 
   /**
    * 创建时间
+   * YYYY-MM-DD HH:mm:ss
    */
   @CreateDateColumn({ type: 'timestamp' })
-  createdTime: Date;
+  createdTime: string;
 
   /**
    * 更新时间
    */
   @UpdateDateColumn({ type: 'timestamp' })
-  updatedTime: Date;
+  updatedTime: string;
 }
