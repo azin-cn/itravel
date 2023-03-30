@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Article } from 'src/entities/article.entity';
 import { Tag } from 'src/entities/tag.entity';
 import { Assert } from 'src/utils/Assert';
-import { Repository } from 'typeorm';
+import { DeleteResult, Repository } from 'typeorm';
 
 @Injectable()
 export class ArticleService {
@@ -90,10 +90,12 @@ export class ArticleService {
     return this.findArticleById(id);
   }
 
-  // async findArticleByTag(tid: string): Promise<Article[]> {
-  //   const articles = await this.articleRepository.find({
-  //     where: { tags: tid },
-  //   });
-  //   return articles
-  // }
+  /**
+   * 删除文章
+   * @param id
+   * @returns
+   */
+  async delete(id: string): Promise<DeleteResult> {
+    return this.articleRepository.delete(id);
+  }
 }
