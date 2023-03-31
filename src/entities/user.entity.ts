@@ -114,32 +114,40 @@ export class User {
   /**
    * 用户创建的文章分类
    */
-  @OneToMany(() => Category, (category) => category.user)
+  @OneToMany(() => Category, (category) => category.user, {
+    cascade: ['insert', 'update'],
+  })
   categories: Category[];
 
   /**
    * 用户创建的文章标签
    */
-  @OneToMany(() => Tag, (tag) => tag.user)
+  @OneToMany(() => Tag, (tag) => tag.user, { cascade: ['insert', 'update'] })
   tags: Tag[];
 
   /**
    * 创建的文章
    */
-  @OneToMany(() => Article, (article) => article.author) //一对多，回调返回的类型，注入关联的属性
+  @OneToMany(() => Article, (article) => article.author, {
+    cascade: ['insert', 'update'],
+  }) //一对多，回调返回的类型，注入关联的属性
   articles: Article[];
 
   /**
    * 发起的评论/回复
    */
-  @OneToMany(() => Comment, (comment) => comment.user)
+  @OneToMany(() => Comment, (comment) => comment.user, {
+    cascade: ['insert', 'update'],
+  })
   comments: Comment[];
 
   /**
    * receivedComments
    * 收到的评论/回复
    */
-  @OneToMany(() => Comment, (comment) => comment.toUser)
+  @OneToMany(() => Comment, (comment) => comment.toUser, {
+    cascade: ['insert', 'update'],
+  })
   receivedComments: Comment[];
 
   /**

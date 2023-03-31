@@ -60,8 +60,17 @@ export class Article {
   /**
    * 文章评论
    */
-  @OneToMany(() => Comment, (comment) => comment.article)
+  @OneToMany(() => Comment, (comment) => comment.article, {
+    cascade: ['insert', 'update'],
+  })
   comments: Comment[];
+
+  /**
+   * 评论数量
+   * 隐藏字段，防止在查询时返回，只用作 Article 实体返回数据
+   */
+  @Column({ default: 0, select: false })
+  commentCount: number;
 
   /**
    * 浏览量

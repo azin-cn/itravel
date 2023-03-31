@@ -57,7 +57,9 @@ export class Comment {
   /**
    * 根评论的回复
    */
-  @OneToMany((type) => Comment, (comment) => comment.parent)
+  @OneToMany((type) => Comment, (comment) => comment.parent, {
+    cascade: ['insert', 'update'],
+  })
   children: Comment[];
 
   /**

@@ -30,7 +30,9 @@ export class Category {
   /**
    * 一对多，一篇文章只属于一个分类
    */
-  @OneToMany(() => Article, (article) => article.category)
+  @OneToMany(() => Article, (article) => article.category, {
+    cascade: ['insert', 'update'],
+  })
   articles: Article[];
 
   /**
