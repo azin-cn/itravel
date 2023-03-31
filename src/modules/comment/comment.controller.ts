@@ -2,7 +2,9 @@ import {
   Body,
   ClassSerializerInterceptor,
   Controller,
+  Get,
   Post,
+  Query,
   UseInterceptors,
 } from '@nestjs/common';
 import { CommentService } from './comment.service';
@@ -21,5 +23,10 @@ export class CommentController {
     const commentRep = await this.commentService.create(comment);
     Assert.assertNotNil(commentRep, '评论/回复失败');
     return ResultVO.success(commentRep);
+  }
+
+  @Get()
+  async getComment(@Query('id') id:string){
+    return await this.commentService.findFormatCommentsByArticleId(id)
   }
 }

@@ -1,5 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import {
+  IPaginationOptions,
+  Pagination,
+  paginate,
+} from 'nestjs-typeorm-paginate';
 import { Article } from 'src/entities/article.entity';
 import { Comment } from 'src/entities/comment.entity';
 import { Assert } from 'src/utils/Assert';
@@ -41,18 +46,31 @@ export class CommentService {
    * @param id
    * @returns
    */
-  async findArticleByCommentId(id: string) {
-    const qb = this.articleRepository
-      .createQueryBuilder('article')
-      // .addSelect('article.*')
-      .leftJoinAndSelect('article.author', 'author')
-      .leftJoinAndSelect('article.category', 'category')
-      .leftJoinAndSelect('article.tags', 'tags')
-      .where('article.id = :id', { id });
+  async findArticleByCommentId(id: string) {}
 
-    const article = await qb.getOne();
+  /**
+   * 通过文章id查找评论
+   */
+  async findFormatCommentsByArticleId(
+    id: string,
+    options?: IPaginationOptions,
+  ): Promise<Pagination<Comment>> {
+    /**
+     * 查询评论/回复的信息
+     * 第一级 parent 为 null 的根评论
+     * 第二级 parent 不为 null 的子回复
+     */
+    const qb = this.commentRepository.createQueryBuilder('comment');
+    qb.where('comment.article_id = :id', { id })
+      .andWhere('comment.parent_id IS NULL AND isDeleted = false')
+      .leftJoinAndSelect('comment.parent', 'parent')
+      .leftJoinAndSelect('comment.user', 'user')
+      .leftJoinAndSelect('comment.toUser', 'toUser')
+      .leftJoinAndSelect('comment.children', 'children')
+      .leftJoinAndSelect('children.parent', 'childParent')
+      .leftJoinAndSelect('children.user', 'childUser')
+      .leftJoinAndSelect('children.toUser', 'childToUser');
 
-    Assert.isNotEmptyArticle(article);
-    return article;
+    return paginate(qb, options);
   }
 }
