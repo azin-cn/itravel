@@ -2,6 +2,7 @@ import {
   Body,
   ClassSerializerInterceptor,
   Controller,
+  Delete,
   Get,
   Param,
   ParseUUIDPipe,
@@ -20,6 +21,7 @@ import { Article } from 'src/entities/article.entity';
 import { AuthorGuard } from 'src/shared/guards/author.guard';
 import { Author } from 'src/shared/decorators/author.decorator';
 import { AUTHOR_SCENE } from 'src/shared/constants/author.constant';
+import { Assert } from 'src/utils/Assert';
 
 @ApiTags('文章')
 @Controller('article')
@@ -67,5 +69,19 @@ export class ArticleController {
   ) {
     const articleRep = await this.articleService.update(id, article);
     return ResultVO.success(articleRep);
+  }
+
+  /**
+   * 删除文章
+   */
+  @Author(AUTHOR_SCENE.ARTICLE)
+  @UseGuards(AuthGuard('jwt'), AuthorGuard)
+  @Delete(':id')
+  async deleteArticle(
+    @Param('id', TransformUUIDPipe) id: string,
+  ): Promise<ResultVO> {
+    const { affected } = await this.articleService.delete(id);
+    Assert.isNotZero(affected, '文章删除失败');
+    return ResultVO.success();
   }
 }

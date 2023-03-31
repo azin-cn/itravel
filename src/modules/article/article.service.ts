@@ -101,6 +101,18 @@ export class ArticleService {
    * @returns
    */
   async delete(id: string): Promise<DeleteResult> {
+    // return this.articleRepository.delete(id);
+    const article = await this.findArticleById(id);
+    Assert.isNotEmptyArticle(article);
+    return this.articleRepository.update(id, { isDeleted: true });
+  }
+
+  /**
+   * 硬删除用户，管理员模式
+   * @param id
+   * @returns
+   */
+  async deleteAdmin(id: string): Promise<DeleteResult> {
     return this.articleRepository.delete(id);
   }
 }
