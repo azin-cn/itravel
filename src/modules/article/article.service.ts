@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Article } from 'src/entities/article.entity';
+import { Comment } from 'src/entities/comment.entity';
 import { Tag } from 'src/entities/tag.entity';
 import { Assert } from 'src/utils/Assert';
 import { DeleteResult, Repository } from 'typeorm';
@@ -20,18 +21,24 @@ export class ArticleService {
   async findArticleById(id: string) {
     const qb = this.articleRepository
       .createQueryBuilder('article')
-      // .addSelect('article.*')
+      .where('article.id = :id', { id })
+      /**
+       * 查询作者的详细信息
+       */
       .leftJoinAndSelect('article.author', 'author')
+      /**
+       * 查询分类的详细信息
+       */
       .leftJoinAndSelect('article.category', 'category')
-      .leftJoinAndSelect('article.tags', 'tags')
-      .leftJoinAndSelect('article.comments', 'comment')
-      .leftJoinAndSelect('comment.parent', 'parent')
-      .orderBy('comment.updatedTime', 'DESC')
-      .where('article.id = :id', { id });
+      /**
+       * 查询tags的详细信息
+       */
+      .leftJoinAndSelect('article.tags', 'tags');
 
     const article = await qb.getOne();
 
     Assert.isNotEmptyArticle(article);
+
     return article;
   }
 
