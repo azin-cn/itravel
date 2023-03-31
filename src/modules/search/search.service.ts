@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   IPaginationOptions,
@@ -6,7 +6,6 @@ import {
   paginate,
 } from 'nestjs-typeorm-paginate';
 import { Article } from 'src/entities/article.entity';
-import { Comment } from 'src/entities/comment.entity';
 import { User } from 'src/entities/user.entity';
 import { ILike, Repository } from 'typeorm';
 
@@ -17,24 +16,19 @@ export class SearchService {
     private userRepository: Repository<User>,
     @InjectRepository(Article)
     private articleRepository: Repository<Article>,
-    @InjectRepository(Comment)
-    private commentRepository: Repository<Comment>,
   ) {}
 
-  async search(keywords: string, options?: IPaginationOptions) {
+  async searchArticle(
+    keywords: string,
+    options?: IPaginationOptions,
+  ): Promise<Pagination<Article>> {
     keywords = `%${keywords}%`;
-
-    const userHandler = this.userRepository
-      .createQueryBuilder('user')
-      .where('LOWER(user.username) LIKE LOWER(:keywords)', { keywords })
-      .orWhere('LOWER(user.description) LIKE LOWER(:keywords)', { keywords });
-    // .orWhere('LOWER(user.email) LIKE LOWER(:keywords)', { keywords })
 
     const articleHandler = this.articleRepository
       .createQueryBuilder('article')
 
       /**
-       * 评论必然存在于文章中
+       * 评论必然存在于文章中，可以使用innerJoin
        */
       .leftJoin('article.comments', 'comment')
       /**
@@ -46,29 +40,30 @@ export class SearchService {
       .orWhere('LOWER(article.summary) LIKE LOWER(:keywords)', { keywords })
       .orWhere('LOWER(article.content) LIKE LOWER(:keywords)', { keywords })
       .orWhere('LOWER(comment.content) LIKE LOWER(:keywords)', { keywords })
+      .orderBy('article.updatedTime')
       .groupBy('article.id');
 
     /**
      * 另外一种使用方式
      * const articles = paginate<Article>({item, total, page, limit})
      */
-    const users = await paginate<User>(userHandler, { page: 1, limit: 10 });
-    const articles = await paginate<Article>(articleHandler, {
-      page: 1,
-      limit: 10,
-    });
+    const articles = await paginate<Article>(articleHandler, options);
 
-    try {
-      console.log('=============================');
-      console.log(await articleHandler.getOneOrFail());
-    } catch (error) {
-      console.error(error);
-    }
-    console.log(await articleHandler.getRawOne());
+    return articles;
+  }
 
-    return {
-      users,
-      articles,
-    };
+  async searchUser(
+    keywords: string,
+    options?: IPaginationOptions,
+  ): Promise<Pagination<User>> {
+    keywords = `%${keywords}%`;
+    const userHandler = this.userRepository
+      .createQueryBuilder('user')
+      .where('LOWER(user.username) LIKE LOWER(:keywords)', { keywords })
+      .orWhere('LOWER(user.description) LIKE LOWER(:keywords)', { keywords })
+      .orderBy('article.updatedTime');
+
+    const users = await paginate<User>(userHandler, options);
+    return users;
   }
 }
