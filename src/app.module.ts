@@ -17,6 +17,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { MailerModule } from './modules/mailer/mailer.module';
 import { CategoryModule } from './modules/category/category.module';
 import { CommentModule } from './modules/comment/comment.module';
+import { SearchModule } from './modules/search/search.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { CommentModule } from './modules/comment/comment.module';
     MailerModule,
     CategoryModule,
     CommentModule,
+    SearchModule,
   ],
   controllers: [AppController],
   providers: [AppService, ...GLOBAL_FILTERS, ...GLOBAL_PIPES],
