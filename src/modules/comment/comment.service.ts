@@ -8,7 +8,7 @@ import {
 import { Article } from 'src/entities/article.entity';
 import { Comment } from 'src/entities/comment.entity';
 import { Assert } from 'src/utils/Assert';
-import { Repository } from 'typeorm';
+import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 
 @Injectable()
 export class CommentService {
@@ -72,5 +72,25 @@ export class CommentService {
       .leftJoinAndSelect('children.toUser', 'childToUser');
 
     return paginate(qb, options);
+  }
+
+  /**
+   * 软删除评论
+   * @param id
+   * @returns
+   */
+  async delete(id: string): Promise<UpdateResult> {
+    const comment = await this.findCommentById(id);
+    Assert.isNotEmpty(comment);
+    return this.commentRepository.update(id, { isDeleted: true });
+  }
+
+  /**
+   * 硬删除评论，管理员模式
+   * @param id
+   * @returns
+   */
+  async deleteAdmin(id: string): Promise<DeleteResult> {
+    return this.commentRepository.delete(id);
   }
 }

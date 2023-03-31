@@ -2,8 +2,9 @@ import {
   Body,
   ClassSerializerInterceptor,
   Controller,
+  Delete,
   Get,
-  ParseIntPipe,
+  Param,
   ParseUUIDPipe,
   Post,
   Query,
@@ -17,9 +18,13 @@ import { TransformCommentPipe } from 'src/shared/pipes/comment.pipe';
 import { Assert } from 'src/utils/Assert';
 import { TransformPaginationPipe } from 'src/shared/pipes/pagination.pipe';
 import { PaginationOptions } from 'src/shared/dto/pagination.dto';
-import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { CommentDTO } from './dto/comment.dto';
+import { TransformUUIDPipe } from 'src/shared/pipes/uuid.pipe';
+import { AuthorGuard } from 'src/shared/guards/author.guard';
+import { Author } from 'src/shared/decorators/author.decorator';
+import { AUTHOR_SCENE } from 'src/shared/constants/author.constant';
 
 @ApiTags('评论')
 @Controller('comment')
@@ -48,5 +53,18 @@ export class CommentController {
     const commentRep = await this.commentService.create(comment);
     Assert.assertNotNil(commentRep, '评论/回复失败');
     return ResultVO.success(commentRep);
+  }
+
+  @ApiOperation({ description: '删除评论' })
+  @ApiParam({ name: 'id' })
+  @Author(AUTHOR_SCENE.ARTICLE)
+  @UseGuards(AuthGuard('jwt'), AuthorGuard)
+  @Delete(':id')
+  async deleteComment(
+    @Param('id', TransformUUIDPipe) id: string,
+  ): Promise<ResultVO> {
+    const { affected } = await this.commentService.delete(id);
+    Assert.isNotZero(affected);
+    return ResultVO.success();
   }
 }
