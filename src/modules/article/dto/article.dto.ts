@@ -1,4 +1,4 @@
-import { ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsNotEmpty,
   IsOptional,
@@ -24,6 +24,7 @@ export class ArticleBaseDTO {
   /**
    * 文章作者
    */
+  @ApiProperty({ description: '文章作者id' })
   @IsNotEmpty({ message: '文章作者不存在' })
   @IsUUID(undefined, { message: '文章作者ID非UUID' })
   author: string; // uuid 为 key
@@ -31,6 +32,7 @@ export class ArticleBaseDTO {
   /**
    * 文章缩略图
    */
+  @ApiPropertyOptional({ description: '文章缩略图' })
   @IsOptional()
   @IsUrl(undefined, { message: '缩略图不是正确URL' })
   thumbUrl: string;
@@ -38,6 +40,7 @@ export class ArticleBaseDTO {
   /**
    * 文章的简要
    */
+  @ApiPropertyOptional({ description: '文章的简要' })
   @IsOptional()
   @IsString()
   @Length(0, 300, {
@@ -48,6 +51,7 @@ export class ArticleBaseDTO {
   /**
    * 文章内容
    */
+  @ApiProperty({ description: '文章内容' })
   @IsNotEmpty()
   @IsString()
   @MinLength(1, {
@@ -60,6 +64,7 @@ export class ArticleBaseDTO {
  * @class 文章新增 DTO 对象
  */
 export class ArticleDTO extends ArticleBaseDTO {
+  @ApiPropertyOptional({ description: 'id' })
   @IsOptional()
   @IsUUID(undefined, { message: '文章ID非UUID' })
   id: string;

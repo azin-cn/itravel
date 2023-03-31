@@ -1,17 +1,13 @@
 import { BadRequestException } from '@nestjs/common';
+import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import {
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsString,
-  Validate,
-} from 'class-validator';
+import { IsOptional, Validate } from 'class-validator';
 
 export class PaginationOptions {
   /**
    * 页面条数
    */
+  @ApiProperty({ description: '页面条数' })
   @IsOptional()
   @Transform((value) => {
     if (value === undefined) return 20;
@@ -28,6 +24,7 @@ export class PaginationOptions {
    * 页面
    * the page that is requested
    */
+  @ApiProperty({ description: '页码' })
   @IsOptional()
   @Transform((value) => {
     if (value === undefined) return 1;

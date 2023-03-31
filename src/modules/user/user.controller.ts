@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  ClassSerializerInterceptor,
-  Controller,
-} from '@nestjs/common';
+import { ClassSerializerInterceptor, Controller } from '@nestjs/common';
 import {
   Body,
   Delete,
@@ -16,18 +12,12 @@ import {
 import { UserService } from './user.service';
 import { User } from 'src/entities/user.entity';
 import { ResultVO } from 'src/shared/vo/ResultVO';
-import { BizException } from 'src/shared/exceptions/BizException';
 import { TransformUserPipe } from 'src/shared/pipes/user.pipe';
 import { TransformUUIDPipe } from 'src/shared/pipes/uuid.pipe';
 import { AuthGuard } from '@nestjs/passport';
-import {
-  ApiOperation,
-  ApiParam,
-  ApiQuery,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import { Assert } from 'src/utils/Assert';
+import { UserDTO } from './dto/user.dto';
 
 @ApiTags('User')
 @Controller('user')
@@ -36,7 +26,7 @@ export class UserController {
   constructor(private userService: UserService) {}
 
   @ApiOperation({ summary: '获取用户信息' })
-  @ApiParam({ name: 'id', type: '' })
+  @ApiParam({ name: 'id', type: String })
   @Get(':id')
   async getUserById(
     @Param('id', TransformUUIDPipe) id: string,
@@ -47,6 +37,7 @@ export class UserController {
   }
 
   @ApiOperation({ summary: '更新用户信息' })
+  @ApiBody({ type: UserDTO })
   @Put()
   @UseGuards(AuthGuard('jwt'))
   @UsePipes(new TransformUserPipe())
@@ -59,6 +50,7 @@ export class UserController {
   }
 
   @ApiOperation({ summary: '删除用户信息' })
+  @ApiParam({ name: 'id' })
   @Delete(':id')
   async deleteUser(
     @Param('id', TransformUUIDPipe) id: string,

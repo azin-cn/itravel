@@ -7,6 +7,7 @@ import {
   ParseUUIDPipe,
   Post,
   Query,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { CommentService } from './comment.service';
@@ -16,19 +17,17 @@ import { TransformCommentPipe } from 'src/shared/pipes/comment.pipe';
 import { Assert } from 'src/utils/Assert';
 import { TransformPaginationPipe } from 'src/shared/pipes/pagination.pipe';
 import { PaginationOptions } from 'src/shared/dto/pagination.dto';
+import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
+import { CommentDTO } from './dto/comment.dto';
 
+@ApiTags('评论')
 @Controller('comment')
 @UseInterceptors(ClassSerializerInterceptor)
 export class CommentController {
   constructor(private commentService: CommentService) {}
 
-  @Post()
-  async postComment(@Body(TransformCommentPipe) comment: Comment) {
-    const commentRep = await this.commentService.create(comment);
-    Assert.assertNotNil(commentRep, '评论/回复失败');
-    return ResultVO.success(commentRep);
-  }
-
+  @ApiOperation({ description: '通过文章获取评论' })
   @Get()
   async getCommentsByArticleId(
     @Query('articleId', ParseUUIDPipe) id: string,
@@ -39,5 +38,15 @@ export class CommentController {
       meta: { totalItems, itemCount, totalPages },
     } = await this.commentService.findFormatCommentsByArticleId(id, options);
     return ResultVO.list(items, itemCount);
+  }
+
+  @ApiOperation({ description: '提交评论' })
+  @ApiBody({ type: CommentDTO })
+  @UseGuards(AuthGuard('jwt'))
+  @Post()
+  async postComment(@Body(TransformCommentPipe) comment: Comment) {
+    const commentRep = await this.commentService.create(comment);
+    Assert.assertNotNil(commentRep, '评论/回复失败');
+    return ResultVO.success(commentRep);
   }
 }
