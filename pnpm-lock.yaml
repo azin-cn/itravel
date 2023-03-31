@@ -36,6 +36,7 @@ specifiers:
   jsonwebtoken: ^9.0.0
   mysql2: ^2.3.3
   nestjs-redoc: ^2.2.2
+  nestjs-typeorm-paginate: ^4.0.3
   nodemailer: ^6.9.1
   passport: ^0.6.0
   passport-jwt: ^4.0.1
@@ -74,6 +75,7 @@ dependencies:
   jsonwebtoken: 9.0.0
   mysql2: 2.3.3
   nestjs-redoc: 2.2.2_z2i42dd6qilsoytlcbrmnxhaaa
+  nestjs-typeorm-paginate: 4.0.3_3ajf6ggfuh55nxrlc5sqvgapxm
   nodemailer: 6.9.1
   passport: 0.6.0
   passport-jwt: 4.0.1
@@ -5368,6 +5370,16 @@ packages:
       express-basic-auth: 1.2.1
       express-handlebars: 5.3.5
       reflect-metadata: 0.1.13
+    dev: false
+
+  /nestjs-typeorm-paginate/4.0.3_3ajf6ggfuh55nxrlc5sqvgapxm:
+    resolution: {integrity: sha512-qr/pdSTIWTLRCf0xiAsGa2TV1KuHyramLzxV+n4VQ5RYLs7APusum7WdGWRWb/ByUlz+T9BWC5mKIGHotLtMnQ==}
+    peerDependencies:
+      '@nestjs/common': ^6.1.1 || ^5.6.2 || ^7.0.0 || ^8.0.0 || ^9.0.0
+      typeorm: ^0.3.0
+    dependencies:
+      '@nestjs/common': 9.3.10_welcnyot5bzd5wa2aovbkxpi4i
+      typeorm: 0.3.12_pa4ea3wjef6s4gsskhbyci3cte
     dev: false
 
   /netmask/2.0.2:
