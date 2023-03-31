@@ -3,6 +3,8 @@ import {
   ClassSerializerInterceptor,
   Controller,
   Get,
+  ParseIntPipe,
+  ParseUUIDPipe,
   Post,
   Query,
   UseInterceptors,
@@ -12,6 +14,8 @@ import { Comment } from 'src/entities/comment.entity';
 import { ResultVO } from 'src/shared/vo/ResultVO';
 import { TransformCommentPipe } from 'src/shared/pipes/comment.pipe';
 import { Assert } from 'src/utils/Assert';
+import { TransformPaginationPipe } from 'src/shared/pipes/pagination.pipe';
+import { PaginationOptions } from 'src/shared/dto/pagination.dto';
 
 @Controller('comment')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -26,7 +30,14 @@ export class CommentController {
   }
 
   @Get()
-  async getComment(@Query('id') id:string){
-    return await this.commentService.findFormatCommentsByArticleId(id)
+  async getCommentsByArticleId(
+    @Query('articleId', ParseUUIDPipe) id: string,
+    @Query(TransformPaginationPipe) options: PaginationOptions,
+  ) {
+    const {
+      items,
+      meta: { totalItems, itemCount, totalPages },
+    } = await this.commentService.findFormatCommentsByArticleId(id, options);
+    return ResultVO.list(items, itemCount);
   }
 }

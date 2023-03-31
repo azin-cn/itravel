@@ -62,7 +62,7 @@ export class CommentService {
      */
     const qb = this.commentRepository.createQueryBuilder('comment');
     qb.where('comment.article_id = :id', { id })
-      .andWhere('comment.parent_id IS NULL AND isDeleted = false')
+      .andWhere('comment.parent_id IS NULL AND comment.isDeleted = false')
       .leftJoinAndSelect('comment.parent', 'parent')
       .leftJoinAndSelect('comment.user', 'user')
       .leftJoinAndSelect('comment.toUser', 'toUser')
