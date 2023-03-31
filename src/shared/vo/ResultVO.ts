@@ -62,10 +62,11 @@ export class ResultVO<T = unknown> {
 
   public static list<T = unknown>(
     list: T[],
+    total: number,
     pagination?: IPagination,
   ): IResult<T> {
     const result = ResultVO.success<T>();
-    result.data = { list, pagination };
+    result.data = { list, total, pagination };
     return result;
   }
 }

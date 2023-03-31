@@ -12,7 +12,7 @@ export class HttpResponseInterceptor<T> implements NestInterceptor {
           return data;
         }
         if (data instanceof Array) {
-          return ResultVO.list(data);
+          return ResultVO.list(data, data.length);
         }
         return ResultVO.info(data);
       }),
