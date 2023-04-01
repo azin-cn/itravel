@@ -43,10 +43,10 @@ export class TransformUserPipe implements PipeTransform {
 
     const user = new User();
     user.id = u.id;
-    user.username = u.username?.toLowerCase();
-    user.email = u.email?.toLowerCase();
-    user.phone = u.phone;
-    user.password = u.password;
+    user.username = u.username?.toLowerCase().trim();
+    user.email = u.email?.toLowerCase().trim();
+    user.phone = u.phone?.trim();
+    user.password = u.password?.trim();
     user.avatar = u.avatar;
     user.scenicArea = u.scenicArea;
 
