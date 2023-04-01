@@ -3,7 +3,6 @@ import { SpotController } from './spot.controller';
 import { SpotService } from './spot.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Spot } from 'src/entities/spot.entity';
-import { Region } from 'src/entities/region.entity';
 import { Province } from 'src/entities/province.entity';
 import { City } from 'src/entities/city.entity';
 import { District } from 'src/entities/district.entity';
@@ -17,7 +16,6 @@ import { SpotFeature } from 'src/entities/spot-feature.entity';
   imports: [
     TypeOrmModule.forFeature([
       Spot,
-      Region,
       Country,
       Province,
       City,
@@ -34,7 +32,6 @@ import { SpotFeature } from 'src/entities/spot-feature.entity';
     SpotService,
     TypeOrmModule.forFeature([
       Spot,
-      Region,
       Country,
       Province,
       City,
