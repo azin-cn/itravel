@@ -1,6 +1,11 @@
-import { BadRequestException, HttpException, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  NotFoundException,
+} from '@nestjs/common';
 import { isMobilePhone, isEmail } from 'class-validator';
 import { Article } from 'src/entities/article.entity';
+import { Spot } from 'src/entities/spot.entity';
 import { User } from 'src/entities/user.entity';
 import { isAccount } from 'src/shared/validators/IsAccount.validator';
 
@@ -97,6 +102,16 @@ export class Assert {
   }
 
   /**
+   * 相等断言
+   * @param v1
+   * @param v2
+   * @param msg
+   */
+  static isEqual<T>(v1: T, v2: T, msg = '参数不相同'): asserts v1 is T {
+    if (v1 !== v2) throw new BadRequestException(msg);
+  }
+
+  /**
    * 非空User断言
    * @param user
    * @param msg
@@ -121,12 +136,12 @@ export class Assert {
   }
 
   /**
-   * 相等断言
-   * @param v1
-   * @param v2
-   * @param msg
+   *
    */
-  static isEqual<T>(v1: T, v2: T, msg = '参数不相同'): asserts v1 is T {
-    if (v1 !== v2) throw new BadRequestException(msg);
+  static isNotEmptySpot(
+    val: Spot,
+    msg = '景点不存在或已删除',
+  ): asserts val is Spot {
+    if (!val) throw new NotFoundException(msg);
   }
 }
