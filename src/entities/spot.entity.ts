@@ -52,24 +52,28 @@ export class Spot {
    * TODO：未来实现不同国家
    */
   @ManyToOne(() => Country, (c) => c.spots)
+  @JoinColumn()
   country: Country;
 
   /**
    * 所属省份
    */
   @ManyToOne(() => Province, (p) => p.spots)
+  @JoinColumn()
   province: Province;
 
   /**
    * 所属城市
    */
-  @OneToMany(() => City, (c) => c.spots)
+  @ManyToOne(() => City, (c) => c.spots)
+  @JoinColumn()
   city: City;
 
   /**
    * 包含的县区
    */
-  @OneToMany(() => District, (d) => d.spots)
+  @ManyToOne(() => District, (d) => d.spots)
+  @JoinColumn()
   district: District;
 
   /**
