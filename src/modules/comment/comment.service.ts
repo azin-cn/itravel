@@ -46,7 +46,9 @@ export class CommentService {
    * @param id
    * @returns
    */
-  async findArticleByCommentId(id: string) {}
+  async findArticleByCommentId(id: string) {
+    //
+  }
 
   /**
    * 通过文章id查找评论

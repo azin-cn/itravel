@@ -25,7 +25,9 @@ export class SpotController {
   @ApiOperation({ description: '获取符合条件的景点' })
   // @ApiQuery({type:})
   @Get()
-  async getSpotsByConditions(@Query() conditions) {}
+  async getSpotsByConditions(@Query() conditions) {
+    //
+  }
 
   /**
    * 更新景点

@@ -6,7 +6,6 @@ import { Spot } from 'src/entities/spot.entity';
 
 @Injectable()
 export class TransformSpotDTOPipe implements PipeTransform {
-  constructor() {}
   async transform(
     spotDTO: SpotDTO,
     metadata: ArgumentMetadata,
