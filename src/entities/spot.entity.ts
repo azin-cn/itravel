@@ -35,6 +35,12 @@ export class Spot {
   region: Region;
 
   /**
+   * 是否删除
+   */
+  @Column({ default: false })
+  isDeleted: boolean;
+
+  /**
    * 创建时间
    */
   @CreateDateColumn({ type: 'timestamp' })

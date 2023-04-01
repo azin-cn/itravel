@@ -1,4 +1,5 @@
 import {
+  Column,
   CreateDateColumn,
   JoinColumn,
   ManyToOne,
@@ -37,6 +38,12 @@ export class SpotMonth {
   /**
    * 推荐度
    */
+
+  /**
+   * 是否删除
+   */
+  @Column({ default: false })
+  isDeleted: boolean;
 
   /**
    * 创建时间
