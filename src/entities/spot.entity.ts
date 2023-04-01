@@ -9,8 +9,11 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { SpotMonth } from './spot-month.entity';
-import { Region } from './region.entity';
 import { SpotFeature } from './spot-feature.entity';
+import { Province } from './province.entity';
+import { City } from './city.entity';
+import { District } from './district.entity';
+import { Country } from './country.entity';
 
 @Entity()
 export class Spot {
@@ -45,11 +48,29 @@ export class Spot {
   spotFeatures: SpotFeature[];
 
   /**
-   * 所属的region
+   * 包含的国家
+   * TODO：未来实现不同国家
    */
-  @ManyToOne(() => Region, (r) => r.spots)
-  @JoinColumn()
-  region: Region;
+  @ManyToOne(() => Country, (c) => c.spots)
+  country: Country;
+
+  /**
+   * 所属省份
+   */
+  @ManyToOne(() => Province, (p) => p.spots)
+  province: Province;
+
+  /**
+   * 所属城市
+   */
+  @OneToMany(() => City, (c) => c.spots)
+  city: City;
+
+  /**
+   * 包含的县区
+   */
+  @OneToMany(() => District, (d) => d.spots)
+  district: District;
 
   /**
    * 是否删除

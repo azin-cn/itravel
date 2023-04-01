@@ -3,10 +3,11 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { City } from './city.entity';
-import { Region } from './region.entity';
+import { Spot } from './spot.entity';
 
 @Entity()
 export class District {
@@ -54,9 +55,8 @@ export class District {
   city: City;
 
   /**
-   * 所属的区域
+   * 包含景点
    */
-  @ManyToOne(() => Region, (r) => r.provinces)
-  @JoinColumn()
-  region: Region;
+  @OneToMany(() => Spot, (s) => s.district)
+  spots: Spot[];
 }

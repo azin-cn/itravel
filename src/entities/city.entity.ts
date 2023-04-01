@@ -8,7 +8,7 @@ import {
 } from 'typeorm';
 import { Province } from './province.entity';
 import { District } from './district.entity';
-import { Region } from './region.entity';
+import { Spot } from './spot.entity';
 
 @Entity()
 export class City {
@@ -62,9 +62,8 @@ export class City {
   districts: District[];
 
   /**
-   * 所属的区域
+   * 包含景点
    */
-  @ManyToOne(() => Region, (r) => r.provinces)
-  @JoinColumn()
-  region: Region;
+  @OneToMany(() => Spot, (s) => s.city)
+  spots: Spot[];
 }
