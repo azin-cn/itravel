@@ -38,8 +38,10 @@ export class SpotMonth {
   month: Month;
 
   /**
-   * 推荐度
+   * 比重
    */
+  @Column({ default: 0, type: 'tinyint' })
+  weight: number;
 
   /**
    * 是否删除
