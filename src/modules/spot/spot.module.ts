@@ -11,6 +11,7 @@ import { SpotMonth } from 'src/entities/spot-month.entity';
 import { Country } from 'src/entities/country.entity';
 import { Feature } from 'src/entities/feature.entity';
 import { SpotFeature } from 'src/entities/spot-feature.entity';
+import { SpotCoordinate } from 'src/entities/spot-coordinate.entity';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { SpotFeature } from 'src/entities/spot-feature.entity';
       SpotMonth,
       Feature,
       SpotFeature,
+      SpotCoordinate,
     ]),
   ],
   controllers: [SpotController],
@@ -40,6 +42,7 @@ import { SpotFeature } from 'src/entities/spot-feature.entity';
       SpotMonth,
       Feature,
       SpotFeature,
+      SpotCoordinate,
     ]),
   ],
 })
