@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 import { SpotMonth } from './spot-month.entity';
 import { Region } from './region.entity';
+import { SpotFeature } from './spot-feature.entity';
 
 @Entity()
 export class Spot {
@@ -36,6 +37,12 @@ export class Spot {
    */
   @OneToMany(() => SpotMonth, (sm) => sm.spot)
   spotMonths: SpotMonth[];
+
+  /**
+   * 使用spot-feature中间表推荐更多信息
+   */
+  @OneToMany(() => SpotFeature, (sf) => sf.spot)
+  spotFeatures: SpotFeature[];
 
   /**
    * 所属的region
