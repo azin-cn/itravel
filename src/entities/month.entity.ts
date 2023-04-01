@@ -1,6 +1,7 @@
-import { Column, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { SpotMonth } from './spot-month.entity';
 
+@Entity()
 export class Month {
   /**
    * 月份id

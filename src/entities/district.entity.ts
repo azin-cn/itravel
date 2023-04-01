@@ -1,7 +1,14 @@
-import { Column, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { City } from './city.entity';
 import { Region } from './region.entity';
 
+@Entity()
 export class District {
   /**
    * 县区id

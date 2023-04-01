@@ -1,9 +1,10 @@
-import { OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Province } from './province.entity';
 import { City } from './city.entity';
 import { District } from './district.entity';
 import { Spot } from './spot.entity';
 
+@Entity()
 export class Region {
   /**
    * 区域id

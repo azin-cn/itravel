@@ -1,6 +1,7 @@
 import {
   Column,
   CreateDateColumn,
+  Entity,
   JoinColumn,
   ManyToOne,
   OneToMany,
@@ -10,6 +11,7 @@ import {
 import { SpotMonth } from './spot-month.entity';
 import { Region } from './region.entity';
 
+@Entity()
 export class Spot {
   /**
    * id
@@ -20,8 +22,14 @@ export class Spot {
   /**
    * name
    */
-  @Column({ type: 'string' })
+  @Column({ type: 'tinytext' })
   name: string;
+
+  /**
+   * 简介
+   */
+  @Column({ type: 'mediumtext', nullable: true })
+  description: string;
 
   /**
    * 使用spot-mongth中间表拓展更多信息

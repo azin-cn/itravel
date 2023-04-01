@@ -1,5 +1,6 @@
 import {
   Column,
+  Entity,
   JoinColumn,
   ManyToOne,
   OneToMany,
@@ -9,6 +10,7 @@ import { Province } from './province.entity';
 import { District } from './district.entity';
 import { Region } from './region.entity';
 
+@Entity()
 export class City {
   /**
    * 市id
