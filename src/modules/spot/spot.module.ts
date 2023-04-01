@@ -10,6 +10,8 @@ import { District } from 'src/entities/district.entity';
 import { Month } from 'src/entities/month.entity';
 import { SpotMonth } from 'src/entities/spot-month.entity';
 import { Country } from 'src/entities/country.entity';
+import { Feature } from 'src/entities/feature.entity';
+import { SpotFeature } from 'src/entities/spot-feature.entity';
 
 @Module({
   imports: [
@@ -22,6 +24,8 @@ import { Country } from 'src/entities/country.entity';
       District,
       Month,
       SpotMonth,
+      Feature,
+      SpotFeature,
     ]),
   ],
   controllers: [SpotController],
@@ -37,6 +41,8 @@ import { Country } from 'src/entities/country.entity';
       District,
       Month,
       SpotMonth,
+      Feature,
+      SpotFeature,
     ]),
   ],
 })
