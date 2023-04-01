@@ -14,6 +14,7 @@ import { Province } from './province.entity';
 import { City } from './city.entity';
 import { District } from './district.entity';
 import { Country } from './country.entity';
+import { SpotCoordinate } from './spot-coordinate.entity';
 
 @Entity()
 export class Spot {
@@ -46,6 +47,12 @@ export class Spot {
    */
   @OneToMany(() => SpotFeature, (sf) => sf.spot)
   spotFeatures: SpotFeature[];
+
+  /**
+   * 旅游景点内的某些的坐标点
+   */
+  @OneToMany(() => SpotCoordinate, (sc) => sc.spot)
+  spotCoordinates: SpotCoordinate[];
 
   /**
    * 包含的国家
