@@ -1,6 +1,7 @@
 import {
   Column,
   CreateDateColumn,
+  JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -32,6 +33,7 @@ export class Spot {
    * 所属的region
    */
   @ManyToOne(() => Region, (r) => r.spots)
+  @JoinColumn()
   region: Region;
 
   /**
