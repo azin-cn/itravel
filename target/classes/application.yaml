@@ -7,9 +7,9 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/netdisk?serverTimezone=UTC
-    username: root
-    password: jiangshao888
+    url: jdbc:mysql://146.56.116.51:3306/web?serverTimezone=UTC
+    username: web
+    password: pM0dH4gD6xJ9vN7z
     #    password: xwAdnCBXYeDT3r7p
     type: com.alibaba.druid.pool.DruidDataSource
     druid:
