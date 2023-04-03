@@ -6,12 +6,12 @@ import { Spot } from 'src/entities/spot.entity';
 import { Province } from 'src/entities/province.entity';
 import { City } from 'src/entities/city.entity';
 import { District } from 'src/entities/district.entity';
-import { Month } from 'src/entities/month.entity';
-import { SpotMonth } from 'src/entities/spot-month.entity';
 import { Country } from 'src/entities/country.entity';
-import { Feature } from 'src/entities/feature.entity';
-import { SpotFeature } from 'src/entities/spot-feature.entity';
 import { SpotCoordinate } from 'src/entities/spot-coordinate.entity';
+import { FeaturesModule } from '../feature/features.module';
+import { MonthsModule } from '../month/months.module';
+import { SpotMonthModule } from '../spot-month/spot-month.module';
+import { SpotFeatureModule } from '../spot-feature/spot-feature.module';
 
 @Module({
   imports: [
@@ -21,12 +21,12 @@ import { SpotCoordinate } from 'src/entities/spot-coordinate.entity';
       Province,
       City,
       District,
-      Month,
-      SpotMonth,
-      Feature,
-      SpotFeature,
       SpotCoordinate,
     ]),
+    FeaturesModule,
+    MonthsModule,
+    SpotFeatureModule,
+    SpotMonthModule,
   ],
   controllers: [SpotController],
   providers: [SpotService],
@@ -38,10 +38,6 @@ import { SpotCoordinate } from 'src/entities/spot-coordinate.entity';
       Province,
       City,
       District,
-      Month,
-      SpotMonth,
-      Feature,
-      SpotFeature,
       SpotCoordinate,
     ]),
   ],
