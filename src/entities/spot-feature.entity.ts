@@ -23,7 +23,7 @@ export class SpotFeature {
    */
   @ManyToOne(() => Spot, (s) => s.spotFeatures)
   @JoinColumn()
-  spot: Spot[];
+  spot: Spot;
 
   /**
    * 对应的特色

@@ -19,7 +19,7 @@ export class Country {
   /**
    * 国家名称/官方名称
    */
-  @Column({ type: 'tinytext' })
+  @Column({ type: 'tinytext', nullable: true })
   fullName: string;
 
   /**

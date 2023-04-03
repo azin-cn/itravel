@@ -27,7 +27,7 @@ export class Province {
   /**
    * 省份全名/官方名称
    */
-  @Column({ type: 'tinytext' })
+  @Column({ type: 'tinytext', nullable: true })
   fullName: string;
 
   /**
