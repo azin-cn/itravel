@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @since 2023-04-03
  */
 @RestController
-@RequestMapping("/monorepo/spotFeature")
+@RequestMapping("/spotFeature")
 public class SpotFeatureController {
 
 }

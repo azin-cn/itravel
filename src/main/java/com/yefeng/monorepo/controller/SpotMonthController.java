@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @since 2023-04-03
  */
 @RestController
-@RequestMapping("/monorepo/spotMonth")
+@RequestMapping("/spotMonth")
 public class SpotMonthController {
 
 }

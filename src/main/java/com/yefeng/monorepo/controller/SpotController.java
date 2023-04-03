@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
  * @since 2023-04-03
  */
 @RestController
-@RequestMapping("/monorepo/spot")
+@RequestMapping("/spot")
 public class SpotController {
 
+    
+    
 }
