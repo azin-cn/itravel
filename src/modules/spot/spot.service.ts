@@ -3,9 +3,17 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Month } from 'src/entities/month.entity';
 import { Spot } from 'src/entities/spot.entity';
 import { Assert } from 'src/utils/Assert';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { SpotDTO } from './dto/spot.dto';
 import { SpotFeature } from 'src/entities/spot-feature.entity';
+import { SpotMonth } from 'src/entities/spot-month.entity';
+import { MonthsService } from '../month/months.service';
+import { FeaturesService } from '../feature/features.service';
+import { District } from 'src/entities/district.entity';
+import { City } from 'src/entities/city.entity';
+import { Province } from 'src/entities/province.entity';
+import { Feature } from 'src/entities/feature.entity';
+import { Country } from 'src/entities/country.entity';
 
 @Injectable()
 export class SpotService {
@@ -14,6 +22,18 @@ export class SpotService {
     private spotRepository: Repository<Spot>,
     @InjectRepository(Month)
     private monthRepository: Repository<Month>,
+    @InjectRepository(Feature)
+    private featureRepository: Repository<Feature>,
+    @InjectRepository(District)
+    private districtRepository: Repository<District>,
+    @InjectRepository(City)
+    private cityRepository: Repository<City>,
+    @InjectRepository(Province)
+    private provinceRepository: Repository<Province>,
+    @InjectRepository(Country)
+    private countryRepository: Repository<Country>,
+    private monthService: MonthsService,
+    private featureService: FeaturesService,
   ) {}
 
   /**
@@ -55,32 +75,75 @@ export class SpotService {
    * @returns
    */
   async create(spotDTO: SpotDTO): Promise<Spot> {
-    const { months, features, country, province, city, district } = spotDTO;
-    /**
-     * months、features必须存在
-     */
-    Assert.isNotEmptyObject(months);
-    Assert.isNotEmptyObject(features);
+    const { months, features, district } = spotDTO;
 
     /**
-     * 区域必须存在
+     * (一) 必须存在name和description
      */
-    Assert.assertNotNil(country, 'country 为空');
-    Assert.assertNotNil(province, 'province 为空');
-
     const spot = this.transformSpotFromSpotDTO(spotDTO);
-    /**
-     * 必须存在name和description
-     */
     Assert.assertNotNil(spot.name);
     Assert.assertNotNil(spot.description);
 
-    const spotFeatures = new SpotFeature();
+    /**
+     * (二) 区域必须存在
+     * 通过district查找city，通过city查找province，通过province查找country
+     */
+    Assert.assertNotNil(district);
+    const districtRep = await this.districtRepository.findOne({
+      where: {
+        id: district,
+      },
+      relations: ['city'],
+    });
+    Assert.assertNotNil(districtRep);
+
+    const cityRep = await this.cityRepository.findOne({
+      where: {
+        id: districtRep.city.id,
+      },
+      relations: ['province'],
+    });
+    Assert.assertNotNil(cityRep);
+
+    const provinceRep = await this.provinceRepository.findOne({
+      where: { id: cityRep.province.id },
+      relations: ['country'],
+    });
+    Assert.assertNotNil(provinceRep);
+
+    /**
+     * (三) 数据库中 months、features 必须存在
+     * month、feature 是数据库中默认存储的
+     */
+    const monthReps = await this.monthService.findMonthsByIds(months);
+    const featureReps = await this.featureService.findFeaturesByIds(features);
+    Assert.isNotEmptyObject(monthReps);
+    Assert.isNotEmptyObject(featureReps);
+
+    const spotMonths = monthReps.map((monthRep) => {
+      const sm = new SpotMonth();
+      sm.month = monthRep;
+      sm.spot = spot;
+      return sm;
+    });
+
+    const spotFeatures = featureReps.map((featureRep) => {
+      const sf = new SpotFeature();
+      sf.feature = featureRep;
+      sf.spot = spot;
+      return sf;
+    });
+
+    /**
+     * (四) 处理数据
+     */
+    spot.district = districtRep;
+    spot.city = cityRep;
+    spot.province = provinceRep;
+    spot.country = provinceRep.country;
+    spot.spotMonths = spotMonths;
+    spot.spotFeatures = spotFeatures;
 
     return this.spotRepository.save(spot);
-  }
-
-  async createMonth(m: Month) {
-    return this.monthRepository.save(m);
   }
 }

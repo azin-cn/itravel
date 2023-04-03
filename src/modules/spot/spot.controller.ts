@@ -35,7 +35,17 @@ export class SpotController {
   @ApiOperation({ description: '新增景点' })
   @Post()
   async postSpot(@Body(TransformSpotDTOPipe) spotDTO: SpotDTO) {
-    // const spot = this.spotService.create();
+    await this.spotService.create(spotDTO);
+    return ResultVO.success();
+  }
+
+  /**
+   * 测试新增数据
+   * @returns 测试景点信息
+   */
+  @ApiOperation({ description: '测试新增' })
+  @Post('test')
+  async testSpot() {
     return ResultVO.success();
   }
 }
