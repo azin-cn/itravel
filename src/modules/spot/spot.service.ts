@@ -3,17 +3,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Month } from 'src/entities/month.entity';
 import { Spot } from 'src/entities/spot.entity';
 import { Assert } from 'src/utils/Assert';
-import { ILike, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { SpotDTO } from './dto/spot.dto';
 import { SpotFeature } from 'src/entities/spot-feature.entity';
 import { SpotMonth } from 'src/entities/spot-month.entity';
 import { MonthsService } from '../month/months.service';
 import { FeaturesService } from '../feature/features.service';
-import { District } from 'src/entities/district.entity';
-import { City } from 'src/entities/city.entity';
-import { Province } from 'src/entities/province.entity';
 import { Feature } from 'src/entities/feature.entity';
-import { Country } from 'src/entities/country.entity';
+import { RegionService } from '../region/region.service';
 
 @Injectable()
 export class SpotService {
@@ -24,14 +21,7 @@ export class SpotService {
     private monthRepository: Repository<Month>,
     @InjectRepository(Feature)
     private featureRepository: Repository<Feature>,
-    @InjectRepository(District)
-    private districtRepository: Repository<District>,
-    @InjectRepository(City)
-    private cityRepository: Repository<City>,
-    @InjectRepository(Province)
-    private provinceRepository: Repository<Province>,
-    @InjectRepository(Country)
-    private countryRepository: Repository<Country>,
+    private regionService: RegionService,
     private monthService: MonthsService,
     private featureService: FeaturesService,
   ) {}
@@ -89,26 +79,15 @@ export class SpotService {
      * 通过district查找city，通过city查找province，通过province查找country
      */
     Assert.assertNotNil(district);
-    const districtRep = await this.districtRepository.findOne({
-      where: {
-        id: district,
-      },
-      relations: ['city'],
-    });
+    const districtRep = await this.regionService.findDistrictById(district);
     Assert.assertNotNil(districtRep);
 
-    const cityRep = await this.cityRepository.findOne({
-      where: {
-        id: districtRep.city.id,
-      },
-      relations: ['province'],
-    });
+    const cityRep = await this.regionService.findCityById(districtRep.city.id);
     Assert.assertNotNil(cityRep);
 
-    const provinceRep = await this.provinceRepository.findOne({
-      where: { id: cityRep.province.id },
-      relations: ['country'],
-    });
+    const provinceRep = await this.regionService.findProvinceById(
+      cityRep.province.id,
+    );
     Assert.assertNotNil(provinceRep);
 
     /**

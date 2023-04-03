@@ -12,6 +12,7 @@ import { FeaturesModule } from '../feature/features.module';
 import { MonthsModule } from '../month/months.module';
 import { SpotMonthModule } from '../spot-month/spot-month.module';
 import { SpotFeatureModule } from '../spot-feature/spot-feature.module';
+import { RegionModule } from '../region/region.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { SpotFeatureModule } from '../spot-feature/spot-feature.module';
     MonthsModule,
     SpotFeatureModule,
     SpotMonthModule,
+    RegionModule,
   ],
   controllers: [SpotController],
   providers: [SpotService],
