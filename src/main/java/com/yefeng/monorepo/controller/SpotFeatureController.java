@@ -1,7 +1,6 @@
 package com.yefeng.monorepo.controller;
-
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.stereotype.Controller;
 
 /**
  * <p>
@@ -11,7 +10,7 @@ import org.springframework.stereotype.Controller;
  * @author yefeng
  * @since 2023-04-03
  */
-@Controller
+@RestController
 @RequestMapping("/monorepo/spotFeature")
 public class SpotFeatureController {
 

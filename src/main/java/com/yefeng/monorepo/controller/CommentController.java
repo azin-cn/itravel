@@ -1,8 +1,8 @@
+
 package com.yefeng.monorepo.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.stereotype.Controller;
-
+import org.springframework.web.bind.annotation.RestController;
 /**
  * <p>
  *  前端控制器
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Controller;
  * @author yefeng
  * @since 2023-04-03
  */
-@Controller
+@RestController
 @RequestMapping("/monorepo/comment")
 public class CommentController {
 
