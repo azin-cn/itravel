@@ -38,7 +38,6 @@ export class AppService {
     /**
      * 第一次循环：省的遍历
      */
-
     for await (const item of china.features) {
       const { properties } = item;
       if (!properties.name) return;
@@ -51,6 +50,10 @@ export class AppService {
       });
       if (!provinceRep) {
         const province = new Province();
+        province.aid = String(properties.adcode);
+        /**
+         * 省简称需要另外一个json数据
+         */
         province.name = properties.name;
         province.fullName = properties.name;
         province.country = country;
@@ -77,13 +80,15 @@ export class AppService {
         let cityRep = await this.cityRepository.findOneBy({
           aid: String(properties.adcode),
         });
+        const city = new City();
+        city.aid = String(properties.adcode);
+        city.name = properties.name;
+        city.fullName = properties.name;
+        city.province = provinceRep;
         if (!cityRep) {
-          const city = new City();
-          city.aid = String(properties.adcode);
-          city.name = properties.name;
-          city.fullName = properties.name;
-          city.province = provinceRep;
           cityRep = await this.cityRepository.save(city);
+        } else {
+          await this.cityRepository.update(cityRep.id, city);
         }
 
         /**
@@ -112,12 +117,15 @@ export class AppService {
           let districtRep = await this.districtRepository.findOneBy({
             aid: String(properties.adcode),
           });
+          const district = new District();
+          district.aid = String(properties.adcode);
+          district.name = properties.name;
+          district.fullName = properties.name;
+          district.city = cityRep;
           if (!districtRep) {
-            const district = new District();
-            district.name = properties.name;
-            district.fullName = properties.name;
-            district.city = cityRep;
             districtRep = await this.districtRepository.save(district);
+          } else {
+            await this.districtRepository.update(districtRep.id, district);
           }
         }
       }
