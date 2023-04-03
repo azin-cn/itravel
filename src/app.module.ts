@@ -23,6 +23,7 @@ import { MonthsModule } from './modules/month/months.module';
 import { FeaturesModule } from './modules/feature/features.module';
 import { SpotFeatureModule } from './modules/spot-feature/spot-feature.module';
 import { SpotMonthModule } from './modules/spot-month/spot-month.module';
+import { RegionModule } from './modules/region/region.module';
 
 @Module({
   imports: [
@@ -52,6 +53,7 @@ import { SpotMonthModule } from './modules/spot-month/spot-month.module';
     FeaturesModule,
     SpotFeatureModule,
     SpotMonthModule,
+    RegionModule,
   ],
   controllers: [AppController],
   providers: [AppService, ...GLOBAL_FILTERS, ...GLOBAL_PIPES],
