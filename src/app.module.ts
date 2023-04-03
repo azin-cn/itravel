@@ -19,6 +19,10 @@ import { CategoryModule } from './modules/category/category.module';
 import { CommentModule } from './modules/comment/comment.module';
 import { SearchModule } from './modules/search/search.module';
 import { SpotModule } from './modules/spot/spot.module';
+import { MonthsModule } from './modules/month/months.module';
+import { FeaturesModule } from './modules/feature/features.module';
+import { SpotFeatureModule } from './modules/spot-feature/spot-feature.module';
+import { SpotMonthModule } from './modules/spot-month/spot-month.module';
 
 @Module({
   imports: [
@@ -44,6 +48,10 @@ import { SpotModule } from './modules/spot/spot.module';
     CommentModule,
     SearchModule,
     SpotModule,
+    MonthsModule,
+    FeaturesModule,
+    SpotFeatureModule,
+    SpotMonthModule,
   ],
   controllers: [AppController],
   providers: [AppService, ...GLOBAL_FILTERS, ...GLOBAL_PIPES],
