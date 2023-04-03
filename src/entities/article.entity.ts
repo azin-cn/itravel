@@ -123,8 +123,8 @@ export class Article {
   /**
    * 关联的景点
    */
-  @ManyToOne(() => Spot, s => s.articles)
-  spot: Spot
+  @ManyToOne(() => Spot, (s) => s.articles)
+  spot: Spot;
 
   /**
    * 发布时间
