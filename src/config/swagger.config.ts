@@ -20,8 +20,8 @@ export const getSwaggerCustomOptions = (): SwaggerCustomOptions => ({
   swaggerOptions: {
     redocOptions: getRedocOptions(),
     docExpansion: 'list',
+    defaultModelsExpandDepth: -1,
     filter: true,
     showRequestDuration: true,
   },
-  explorer: true,
 });
