@@ -15,6 +15,7 @@ import { City } from './city.entity';
 import { District } from './district.entity';
 import { Country } from './country.entity';
 import { SpotCoordinate } from './spot-coordinate.entity';
+import { Article } from './article.entity';
 
 @Entity()
 export class Spot {
@@ -35,6 +36,12 @@ export class Spot {
    */
   @Column({ type: 'mediumtext', nullable: true })
   description: string;
+
+  /**
+   * 包含的文章
+   */
+  @OneToMany(() => Article, (a) => a.spot)
+  articles: Article[];
 
   /**
    * 使用spot-mongth中间表拓展更多信息

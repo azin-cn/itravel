@@ -16,6 +16,7 @@ import { ARTICLE_STATUS } from 'src/shared/constants/article.constant';
 import { Exclude } from 'class-transformer';
 import { Category } from './category.entity';
 import { Comment } from './comment.entity';
+import { Spot } from './spot.entity';
 
 @Entity('article')
 export class Article {
@@ -118,6 +119,12 @@ export class Article {
     default: ARTICLE_STATUS.DRAFT,
   })
   status: number;
+
+  /**
+   * 关联的景点
+   */
+  @ManyToOne(() => Spot, s => s.articles)
+  spot: Spot
 
   /**
    * 发布时间
