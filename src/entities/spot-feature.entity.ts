@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { Spot } from './spot.entity';
 import { Feature } from './feature.entity';
+import { Exclude } from 'class-transformer';
 
 @Entity()
 export class SpotFeature {
@@ -41,6 +42,7 @@ export class SpotFeature {
   /**
    * 是否删除
    */
+  @Exclude()
   @Column({ default: false, comment: '' })
   isDeleted: boolean;
 

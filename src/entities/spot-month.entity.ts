@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { Month } from './month.entity';
 import { Spot } from './spot.entity';
+import { Exclude } from 'class-transformer';
 
 /**
  * 更好地处理和存储每个月份与景点之间的关系，
@@ -46,6 +47,7 @@ export class SpotMonth {
   /**
    * 是否删除
    */
+  @Exclude()
   @Column({ default: false })
   isDeleted: boolean;
 

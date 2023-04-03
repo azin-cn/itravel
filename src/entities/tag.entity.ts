@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 import { Article } from './article.entity';
 import { User } from './user.entity';
+import { Exclude } from 'class-transformer';
 
 @Entity()
 export class Tag {
@@ -40,6 +41,13 @@ export class Tag {
   articles: Article[];
 
   /**
+   * 是否删除
+   */
+  @Exclude()
+  @Column({ default: false })
+  isDeleted: boolean;
+
+  /**
    * 创建时间
    * YYYY-MM-DD HH:mm:ss
    */
@@ -51,10 +59,4 @@ export class Tag {
    */
   @UpdateDateColumn({ type: 'timestamp' })
   updatedTime: string;
-
-  /**
-   * 是否删除
-   */
-  @Column({ default: false })
-  isDeleted: boolean;
 }

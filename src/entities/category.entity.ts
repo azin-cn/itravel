@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 import { User } from './user.entity';
 import { Article } from './article.entity';
+import { Exclude } from 'class-transformer';
 
 @Entity()
 export class Category {
@@ -38,6 +39,7 @@ export class Category {
   /**
    * 是否删除
    */
+  @Exclude()
   @Column({ default: false })
   isDeleted: boolean;
 

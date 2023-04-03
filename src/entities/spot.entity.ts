@@ -16,6 +16,7 @@ import { District } from './district.entity';
 import { Country } from './country.entity';
 import { SpotCoordinate } from './spot-coordinate.entity';
 import { Article } from './article.entity';
+import { Exclude } from 'class-transformer';
 
 @Entity()
 export class Spot {
@@ -93,6 +94,7 @@ export class Spot {
   /**
    * 是否删除
    */
+  @Exclude()
   @Column({ default: false })
   isDeleted: boolean;
 

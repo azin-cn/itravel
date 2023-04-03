@@ -7,6 +7,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { User } from './user.entity';
+import { Exclude } from 'class-transformer';
 
 @Entity('title')
 export class Title {
@@ -28,6 +29,7 @@ export class Title {
   /**
    * 是否删除
    */
+  @Exclude()
   @Column({ default: false })
   isDeleted: boolean;
 
