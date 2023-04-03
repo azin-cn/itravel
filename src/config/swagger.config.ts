@@ -19,5 +19,9 @@ export const getRedocOptions = (): RedocOptions => ({
 export const getSwaggerCustomOptions = (): SwaggerCustomOptions => ({
   swaggerOptions: {
     redocOptions: getRedocOptions(),
+    docExpansion: 'list',
+    filter: true,
+    showRequestDuration: true,
   },
+  explorer: true,
 });
