@@ -87,7 +87,7 @@ export class ArticleController {
    * @param id
    * @returns
    */
-  @ApiOperation({ description: '删除文章' })
+  @ApiOperation({ summary: '删除文章' })
   @ApiParam({ name: 'id', type: String })
   @Author(AUTHOR_SCENE.ARTICLE)
   @UseGuards(AuthGuard('jwt'), AuthorGuard)

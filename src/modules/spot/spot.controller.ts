@@ -13,7 +13,7 @@ import { SpotDTO } from './dto/spot.dto';
 export class SpotController {
   constructor(private spotService: SpotService) {}
 
-  @ApiOperation({ description: '通过ID获取景点信息' })
+  @ApiOperation({ summary: '通过ID获取景点信息' })
   @ApiParam({ name: 'id' })
   @Get(':id')
   async getSpotById(@Param('id', TransformUUIDPipe) id: string) {
@@ -22,7 +22,7 @@ export class SpotController {
     return ResultVO.success(spot);
   }
 
-  @ApiOperation({ description: '获取符合条件的景点' })
+  @ApiOperation({ summary: '获取符合条件的景点' })
   // @ApiQuery({type:})
   @Get()
   async getSpotsByConditions(@Query() conditions) {
@@ -32,7 +32,7 @@ export class SpotController {
   /**
    * 更新景点
    */
-  @ApiOperation({ description: '新增景点' })
+  @ApiOperation({ summary: '新增景点' })
   @Post()
   async postSpot(@Body(TransformSpotDTOPipe) spotDTO: SpotDTO) {
     await this.spotService.create(spotDTO);
@@ -43,7 +43,7 @@ export class SpotController {
    * 测试新增数据
    * @returns 测试景点信息
    */
-  @ApiOperation({ description: '测试新增' })
+  @ApiOperation({ summary: '测试新增' })
   @Post('test')
   async testSpot() {
     return ResultVO.success();

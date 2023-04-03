@@ -12,19 +12,21 @@ import { TrasnformAuthPipe } from 'src/shared/pipes/auth.pipe';
 import { TransformUserAuthPipe } from 'src/shared/pipes/user.pipe';
 import { AuthService } from './auth.service';
 import { ResultVO } from 'src/shared/vo/ResultVO';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Auth')
 @Controller('auth')
 @UseInterceptors(ClassSerializerInterceptor)
 export class AuthController {
   constructor(private authService: AuthService) {}
+  @ApiOperation({ summary: '用户激活' })
   @Get('activate')
   async userActive(@Query('token') token: string): Promise<ResultVO> {
     const user = await this.authService.activateUserByToken(token);
     return ResultVO.success(user);
   }
 
+  @ApiOperation({ summary: '用户登录' })
   @Post('login')
   async userLogin(
     @Body(TransformUserAuthPipe) userDTO: UserAuthDTO,
@@ -35,6 +37,7 @@ export class AuthController {
     return ResultVO.success(res);
   }
 
+  @ApiOperation({ summary: '用户注册' })
   @Post('register')
   async userRegiser(
     @Body(TransformUserAuthPipe) userDTO: UserAuthDTO,

@@ -32,7 +32,7 @@ import { AUTHOR_SCENE } from 'src/shared/constants/author.constant';
 export class CommentController {
   constructor(private commentService: CommentService) {}
 
-  @ApiOperation({ description: '通过文章获取评论' })
+  @ApiOperation({ summary: '通过文章获取评论' })
   @Get()
   async getCommentsByArticleId(
     @Query('articleId', ParseUUIDPipe) id: string,
@@ -45,7 +45,7 @@ export class CommentController {
     return ResultVO.list(items, itemCount);
   }
 
-  @ApiOperation({ description: '提交评论' })
+  @ApiOperation({ summary: '提交评论' })
   @ApiBody({ type: CommentDTO })
   @UseGuards(AuthGuard('jwt'))
   @Post()
@@ -55,7 +55,7 @@ export class CommentController {
     return ResultVO.success(commentRep);
   }
 
-  @ApiOperation({ description: '删除评论' })
+  @ApiOperation({ summary: '删除评论' })
   @ApiParam({ name: 'id' })
   @Author(AUTHOR_SCENE.ARTICLE)
   @UseGuards(AuthGuard('jwt'), AuthorGuard)
