@@ -30,6 +30,12 @@ export class District {
   fullName: string;
 
   /**
+   * 县区权重
+   */
+  @Column({ default: 0, type: 'tinyint' })
+  weight: number;
+
+  /**
    * 高德地图id
    */
   @Column({ nullable: true })

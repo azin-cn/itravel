@@ -23,6 +23,12 @@ export class Country {
   fullName: string;
 
   /**
+   * 国家权重
+   */
+  @Column({ default: 0, type: 'tinyint' })
+  weight: number;
+
+  /**
    * 高德地图id
    */
   @Column({ nullable: true })
