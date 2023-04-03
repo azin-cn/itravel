@@ -125,4 +125,8 @@ export class SpotService {
 
     return this.spotRepository.save(spot);
   }
+
+  async findSpotsByConditions() {
+    
+  }
 }
