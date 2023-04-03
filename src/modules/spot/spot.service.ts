@@ -127,6 +127,11 @@ export class SpotService {
   }
 
   async findSpotsByConditions() {
+    // select * from spot wher .....
+    // spot
+    const qb = this.featureRepository.createQueryBuilder('feature');
+    qb.getOne(); // 
     
+    qb.getRawOne(); // 
   }
 }
