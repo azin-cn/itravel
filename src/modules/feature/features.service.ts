@@ -33,4 +33,21 @@ export class FeaturesService {
     Assert.isNotEmptyObject(features);
     return features;
   }
+
+  /**
+   * 获取所有的特色
+   * @returns
+   */
+  async findAll(): Promise<Feature[]> {
+    return this.featureRepository.find();
+  }
+
+  /**
+   * 获取所有的特色id
+   * @returns
+   */
+  async findAllIds(): Promise<string[]> {
+    const features = await this.featureRepository.find();
+    return features.map((item) => item.id);
+  }
 }

@@ -31,4 +31,21 @@ export class MonthsService {
     Assert.isNotEmptyObject(months);
     return months;
   }
+
+  /**
+   * 获取所有的月份
+   * @returns
+   */
+  async findAll(): Promise<Month[]> {
+    return this.monthRepository.find();
+  }
+
+  /**
+   * 获取所有的月份id
+   * @returns
+   */
+  async findAllIds(): Promise<string[]> {
+    const months = await this.monthRepository.find();
+    return months.map((item) => item.id);
+  }
 }
