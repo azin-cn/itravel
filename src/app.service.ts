@@ -138,7 +138,8 @@ export class AppService {
         }
       }
     }
-    china.features.length;
+
+    console.log('导入数据成功！');
   }
 
   async insertAreaDB(adcode: string, level: string) {}
