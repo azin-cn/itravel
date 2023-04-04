@@ -62,10 +62,16 @@ export class AppService {
 
       /**
        * 每一个省json
+       * 台湾省无数据，需要特殊处理
        */
-      const provinceJson = (await MapApi.getMapJsonWithCode(
-        properties.adcode as string,
-      )) as IFeatureCollection;
+      let provinceJson: IFeatureCollection;
+      try {
+        provinceJson = (await MapApi.getMapJsonWithCode(
+          properties.adcode as string,
+        )) as IFeatureCollection;
+      } catch (error) {
+        continue;
+      }
 
       /**
        * 第二重循环：市的遍历
