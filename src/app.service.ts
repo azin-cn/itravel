@@ -85,6 +85,7 @@ export class AppService {
         city.name = properties.name;
         city.fullName = properties.name;
         city.province = provinceRep;
+        city.weight = Math.floor(Math.random() * 100);
         if (!cityRep) {
           cityRep = await this.cityRepository.save(city);
         } else {
@@ -122,6 +123,7 @@ export class AppService {
           district.name = properties.name;
           district.fullName = properties.name;
           district.city = cityRep;
+          district.weight = Math.floor(Math.random() * 100);
           if (!districtRep) {
             districtRep = await this.districtRepository.save(district);
           } else {
