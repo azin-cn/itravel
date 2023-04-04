@@ -15,6 +15,7 @@ export const getDBConf = (): TypeOrmModuleOptions => ({
   autoLoadEntities: true,
   namingStrategy: new SnakeNamingStrategy(), // 将实体中的小驼峰变为蛇形
   timezone: '+08:00', // 时区
+  charset: 'utf8mb4',
   synchronize: true, //根据实体自动创建数据库表， 生产环境建议关闭
 });
 export default getDBConf();
