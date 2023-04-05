@@ -410,3 +410,20 @@ Nestjs 加载配置文件时，如果使用的是非 .js .ts 的配置文件进�
 
 - nest-knife4j
 - nestjs-knife4j
+
+## SQL 优化部分
+
+在未传任何筛选数据中，默认会 join country province 表，此时 country.name 是中国，此时可以有两种写法
+
+```ts
+const qb = this.spotRepository.createQueryBuilder('spot');
+qb.leftJoin(Country, 'country', 'country.name = "中国"');
+qb.leftJoin(Province, 'province', 'province.id = spot.province_id');
+
+const qb = this.spotRepository.createQueryBuilder('spot');
+qb.leftJoin(Country, 'country', 'country.id = spot.country_id');
+qb.leftJoin(Province, 'province', 'province.id = spot.province_id');
+qb.andWhere('country.name = "中国"');
+```
+
+在使用时，更加推荐后面的写法，条件用 where 构造，因为关联表时如果使用主外键，速度会更快
