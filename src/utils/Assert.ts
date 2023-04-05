@@ -37,7 +37,7 @@ export class Assert {
    * 非空对象
    */
   static isNotEmptyObject<T>(
-    val: T | null | undefined,
+    val: T | unknown,
     msg = '参数为空对象',
   ): asserts val is T {
     Assert.assertNotNil(val);
@@ -50,7 +50,7 @@ export class Assert {
    * @param msg
    */
   static isNotNull<T>(
-    val: T | undefined,
+    val: T | unknown,
     msg = '参数不能为 null',
   ): asserts val is T {
     if (val === null) throw new BadRequestException(msg);
