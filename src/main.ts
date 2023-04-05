@@ -4,13 +4,13 @@ import { HttpResponseInterceptor } from './shared/interceptors/http-response.int
 import { SwaggerModule } from '@nestjs/swagger';
 import { knife4jSetup } from 'nest-knife4j';
 import {
-  getRedocOptions,
   getSwaggerConf,
   getSwaggerCustomOptions,
 } from './config/swagger.config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.enableCors();
 
   const document = SwaggerModule.createDocument(app, getSwaggerConf());
   // await RedocModule.setup('/docs', app, document, getRedocOptions());
