@@ -411,6 +411,22 @@ Nestjs 加载配置文件时，如果使用的是非 .js .ts 的配置文件进�
 - nest-knife4j
 - nestjs-knife4j
 
+## SQL 注意事项 1
+
+手动写 sql 时，应该注意与 SQL 语法兼容，在 SQL 中的字符串应该用字符串的单引号或双引号或反引号标识，如：
+
+- 使用变量形式
+
+```ts
+qb.andWhere('sm.month_id IN (:...months)', { months });
+```
+
+- 手动构造 SQL，注意字符串
+
+```ts
+qb.andWhere(`province.id = '${province}'`);
+```
+
 ## SQL 优化部分
 
 在未传任何筛选数据中，默认会 join country province 表，此时 country.name 是中国，此时可以有两种写法
@@ -427,3 +443,57 @@ qb.andWhere('country.name = "中国"');
 ```
 
 在使用时，更加推荐后面的写法，条件用 where 构造，因为关联表时如果使用主外键，速度会更快
+
+## 使用 typeorm 无法映射实体数据
+
+使用 typeorm 无法映射实体数据时
+
+- 检查 getRawOne 是否为实体的数据类型，如果不是，则手动进行转换
+- 如果是，则判断 repository 的 queryBuilder 是否为指定的 entity，此种情况的 querybuilder 一般为 any
+
+## 根据月份、特色的权重进行排行
+
+```sql
+select DISTINCT c.name,d.name,s.id,s.name,
+(SELECT sum(weight) FROM spot_month WHERE spot_id = s.id)as weight
+from spot s
+left join country  ct on ct.id=s.country_id
+left join province p on p.id=s.province_id
+left join city c on c.id=s.city_id
+left join district d on d.id=s.district_id
+left join `spot_month` sm on sm.spot_id=s.id
+where 1=1
+
+ and p.name='广东'
+ and c.name='青岛市'
+
+ORDER BY weight desc
+```
+
+主要是利用子查询的功能，将 spot-month，spot-feature、area 的权重相加进行排序
+
+```sql
+select
+		spot.id, spot.name,
+		sm.smw, sf.sfw,
+		province.weight `pw`, (sm.smw + sf.sfw + province.weight) weight,
+		province.name `pname`
+from spot
+
+left join (
+		select spot_id, sum(weight) as smw from spot_month
+				group by spot_id
+		) `sm`
+		on sm.spot_id = spot.id
+
+left join (
+		select spot_id, sum(weight) as sfw from spot_feature
+	      group by spot_id
+		) `sf`
+		on sf.spot_id = spot.id
+
+left join country on country.id = spot.country_id -- area
+left join province on province.id = spot.province_id -- itemArea
+where country.name = '中国' AND province.`name` = '广东'
+order by weight desc
+```
