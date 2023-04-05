@@ -35,8 +35,14 @@ export class Spot {
   /**
    * 简介
    */
-  @Column({ type: 'mediumtext', nullable: true })
+  @Column({ type: 'mediumtext' })
   description: string;
+
+  /**
+   * 缩略图，创建时不为空
+   */
+  @Column({ type: 'text' })
+  thumbUrl: string;
 
   /**
    * 包含的文章
