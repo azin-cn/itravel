@@ -188,8 +188,9 @@ export class SpotService {
       area = 'country';
       itemArea = 'province';
       qb = this.provinceRepository.createQueryBuilder('province');
-      qb.leftJoin(Country, 'country', 'country.name = "中国"');
+      qb.leftJoin(Country, 'country', 'country.id = spot.country_id');
       qb.leftJoin(Spot, 'spot', 'spot.province_id = province.id');
+      qb.where('country.name = "中国"');
     }
 
     /**
@@ -299,8 +300,9 @@ export class SpotService {
        */
       area = 'country';
       itemArea = 'province';
-      qb.leftJoin(Country, 'country', 'country.name = "中国"');
+      qb.leftJoin(Country, 'country', 'country.id = spot.country_id');
       qb.leftJoin(Province, 'province', 'province.id = spot.province_id');
+      qb.andWhere('country.name = "中国"');
     }
 
     return { qb, area, itemArea };
@@ -346,7 +348,7 @@ export class SpotService {
     const { qb, area, itemArea } = this.getQBWhichSpotLeftJoinRegion(spotDTO);
 
     if (spotDTO.name) {
-      qb.andWhere(
+      qb.orWhere(
         `LOWER( '${spotDTO.name}' ) LIKE LOWER( CONCAT(spot.name, '%') )`,
       )
         .orWhere(`LOWER( spot.name ) LIKE LOWER( :name )`, {
@@ -381,7 +383,7 @@ export class SpotService {
 
     const spots = await qb.getMany();
     const spotsRaw = await qb.getRawMany();
-    console.log(spots[0]);
+    // console.log(spots[0]);
     console.log(spotsRaw[0]);
     return spots;
   }
