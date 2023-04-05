@@ -241,7 +241,7 @@ export class SpotService {
   /**
    * 获取根据条件构造的查询器
    * spot left join region
-   * 返回spot具有的信息，spot为主表
+   * 返回 spot 具有的信息，spot为主表
    * region: country | province | city
    * @param spotDTO
    * @returns
@@ -251,30 +251,16 @@ export class SpotService {
     area: string;
     itemArea: string;
   } {
-    // select p.name,count(s.province_id) --两个都动态配置
-    // from spot s
-    // left join country  ct on ct.id=s.country_id  --根据条件动态连接表
-    // left join province p on p.id=s.province_id
-    // left join city c on c.id=s.city_id
-    // left join district d on d.id=s.district_id
-    // left join `spot_month` sm on sm.spot_id=s.id
-    // left join spot_feature sf on sf.spot_id=s.id
-    // where 1=1
-    // and sm.month_id in ('23','34')--筛选加月份
-    // and sf.feature_id in('1','2')--筛选添加标签
-    // and s.country_id = '' --动态配置
-    // GROUP BY s.province_id ---动态设置
-
     const qb = this.spotRepository.createQueryBuilder('spot').where('1=1');
     /**
      * 月份和特色，非空则加入条件
      */
     const { features, months } = spotDTO;
-    if (isNotEmptyObject(features)) {
+    if (arrayNotEmpty(features)) {
       qb.leftJoin('spot.spotFeatures', 'sf');
       qb.andWhere('sf.feature_id IN (:...features)', { features });
     }
-    if (isNotEmptyObject(months)) {
+    if (arrayNotEmpty(months)) {
       qb.leftJoin('spot.spotMonths', 'sm');
       qb.andWhere('sm.month_id IN (:...months)', { months });
     }
@@ -282,6 +268,8 @@ export class SpotService {
     /**
      * 只能存在一种，country、province、city、district，使用if else结构
      * 为了兼容传递的数据，使用多个 if 而不是 if else
+     * district是不存在的，因为最小只能到city，而city就是索引district的数据
+     * 如果区域关系不正确，如广东梅州被改成山东梅州，则查不出数据
      */
     const { country, province, city } = spotDTO;
     let area: string, itemArea: string;
@@ -319,7 +307,7 @@ export class SpotService {
   }
 
   /**
-   * 获取区域的景点数量，返回具有景点的区域
+   * 获取区域的景点数量，返回具有景点的区域(具有景点)
    * spot left join region
    * @param spotDTO
    */
@@ -333,7 +321,7 @@ export class SpotService {
     qb.select(`${itemArea}.id`, 'id')
       .addSelect(`${itemArea}.name`, 'name')
       .addSelect(`${itemArea}.full_name`, 'fullName')
-      .addSelect(`COALESCE( COUNT( DISTINCT spot.${itemArea}_id), 0 )`, 'value')
+      .addSelect(`COALESCE( COUNT( DISTINCT spot.id), 0 )`, 'value')
       .addSelect(`'${itemArea}' AS level`)
       .andWhere(`spot.${area}_id = ${area}.id`);
 
@@ -348,13 +336,53 @@ export class SpotService {
   }
 
   /**
-   * 获取景点实体数组
+   * 根据条件获取景点实体数组
    * @param spotDTO
    */
-  async findSpotsByConditions(spotDTO: SpotDTO) {
-    const qb = this.featureRepository.createQueryBuilder('feature');
-    qb.getOne(); //
+  async findSpotsByConditions(spotDTO: SpotDTO): Promise<Spot[]> {
+    /**
+     * 需要使用的是 spot left join other 形式
+     */
+    const { qb, area, itemArea } = this.getQBWhichSpotLeftJoinRegion(spotDTO);
 
-    qb.getRawOne(); //
+    if (spotDTO.name) {
+      qb.andWhere(
+        `LOWER( '${spotDTO.name}' ) LIKE LOWER( CONCAT(spot.name, '%') )`,
+      )
+        .orWhere(`LOWER( spot.name ) LIKE LOWER( :name )`, {
+          name: spotDTO.name,
+        })
+        .orWhere(`LOWER( spot.description ) LIKE LOWER( :name ) `, {
+          name: spotDTO.name,
+        });
+    }
+
+    /**
+     * 判断 months 和 features 决定是否join表
+     * 在 getQBWhichSpotLeftJoinRegion 中只有 months 和 features 不为空才会 join
+     */
+    const { months, features } = spotDTO;
+    if (!arrayNotEmpty(months)) {
+      /**
+       * 为空 join 表
+       */
+      qb.leftJoin('spot.spotMonths', 'sm');
+    }
+    if (!arrayNotEmpty(features)) {
+      /**
+       * 为空 join 表
+       */
+      qb.leftJoin('spot.spotFeatures', 'sf');
+    }
+
+    qb.select(`DISTINCT spot.id, spot.name, sf.weight`)
+      .orderBy('sf.weight', 'DESC')
+      .limit(10);
+
+    const spots = await qb.getMany();
+    const spotsRaw = await qb.getRawMany();
+    console.log(spots[0]);
+    console.log(spotsRaw[0]);
+    return spots;
   }
 }
