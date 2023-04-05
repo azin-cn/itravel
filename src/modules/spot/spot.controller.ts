@@ -48,8 +48,11 @@ export class SpotController {
    */
   @ApiOperation({ summary: '获取符合条件的景点' })
   @Get('area_spots')
-  async getSpotsByConditions(@Query(TransformSpotDTOPipe) spotDTO: SpotDTO) {
-    // const;
+  async getSpotsByConditions(
+    @Query(TransformSpotDTOPipe) spotDTO: SpotDTO,
+  ): Promise<ResultVO> {
+    const spots = await this.spotService.findSpotsByConditions(spotDTO);
+    return ResultVO.success(spots);
   }
 
   @ApiOperation({ summary: '通过ID获取景点信息' })
