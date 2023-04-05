@@ -150,14 +150,14 @@ export class SpotService {
    * @returns
    */
   getQBWhichRegionLeftJoinSpot(spotDTO: SpotDTO): {
-    qb: SelectQueryBuilder<any>;
+    qb: SelectQueryBuilder<unknown>;
     area: string;
     itemArea: string;
   } {
     /**
      * 查询的主体是区域，必须区域 leftJoin 景点 或者 景点 rightJoin 区域才可以将所有区域返回
      */
-    let qb: SelectQueryBuilder<any>;
+    let qb: SelectQueryBuilder<unknown>;
 
     const { country, province, city } = spotDTO;
     let area: string, itemArea: string;
@@ -166,20 +166,20 @@ export class SpotService {
       area = 'city';
       itemArea = 'district';
       qb = this.districtRepository.createQueryBuilder('district').where('1=1');
-      qb.leftJoin(City, 'city', `city.id = '${city}'`);
       qb.leftJoin(Spot, 'spot', 'spot.district_id = district.id');
+      qb.leftJoin(City, 'city', `city.id = '${city}'`);
     } else if (province) {
       area = 'province';
       itemArea = 'city';
-      qb = this.cityRepository.createQueryBuilder('city');
-      qb.leftJoin(Province, 'province', `province.id = '${province}'`);
+      qb = this.cityRepository.createQueryBuilder('city').where('1=1');
       qb.leftJoin(Spot, 'spot', 'spot.city_id = city.id');
+      qb.leftJoin(Province, 'province', `province.id = '${province}'`);
     } else if (country) {
       area = 'country';
       itemArea = 'province';
-      qb = this.provinceRepository.createQueryBuilder('province');
-      qb.leftJoin(Country, 'country', `country.id = '${country}'`);
+      qb = this.provinceRepository.createQueryBuilder('province').where('1=1');
       qb.leftJoin(Spot, 'spot', 'spot.province_id = province.id');
+      qb.leftJoin(Country, 'country', `country.id = '${country}'`);
     } else if (!(country || province || city)) {
       /**
        * 都不存在
@@ -187,10 +187,10 @@ export class SpotService {
        */
       area = 'country';
       itemArea = 'province';
-      qb = this.provinceRepository.createQueryBuilder('province');
-      qb.leftJoin(Country, 'country', 'country.id = spot.country_id');
+      qb = this.provinceRepository.createQueryBuilder('province').where('1=1');
       qb.leftJoin(Spot, 'spot', 'spot.province_id = province.id');
-      qb.where('country.name = "中国"');
+      qb.leftJoin(Country, 'country', 'country.id = spot.country_id');
+      qb.andWhere('country.name = "中国"');
     }
 
     /**
@@ -226,8 +226,7 @@ export class SpotService {
       .addSelect(`${itemArea}.name`, 'name')
       .addSelect(`${itemArea}.full_name`, 'fullName')
       .addSelect(`COALESCE( COUNT( DISTINCT spot.id), 0 )`, 'value')
-      .addSelect(`'${itemArea}' AS level`)
-      .andWhere(`${itemArea}.${area}_id = ${area}.id`);
+      .addSelect(`'${itemArea}' AS level`);
 
     /**
      * 分组规则
@@ -248,23 +247,11 @@ export class SpotService {
    * @returns
    */
   getQBWhichSpotLeftJoinRegion(spotDTO: SpotDTO): {
-    qb: SelectQueryBuilder<any>;
+    qb: SelectQueryBuilder<Spot>;
     area: string;
     itemArea: string;
   } {
     const qb = this.spotRepository.createQueryBuilder('spot').where('1=1');
-    /**
-     * 月份和特色，非空则加入条件
-     */
-    const { features, months } = spotDTO;
-    if (arrayNotEmpty(features)) {
-      qb.leftJoin('spot.spotFeatures', 'sf');
-      qb.andWhere('sf.feature_id IN (:...features)', { features });
-    }
-    if (arrayNotEmpty(months)) {
-      qb.leftJoin('spot.spotMonths', 'sm');
-      qb.andWhere('sm.month_id IN (:...months)', { months });
-    }
 
     /**
      * 只能存在一种，country、province、city、district，使用if else结构
@@ -305,11 +292,24 @@ export class SpotService {
       qb.andWhere('country.name = "中国"');
     }
 
+    /**
+     * 月份和特色，非空则加入条件
+     */
+    const { features, months } = spotDTO;
+    if (arrayNotEmpty(features)) {
+      qb.leftJoin('spot.spotFeatures', 'sf');
+      qb.andWhere('sf.feature_id IN (:...features)', { features });
+    }
+    if (arrayNotEmpty(months)) {
+      qb.leftJoin('spot.spotMonths', 'sm');
+      qb.andWhere('sm.month_id IN (:...months)', { months });
+    }
+
     return { qb, area, itemArea };
   }
 
   /**
-   * 获取区域的景点数量，返回具有景点的区域(具有景点)
+   * 获取区域的景点数量，返回具有景点的区域(具有景点的区域)
    * spot left join region
    * @param spotDTO
    */
@@ -377,13 +377,16 @@ export class SpotService {
       qb.leftJoin('spot.spotFeatures', 'sf');
     }
 
-    qb.select(`DISTINCT spot.id, spot.name, sf.weight`)
-      .orderBy('sf.weight', 'DESC')
+    qb
+      // .groupBy('spot.id')
+      // .addGroupBy('sf.weight')
+      // .addGroupBy('sm.weight')
+      // .addGroupBy(`${area}.weight`)
       .limit(10);
 
     const spots = await qb.getMany();
     const spotsRaw = await qb.getRawMany();
-    // console.log(spots[0]);
+    console.log(spots[0]);
     console.log(spotsRaw[0]);
     return spots;
   }
