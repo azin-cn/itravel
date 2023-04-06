@@ -16,4 +16,10 @@ export class AppController {
     await this.appService.createSpotMonthSpotFeatureDB();
     return 'success';
   }
+
+  @Post('createSpotThumbUrl')
+  async createThumbUrl() {
+    await this.appService.createSpotThumbUrl();
+    return 'success';
+  }
 }

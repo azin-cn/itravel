@@ -36,6 +36,12 @@ export class Spot {
   description: string;
 
   /**
+   * 缩略图
+   */
+  @Column({ type: 'text' })
+  thumbUrl: string;
+
+  /**
    * 使用spot-mongth中间表拓展更多信息
    */
   @OneToMany(() => SpotMonth, (sm) => sm.spot)

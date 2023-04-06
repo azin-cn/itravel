@@ -277,4 +277,70 @@ export class AppService {
       this.spotMonthRepository.save(sms);
     }
   }
+
+  /**
+   * 创建景区缩略图url
+   */
+  async createSpotThumbUrl() {
+    const spots = await this.spotRepository.find();
+    let counter = 1;
+
+    const map = new Map<number, number>();
+
+    const images = [
+      'https://tse2-mm.cn.bing.net/th/id/OIP-C.g9UbVfyVZX-SfD09JcYr5QHaEK?pid=ImgDet&rs=1',
+      'https://tse3-mm.cn.bing.net/th/id/OIP-C.Lf2u2dPln44gRiIC7IR3IwHaEK?pid=ImgDet&rs=1',
+      'https://desk-fd.zol-img.com.cn/t_s960x600c5/g4/M07/06/05/Cg-4y1TcgwGIcCW6ADOtF-oxuF8AAUn6wNDA_AAM60v722.jpg',
+      'https://pic3.zhimg.com/v2-c6ae9c3aff36b9b221258f6a90577902_r.jpg',
+      'https://desk-fd.zol-img.com.cn/t_s960x600c5/g5/M00/02/03/ChMkJlbKxo2IT63KACN7OztCegEAALHmwPZIQ0AI3tT786.jpg',
+      'https://b.zol-img.com.cn/desk/bizhi/image/10/960x600/1598319721647.jpg',
+      'https://ts1.cn.mm.bing.net/th/id/R-C.b2ce2003596cd13b705d25facdd27860?rik=d4ivBEt4skiIwQ&riu=http%3a%2f%2fseopic.699pic.com%2fphoto%2f50064%2f4314.jpg_wh1200.jpg&ehk=ssMlV0RHlr3d5NxUoG%2faQrugcy2NB8BruRphOFxx1vI%3d&risl=&pid=ImgRaw&r=0',
+      'https://ts1.cn.mm.bing.net/th/id/R-C.db3836610f631c4d06bdde4fd923e98f?rik=qaf5de1wCMNaRw&riu=http%3a%2f%2fseopic.699pic.com%2fphoto%2f50093%2f5337.jpg_wh1200.jpg&ehk=Oe3ZIbrBYnhQ0zqIu%2ftsRSE8srtaRlewEtSIg3sp6Zw%3d&risl=&pid=ImgRaw&r=0',
+      'https://ts1.cn.mm.bing.net/th/id/R-C.efeea7fe9c2700fcff22483246e448db?rik=2GOGPn7eZvqd7A&riu=http%3a%2f%2fpic.zsucai.com%2ffiles%2f2013%2f0830%2fxiaguang4.jpg&ehk=WiVr1cmj4u7RnOhKcAbAFDCbcnEuMDMJc1g9GVQAoj8%3d&risl=&pid=ImgRaw&r=0',
+      'https://ts1.cn.mm.bing.net/th/id/R-C.8e283246276fad2c01e8d0e300bb4540?rik=umflFIIvM%2f%2b%2b6Q&riu=http%3a%2f%2fseopic.699pic.com%2fphoto%2f50118%2f7084.jpg_wh1200.jpg&ehk=1HQoa7wYy9xnf0HqsFbQQJAv79HJnBest1U0atuLHSQ%3d&risl=&pid=ImgRaw&r=0',
+      'https://ts1.cn.mm.bing.net/th/id/R-C.7b0791da556ca3d24acbf90ee49b739f?rik=8y%2bmKNLwPGRBNg&riu=http%3a%2f%2fseopic.699pic.com%2fphoto%2f50118%2f7101.jpg_wh1200.jpg&ehk=ioYQckbfqLEXxXpsxW0IgyNGeJCih5QezMPdD%2bTSuA0%3d&risl=&pid=ImgRaw&r=0',
+      'https://desk-fd.zol-img.com.cn/t_s960x600c5/g5/M00/01/0F/ChMkJlbKwtmINC3iAAx4ozyK5jAAALGuAMGw3cADHi7853.jpg',
+      'https://pic4.zhimg.com/v2-14098590ffdbf8a4a3e0db52c07fdded_r.jpg?source=1940ef5c',
+      'https://ts1.cn.mm.bing.net/th/id/R-C.f36fcbbb1a25d08c0a3455cb04e2d580?rik=AaK7Szk%2fpr6Dyw&riu=http%3a%2f%2fseopic.699pic.com%2fphoto%2f50042%2f1772.jpg_wh1200.jpg&ehk=U7FSjN9jI1WWrYO6kH1UzxkYBq523Vr21iewotHYeA8%3d&risl=&pid=ImgRaw&r=0',
+      'https://ts1.cn.mm.bing.net/th/id/R-C.d9749f5121aceb9d69d23c052ecd84ec?rik=mtBrkeKAQt2kXg&riu=http%3a%2f%2fseopic.699pic.com%2fphoto%2f50042%2f7570.jpg_wh1200.jpg&ehk=HIISw7GgScoyjvmjz2hQpqmaIOw%2f6nP1DyyOXvwkRxU%3d&risl=&pid=ImgRaw&r=0',
+      'https://ts1.cn.mm.bing.net/th/id/R-C.4a5d022904290715a83ae6f6f1cd8dfb?rik=pKjzXCr%2beOTEyA&riu=http%3a%2f%2fimg.sytuku.com%2fuptu%2fyulantu%2f161010%2f5-161010223037.jpg&ehk=ABsgOnly7GEbTEeIuQ0FTcofoDLAFAP1m6s8s8M6asg%3d&risl=&pid=ImgRaw&r=0',
+      'https://ts1.cn.mm.bing.net/th/id/R-C.a527b360fe317d1ed2d80a49d51c9c1c?rik=SQr3Q9XFQzrf0A&riu=http%3a%2f%2fseopic.699pic.com%2fphoto%2f50075%2f6521.jpg_wh1200.jpg&ehk=7cbm1dF83MThf5g4EdvNfSIBgLkHs0931e6bQnc7sug%3d&risl=&pid=ImgRaw&r=0',
+      'https://tse1-mm.cn.bing.net/th/id/OIP-C.xc5KsKdO2u9T5hBCpE0yCgHaEK?pid=ImgDet&rs=1',
+      'https://ts1.cn.mm.bing.net/th/id/R-C.47b9aad56cbd44ee526416808640b9fc?rik=B%2fkv4B4rQKGHUQ&riu=http%3a%2f%2fpic.zsucai.com%2ffiles%2f2013%2f0830%2fxiaguang6.jpg&ehk=ZeFlshNb9tNEVE45IHxmdqogQUFsrh3Pb%2fTQ86sQ%2fpY%3d&risl=&pid=ImgRaw&r=0',
+      'https://ts1.cn.mm.bing.net/th/id/R-C.3f68d60fb0786df8223ff43c2725587a?rik=qP6pTO5lKqIlXg&riu=http%3a%2f%2fsc.68design.net%2fphotofiles%2f201505%2ffUfyxPPvS7.jpg&ehk=WeDZPcsMQRx7pnNTsV8EjsiEHsueGV9GTaddKxTj1r0%3d&risl=&pid=ImgRaw&r=0',
+      'https://ts1.cn.mm.bing.net/th/id/R-C.dab73e4d50895d260105e0e25d41371d?rik=qZ0RXkzD3NbRfw&riu=http%3a%2f%2fseopic.699pic.com%2fphoto%2f50000%2f2401.jpg_wh1200.jpg&ehk=9q%2bizqiNF4NjPJ4yvA4iHnf7BVuwMJMhjOJOduWyoYM%3d&risl=&pid=ImgRaw&r=0',
+      'https://desk-fd.zol-img.com.cn/t_s960x600c5/g5/M00/01/0F/ChMkJlbKwnWIbdBEAAyF94ZEywYAALGoQMDOIkADIYP587.jpg',
+      'https://desk-fd.zol-img.com.cn/t_s960x600c5/g5/M00/02/03/ChMkJlbKxtqICzWtABTs9EQHkIUAALHrQLAW5UAFO0M151.jpg',
+      'https://ts1.cn.mm.bing.net/th/id/R-C.06a21f77a7928a13f30885bbbe527c3f?rik=yC5KttaeGjlrfg&riu=http%3a%2f%2fimg.mm4000.com%2ffile%2fe%2f72%2f10064b055b.jpg%3fdown&ehk=JuUbMZ%2bS3C3m5FXazWYNez9dmpwVrqKho3rAXY%2baubY%3d&risl=&pid=ImgRaw&r=0',
+      'https://desk-fd.zol-img.com.cn/t_s960x600c5/g5/M00/02/01/ChMkJlbKxEeIUFCUAAn_0fHGz3sAALHEQCrAGkACf_p422.jpg',
+      'https://ts1.cn.mm.bing.net/th/id/R-C.910786522c0cd45063bc8fc0f0aef0d0?rik=GZKkAKUGSryRsQ&riu=http%3a%2f%2fpic.zsucai.com%2ffiles%2f2013%2f0922%2fshu12.jpg&ehk=GweT148sJrgm60TrXUlumNsgZHPa1M3FKjuvGGPIuvM%3d&risl=&pid=ImgRaw&r=0',
+      'https://ts1.cn.mm.bing.net/th/id/R-C.52e5622d2443fa71cfdcb9bb6087911d?rik=PCz7sh2I3PKBGA&riu=http%3a%2f%2fimage.qianye88.com%2fpic%2f0e0289806288b7faabbc147abba9f0a8&ehk=09cAU0nEZS2AWz6G3CDfmCPcuCPNiQ0NAfNFysgn248%3d&risl=&pid=ImgRaw&r=0',
+      'https://ts1.cn.mm.bing.net/th/id/R-C.68978afc71576a94a1d50ef5016dbd9e?rik=cDDsy5SLmDvDHQ&riu=http%3a%2f%2fseopic.699pic.com%2fphoto%2f50075%2f0779.jpg_wh1200.jpg&ehk=FG4Hd5S711LYcuLBIcDagQyk4KhcH1oIfqyk1MWUOyg%3d&risl=&pid=ImgRaw&r=0',
+      'https://desk-fd.zol-img.com.cn/t_s960x600c5/g5/M00/01/0E/ChMkJ1bKwhGIJFUZAAVHFzXgsW8AALGiQGvaxcABUcv637.jpg',
+      'https://www.haoy99.com/FileUpload/2019-02/Shui1Zhu11i1Pao1pptB-173234_109.jpg',
+      'https://ts1.cn.mm.bing.net/th/id/R-C.aa0c40317812024f29929629c944e403?rik=AvTKZQW8fWMELg&riu=http%3a%2f%2fseopic.699pic.com%2fphoto%2f50095%2f2641.jpg_wh1200.jpg&ehk=ryd8RMPeag3orATYY%2bg236F3Keidn%2fWY5LRoiUwoP94%3d&risl=&pid=ImgRaw&r=0',
+      'https://ts1.cn.mm.bing.net/th/id/R-C.432357432ebe5fdfb777b78c7d121f30?rik=YR2o31HKGFDpOA&riu=http%3a%2f%2fpic.bizhi360.com%2fbbpic%2f95%2f4395.jpg&ehk=GcXmvzMg8NJzhm7u6paDc7FGwq3H2av%2b1f29kSIP3bU%3d&risl=&pid=ImgRaw&r=0',
+    ];
+    spots.forEach(async (spot) => {
+      const index = Math.floor(Math.random() * images.length);
+      const thumbUrl = images[index];
+
+      await this.spotRepository.update(spot.id, { thumbUrl });
+      console.log(
+        '图像索引：',
+        index,
+        '当前计数：',
+        counter++,
+        '总数：',
+        spots.length,
+      );
+
+      map.set(index, (map.get(index) || 0) + 1);
+      const r: number[] = [];
+      for (const [i, v] of map) {
+        r[i] = v;
+      }
+      console.log(r.join());
+    });
+  }
 }
