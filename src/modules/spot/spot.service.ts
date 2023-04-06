@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Month } from 'src/entities/month.entity';
 import { Spot } from 'src/entities/spot.entity';
 import { Assert } from 'src/utils/Assert';
-import { Repository, SelectQueryBuilder, getConnection } from 'typeorm';
+import { Repository, SelectQueryBuilder } from 'typeorm';
 import { SpotDTO } from './dto/spot.dto';
 import { SpotFeature } from 'src/entities/spot-feature.entity';
 import { SpotMonth } from 'src/entities/spot-month.entity';
@@ -166,20 +166,23 @@ export class SpotService {
       area = 'city';
       itemArea = 'district';
       qb = this.districtRepository.createQueryBuilder('district').where('1=1');
-      qb.leftJoin(Spot, 'spot', 'spot.district_id = district.id');
-      qb.leftJoin(City, 'city', `city.id = '${city}'`);
+      qb.leftJoin(Spot, 'spot', 'spot.district_id = district.id')
+        .leftJoin(City, 'city', `city.id = spot.city_id`)
+        .where(`city.id = '${city}'`);
     } else if (province) {
       area = 'province';
       itemArea = 'city';
       qb = this.cityRepository.createQueryBuilder('city').where('1=1');
-      qb.leftJoin(Spot, 'spot', 'spot.city_id = city.id');
-      qb.leftJoin(Province, 'province', `province.id = '${province}'`);
+      qb.leftJoin(Spot, 'spot', 'spot.city_id = city.id')
+        .leftJoin(Province, 'province', `province.id = spot.province_id`)
+        .where(`province.id = '${province}'`);
     } else if (country) {
       area = 'country';
       itemArea = 'province';
       qb = this.provinceRepository.createQueryBuilder('province').where('1=1');
-      qb.leftJoin(Spot, 'spot', 'spot.province_id = province.id');
-      qb.leftJoin(Country, 'country', `country.id = '${country}'`);
+      qb.leftJoin(Spot, 'spot', 'spot.province_id = province.id')
+        .leftJoin(Country, 'country', `country.id = spot.country_id`)
+        .where(`country.id = '${country}'`);
     } else if (!(country || province || city)) {
       /**
        * 都不存在
@@ -226,6 +229,7 @@ export class SpotService {
       .addSelect(`${itemArea}.name`, 'name')
       .addSelect(`${itemArea}.full_name`, 'fullName')
       .addSelect(`COALESCE( COUNT( DISTINCT spot.id), 0 )`, 'value')
+      // .addSelect
       .addSelect(`'${itemArea}' AS level`);
 
     /**
@@ -236,6 +240,41 @@ export class SpotService {
     const counts = plainToInstance(SpotCountVO, await qb.getRawMany());
     // console.log(counts);
     return counts;
+  }
+
+  /**
+   * 根据spotDTO决定是否Spot LEFT JOIN Month 并设置 WHERE 条件
+   * @param qb
+   * @param spotDTO
+   * @returns
+   */
+  getQBWhichSpotLeftJoinMonthWithQB(
+    qb: SelectQueryBuilder<Spot>,
+    spotDTO: SpotDTO,
+  ): { qb: SelectQueryBuilder<Spot> } {
+    const { months } = spotDTO;
+    if (arrayNotEmpty(months)) {
+      qb.leftJoin('spot.spotMonths', 'sm');
+      qb.andWhere('sm.month_id IN (:...months)', { months });
+    }
+    return { qb };
+  }
+  /**
+   * 根据spotDTO决定是否Spot LEFT JOIN Feature 并设置 WHERE 条件
+   * @param qb
+   * @param spotDTO
+   * @returns
+   */
+  getQBWhichSpotLeftJoinFeatureWithQB(
+    qb: SelectQueryBuilder<Spot>,
+    spotDTO: SpotDTO,
+  ): { qb: SelectQueryBuilder<Spot> } {
+    const { features } = spotDTO;
+    if (arrayNotEmpty(features)) {
+      qb.leftJoin('spot.spotFeatures', 'sf');
+      qb.andWhere('sf.feature_id IN (:...features)', { features });
+    }
+    return { qb };
   }
 
   /**
@@ -265,20 +304,23 @@ export class SpotService {
     if (country) {
       area = 'country';
       itemArea = 'province';
-      qb.leftJoin(Country, 'country', `country.id = '${country}'`);
-      qb.leftJoin(Province, 'province', 'province.id = spot.province_id');
+      qb.leftJoin(Country, 'country', `country.id = spot.country_id`)
+        .leftJoin(Province, 'province', 'province.id = spot.province_id')
+        .andWhere(`country.id = '${country}'`);
     }
     if (province) {
       area = 'province';
       itemArea = 'city';
-      qb.leftJoin(Province, 'province', `province.id = '${province}'`);
-      qb.leftJoin(City, 'city', 'city.id = spot.city_id');
+      qb.leftJoin(Province, 'province', `province.id = spot.province_id`)
+        .leftJoin(City, 'city', 'city.id = spot.city_id')
+        .andWhere(`province.id = '${province}'`);
     }
     if (city) {
       area = 'city';
       itemArea = 'district';
-      qb.leftJoin(City, 'city', `city.id = '${city}'`);
-      qb.leftJoin(District, 'district', 'district.id = spot.district_id');
+      qb.leftJoin(City, 'city', `city.id = spot.city_id`)
+        .leftJoin(District, 'district', 'district.id = spot.district_id')
+        .andWhere(`city.id = '${city}'`);
     }
     if (!(country || province || city)) {
       /**
@@ -294,16 +336,10 @@ export class SpotService {
 
     /**
      * 月份和特色，非空则加入条件
+     * @deprecated
+     * @new 请看 getQBWhichSpotLeftJoinMonthWithQB | getQBWhichSpotLeftJoinFeatureWithQB
      */
     const { features, months } = spotDTO;
-    if (arrayNotEmpty(features)) {
-      qb.leftJoin('spot.spotFeatures', 'sf');
-      qb.andWhere('sf.feature_id IN (:...features)', { features });
-    }
-    if (arrayNotEmpty(months)) {
-      qb.leftJoin('spot.spotMonths', 'sm');
-      qb.andWhere('sm.month_id IN (:...months)', { months });
-    }
 
     return { qb, area, itemArea };
   }
