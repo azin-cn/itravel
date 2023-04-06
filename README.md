@@ -451,7 +451,7 @@ qb.andWhere('country.name = "中国"');
 - 检查 getRawOne 是否为实体的数据类型，如果不是，则手动进行转换
 - 如果是，则判断 repository 的 queryBuilder 是否为指定的 entity，此种情况的 querybuilder 一般为 any
 
-## 根据月份、特色的权重进行排行
+## 根据月份、特色、区域的权重进行排行，难点
 
 ```sql
 select DISTINCT c.name,d.name,s.id,s.name,
@@ -473,25 +473,28 @@ ORDER BY weight desc
 主要是利用子查询的功能，将 spot-month，spot-feature、area 的权重相加进行排序
 
 ```sql
-select
-		spot.id, spot.name,
-		sm.smw, sf.sfw,
+select 
+		spot.id, spot.name, 
+		sm.smw, sf.sfw, 
+    -- ${itemArea}.weight
 		province.weight `pw`, (sm.smw + sf.sfw + province.weight) weight,
 		province.name `pname`
-from spot
+from spot 
 
 left join (
 		select spot_id, sum(weight) as smw from spot_month
+				where month_id in ("0c4c32c8-5c46-457a-bb54-1bd067b635c5")
 				group by spot_id
 		) `sm`
 		on sm.spot_id = spot.id
 
 left join (
 		select spot_id, sum(weight) as sfw from spot_feature
+				where feature_id in ("0c4326bb-ce1c-4cef-b9fb-bad48288f768")
 	      group by spot_id
 		) `sf`
 		on sf.spot_id = spot.id
-
+		
 left join country on country.id = spot.country_id -- area
 left join province on province.id = spot.province_id -- itemArea
 where country.name = '中国' AND province.`name` = '广东'
