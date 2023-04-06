@@ -1,5 +1,6 @@
 import { BadRequestException } from '@nestjs/common';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 import {
   IsArray,
   IsOptional,
@@ -61,27 +62,73 @@ export class SpotBaseDTO {
   @IsUUID()
   district: string;
 
-  @ApiPropertyOptional({ description: '包含月份' })
+  @ApiPropertyOptional({ description: '包含的月份' })
   @IsOptional()
-  @Validate((value) => {
-    if (value instanceof Array) {
-      value.forEach((item) => {
-        if (!isUUID(item))
+  @Transform(({ value }) => {
+    /**
+     * value string | undefined | null
+     */
+    if (value === undefined || value === null) {
+      /**
+       * 未传值
+       */
+      return null;
+    } else if (value === '') {
+      /**
+       * 为空字符串但是返回需要空字符串数组
+       */
+      return [''];
+    } else if (typeof value === 'string') {
+      /**
+       * 1,2,3,4 类型
+       */
+      const values = value
+        .toString()
+        .split(',')
+        .map((item) => {
+          item = item.trim();
+          if (isUUID(item)) return item;
           throw new BadRequestException('months 元素必须是 UUID');
-      });
-    } else throw new BadRequestException('months 参数必须是 Array');
+        });
+
+      return values;
+    }
+    throw new BadRequestException('months 未知数据类型');
   })
   months: string[];
 
-  @ApiPropertyOptional({ description: '包含特色' })
+  @ApiPropertyOptional({ description: '包含的特色' })
   @IsOptional()
-  @Validate((value) => {
-    if (value instanceof Array) {
-      value.forEach((item) => {
-        if (!isUUID(item))
+  @Transform(({ value }) => {
+    /**
+     * value string | undefined | null
+     */
+    if (value === undefined || value === null) {
+      /**
+       * 未传值
+       */
+      return null;
+    } else if (value === '') {
+      /**
+       * 为空字符串但是返回需要空字符串数组
+       */
+      return [''];
+    } else if (typeof value === 'string') {
+      /**
+       * 1,2,3,4 类型
+       */
+      const values = value
+        .toString()
+        .split(',')
+        .map((item) => {
+          item = item.trim();
+          if (isUUID(item)) return item;
           throw new BadRequestException('features 元素必须是 UUID');
-      });
-    } else throw new BadRequestException('features 参数必须是 Array');
+        });
+
+      return values;
+    }
+    throw new BadRequestException('features 未知数据类型');
   })
   features: string[];
 }
