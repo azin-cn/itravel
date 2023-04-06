@@ -15,9 +15,9 @@ import { Country } from 'src/entities/country.entity';
 import { Province } from 'src/entities/province.entity';
 import { City } from 'src/entities/city.entity';
 import { District } from 'src/entities/district.entity';
-import { arrayNotEmpty, isNotEmptyObject } from 'class-validator';
+import { arrayNotEmpty, isNotEmpty } from 'class-validator';
 import { plainToInstance } from 'class-transformer';
-import { SpotCountVO } from './vo/spot.vo';
+import { SpotBriefVO, SpotCountVO } from './vo/spot.vo';
 
 @Injectable()
 export class SpotService {
@@ -200,11 +200,12 @@ export class SpotService {
      * 月份和特色，非空则加入条件
      */
     const { features, months } = spotDTO;
-    if (arrayNotEmpty(features)) {
+    console.log('==============', features, months);
+    if (isNotEmpty(features)) {
       qb.leftJoin('spot.spotFeatures', 'sf');
       qb.andWhere('sf.feature_id IN (:...features)', { features });
     }
-    if (arrayNotEmpty(months)) {
+    if (isNotEmpty(months)) {
       qb.leftJoin('spot.spotMonths', 'sm');
       qb.andWhere('sm.month_id IN (:...months)', { months });
     }
@@ -253,7 +254,11 @@ export class SpotService {
     spotDTO: SpotDTO,
   ): { qb: SelectQueryBuilder<Spot> } {
     const { months } = spotDTO;
-    if (arrayNotEmpty(months)) {
+    if (isNotEmpty(months)) {
+      /**
+       * null
+       * [] | [some]
+       */
       qb.leftJoin('spot.spotMonths', 'sm');
       qb.andWhere('sm.month_id IN (:...months)', { months });
     }
@@ -270,7 +275,11 @@ export class SpotService {
     spotDTO: SpotDTO,
   ): { qb: SelectQueryBuilder<Spot> } {
     const { features } = spotDTO;
-    if (arrayNotEmpty(features)) {
+    if (isNotEmpty(features)) {
+      /**
+       * null
+       * [] | [some]
+       */
       qb.leftJoin('spot.spotFeatures', 'sf');
       qb.andWhere('sf.feature_id IN (:...features)', { features });
     }
@@ -287,8 +296,8 @@ export class SpotService {
    */
   getQBWhichSpotLeftJoinRegion(spotDTO: SpotDTO): {
     qb: SelectQueryBuilder<Spot>;
-    area: string;
-    itemArea: string;
+    area: 'country' | 'province' | 'city';
+    itemArea: 'country' | 'province' | 'city' | 'district';
   } {
     const qb = this.spotRepository.createQueryBuilder('spot').where('1=1');
 
@@ -299,7 +308,8 @@ export class SpotService {
      * 如果区域关系不正确，如广东梅州被改成山东梅州，则查不出数据
      */
     const { country, province, city } = spotDTO;
-    let area: string, itemArea: string;
+    let area: 'country' | 'province' | 'city',
+      itemArea: 'country' | 'province' | 'city' | 'district';
 
     if (country) {
       area = 'country';
@@ -336,7 +346,7 @@ export class SpotService {
 
     /**
      * 月份和特色，非空则加入条件
-     * @deprecated
+     * @deprecated 已拆分
      * @new 请看 getQBWhichSpotLeftJoinMonthWithQB | getQBWhichSpotLeftJoinFeatureWithQB
      */
     const { features, months } = spotDTO;
@@ -375,9 +385,13 @@ export class SpotService {
 
   /**
    * 根据条件获取景点实体数组
+   * 使用Spot Left Join region
    * @param spotDTO
    */
-  async findSpotsByConditions(spotDTO: SpotDTO): Promise<Spot[]> {
+  async findSpotsByConditions(
+    spotDTO: SpotDTO,
+    limit = 10,
+  ): Promise<SpotBriefVO[]> {
     /**
      * 需要使用的是 spot left join other 形式
      */
@@ -397,33 +411,52 @@ export class SpotService {
 
     /**
      * 判断 months 和 features 决定是否join表
-     * 在 getQBWhichSpotLeftJoinRegion 中只有 months 和 features 不为空才会 join
+     * getQBWhichSpotLeftJoinFeatureWithQB 手动控制 join feature
+     * getQBWhichSpotLeftJoinMonthWithQB 手动控制 join month
+     * @description 在 getQBWhichSpotLeftJoinRegion 中已废弃组合 join feature 和 join month
+     * 相关排序sql请看 ./sql
      */
+
     const { months, features } = spotDTO;
-    if (!arrayNotEmpty(months)) {
-      /**
-       * 为空 join 表
-       */
-      qb.leftJoin('spot.spotMonths', 'sm');
-    }
-    if (!arrayNotEmpty(features)) {
-      /**
-       * 为空 join 表
-       */
-      qb.leftJoin('spot.spotFeatures', 'sf');
-    }
 
-    qb
-      // .groupBy('spot.id')
-      // .addGroupBy('sf.weight')
-      // .addGroupBy('sm.weight')
-      // .addGroupBy(`${area}.weight`)
-      .limit(10);
+    qb.leftJoin(
+      (sub: SelectQueryBuilder<SpotMonth>) => {
+        sub
+          .select('spot_id, sum(weight) as weight')
+          .from(SpotMonth, 'spot_month')
+          .where('1=1')
+          .groupBy('spot_id');
+        if (arrayNotEmpty(months)) {
+          sub.andWhere('sm.month_id IN (:...months)', { months });
+        }
+        return sub;
+      },
+      'sm',
+      'sm.spot_id = spot.id',
+    );
+    qb.leftJoin(
+      (sub: SelectQueryBuilder<SpotFeature>) => {
+        sub
+          .select('spot_id, sum(weight) as weight')
+          .from(SpotFeature, 'spot_feature')
+          .where('1=1')
+          .groupBy('spot_id');
+        if (arrayNotEmpty(features)) {
+          sub.andWhere('sf.feature_id IN (:...features)', { features });
+        }
+        return sub;
+      },
+      'sf',
+      'sf.spot_id = spot.id',
+    );
 
-    const spots = await qb.getMany();
-    const spotsRaw = await qb.getRawMany();
-    console.log(spots[0]);
-    console.log(spotsRaw[0]);
+    qb.select('spot.id, spot.name, spot.description, spot.thumb_url thumbUrl')
+      .addSelect(`(sm.weight + sf.weight + ${itemArea}.weight)`, 'weight')
+      .addSelect(`${itemArea}.name`, 'region')
+      .orderBy('weight', 'DESC')
+      .addOrderBy('spot.name', 'ASC')
+      .limit(limit);
+    const spots = plainToInstance(SpotBriefVO, await qb.getRawMany());
     return spots;
   }
 }
