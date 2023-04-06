@@ -343,4 +343,20 @@ export class AppService {
       console.log(r.join());
     });
   }
+
+  /**
+   * 加长景区的简介
+   */
+  async updateSpotDescription() {
+    const spots = await this.spotRepository.find();
+    let counter = 1;
+    spots.forEach(async (spot) => {
+      let description = spot.description;
+      if (description.length < 120) {
+        description = description + '。' + description;
+      }
+      await this.spotRepository.update(spot.id, { description });
+      console.log('当前计数：', counter++, '总计数：', spots.length);
+    });
+  }
 }

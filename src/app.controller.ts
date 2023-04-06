@@ -22,4 +22,10 @@ export class AppController {
     await this.appService.createSpotThumbUrl();
     return 'success';
   }
+
+  @Post('updateSpotDescription')
+  async updateSpotDescription() {
+    await this.appService.updateSpotDescription();
+    return 'success';
+  }
 }
