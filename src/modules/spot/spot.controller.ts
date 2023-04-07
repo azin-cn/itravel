@@ -64,6 +64,16 @@ export class SpotController {
     return ResultVO.success(spot);
   }
 
+  @ApiOperation({ summary: '随机获取推荐景点' })
+  // @ApiQuery({ type: SpotDTO })
+  @Get('recom_spots/rand')
+  async getRandRecommentSpots(
+    @Query(TransformSpotDTOPipe) spotDTO: SpotDTO,
+  ): Promise<ResultVO> {
+    const spots = await this.spotService.findRandRecommentSpots(spotDTO);
+    return ResultVO.success(spots);
+  }
+
   /**
    * 新增景点
    */

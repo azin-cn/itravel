@@ -262,6 +262,7 @@ export class SpotService {
     }
     return { qb };
   }
+
   /**
    * 根据spotDTO决定是否Spot LEFT JOIN Feature 并设置 WHERE 条件
    * @param qb
@@ -451,9 +452,33 @@ export class SpotService {
     qb.select('spot.id, spot.name, spot.description, spot.thumb_url thumbUrl')
       .addSelect(`(sm.weight + sf.weight + ${itemArea}.weight)`, 'weight')
       .addSelect(`${itemArea}.name`, 'region')
+      .addSelect(`${itemArea}.id`, 'regionId')
       .addSelect(`'${itemArea}'`, 'level')
       .orderBy('weight', 'DESC')
       .addOrderBy('spot.name', 'ASC')
+      .limit(limit);
+    const spots = plainToInstance(SpotBriefVO, await qb.getRawMany());
+    return spots;
+  }
+
+  /**
+   * 获取随机推荐
+   * @param spotDTO
+   * @param limit
+   * @returns
+   */
+  async findRandRecommentSpots(
+    spotDTO: SpotDTO,
+    limit = 8,
+  ): Promise<SpotBriefVO[]> {
+    const qb = this.spotRepository
+      .createQueryBuilder('spot')
+      .leftJoin(Province, 'province', 'province.id = spot.province_id')
+      .select('spot.id, spot.name, spot.description, spot.thumb_url thumbUrl')
+      .addSelect('province.name', 'region')
+      .addSelect('province.id', 'regionId')
+      .addSelect(`'province' as level`)
+      .orderBy('RAND()')
       .limit(limit);
     const spots = plainToInstance(SpotBriefVO, await qb.getRawMany());
     return spots;
