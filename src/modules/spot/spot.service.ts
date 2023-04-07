@@ -200,12 +200,11 @@ export class SpotService {
      * 月份和特色，非空则加入条件
      */
     const { features, months } = spotDTO;
-    console.log('==============', features, months);
     if (isNotEmpty(features)) {
       qb.leftJoin('spot.spotFeatures', 'sf');
       qb.andWhere('sf.feature_id IN (:...features)', { features });
     }
-    if (isNotEmpty(months)) {
+    if (isNotEmpty(months) && months.length !== 12) {
       qb.leftJoin('spot.spotMonths', 'sm');
       qb.andWhere('sm.month_id IN (:...months)', { months });
     }
@@ -230,7 +229,6 @@ export class SpotService {
       .addSelect(`${itemArea}.name`, 'name')
       .addSelect(`${itemArea}.full_name`, 'fullName')
       .addSelect(`COALESCE( COUNT( DISTINCT spot.id), 0 )`, 'value')
-      // .addSelect
       .addSelect(`'${itemArea}' AS level`);
 
     /**
@@ -390,7 +388,7 @@ export class SpotService {
    */
   async findSpotsByConditions(
     spotDTO: SpotDTO,
-    limit = 10,
+    limit = 7,
   ): Promise<SpotBriefVO[]> {
     /**
      * 需要使用的是 spot left join other 形式
@@ -453,6 +451,7 @@ export class SpotService {
     qb.select('spot.id, spot.name, spot.description, spot.thumb_url thumbUrl')
       .addSelect(`(sm.weight + sf.weight + ${itemArea}.weight)`, 'weight')
       .addSelect(`${itemArea}.name`, 'region')
+      .addSelect(`'${itemArea}'`, 'level')
       .orderBy('weight', 'DESC')
       .addOrderBy('spot.name', 'ASC')
       .limit(limit);

@@ -2,12 +2,10 @@ import { BadRequestException } from '@nestjs/common';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import {
-  IsArray,
   IsOptional,
   IsString,
   IsUUID,
   MinLength,
-  Validate,
   isUUID,
 } from 'class-validator';
 
