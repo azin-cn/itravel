@@ -21,11 +21,22 @@ import { UserDTO } from './dto/user.dto';
 
 @ApiTags('User')
 @Controller('user')
+@UseGuards(AuthGuard('jwt'))
 @UseInterceptors(ClassSerializerInterceptor)
 export class UserController {
   constructor(private userService: UserService) {}
 
-  @ApiOperation({ summary: '获取用户信息' })
+  @ApiOperation({ summary: '获取用户简略信息' })
+  @ApiParam({ name: 'id', type: String })
+  @UseGuards()
+  @Get('brief/:id')
+  async getUserBriefInfo(
+    @Param('id', TransformUUIDPipe) id: string,
+  ): Promise<ResultVO> {
+    return ResultVO.success();
+  }
+
+  @ApiOperation({ summary: '获取用户详情信息' })
   @ApiParam({ name: 'id', type: String })
   @Get(':id')
   async getUserById(
@@ -39,7 +50,6 @@ export class UserController {
   @ApiOperation({ summary: '更新用户信息' })
   @ApiBody({ type: UserDTO })
   @Put()
-  @UseGuards(AuthGuard('jwt'))
   @UsePipes(new TransformUserPipe())
   async putUser(@Body() user: User): Promise<ResultVO> {
     // const { affected } = await this.userService.update(user);
