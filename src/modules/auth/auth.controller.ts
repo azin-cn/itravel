@@ -5,6 +5,7 @@ import {
   Get,
   Post,
   Query,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { AuthTypeDTO, UserAuthDTO } from './dto/auth.dto';
@@ -13,6 +14,7 @@ import { TransformUserAuthPipe } from 'src/shared/pipes/user.pipe';
 import { AuthService } from './auth.service';
 import { ResultVO } from 'src/shared/vo/ResultVO';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -34,7 +36,15 @@ export class AuthController {
   ): Promise<ResultVO> {
     const { type } = query;
     const res = await this.authService.login(userDTO, type);
+    console.log(res);
     return ResultVO.success(res);
+  }
+
+  @ApiOperation({ summary: '用户注销' })
+  @UseGuards(AuthGuard('jwt'))
+  @Post('logout')
+  async userLogout(): Promise<ResultVO> {
+    return ResultVO.success();
   }
 
   @ApiOperation({ summary: '用户注册' })
