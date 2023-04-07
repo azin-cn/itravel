@@ -15,7 +15,7 @@ import { UserService } from '../user/user.service';
 import { AUTH_TYPE } from 'src/shared/constants/auth.constant';
 import { JwtPayload, UserAuthDTO } from './dto/auth.dto';
 import { JwtService } from '@nestjs/jwt';
-import { LoginResponseDTO } from './dto/token.dto';
+import { LoginResponseVO } from './dto/token.dto';
 import { instanceToPlain, plainToClass } from 'class-transformer';
 import { MailerService } from '../mailer/mailer.service';
 import { USER_STATUS } from 'src/shared/constants/user.constant';
@@ -156,7 +156,7 @@ export class AuthService {
    * @param type
    * @returns token
    */
-  async login(u: UserAuthDTO, type: number): Promise<LoginResponseDTO> {
+  async login(u: UserAuthDTO, type: number): Promise<LoginResponseVO> {
     // 经过转换后，必然是具有唯一凭证的 User
     const user = this.transformUserFromAuthDTO(u);
 
@@ -165,10 +165,12 @@ export class AuthService {
        * 第三方登录
        */
       // TODO: 第三方登录逻辑
+      throw new BadRequestException('暂不支持第三方登录');
     } else if (type === AUTH_TYPE.MOBILE) {
       /**
        * 手机验证码登录
        */
+      throw new BadRequestException('暂不支持手机登录');
     } else if (type === AUTH_TYPE.ACCOUNT) {
       /**
        * 账户密码登录
@@ -185,11 +187,11 @@ export class AuthService {
          */
         const isPwdMatch = bcrypt.compareSync(user.password, userRep.password);
         if (!isPwdMatch) throw new BadRequestException('账户或密码错误');
-        const { id, role, status } = userRep;
+        const { id, role, status, avatar } = userRep;
         const token = await this.generateToken(
           instanceToPlain(new JwtPayload(id, role, status)),
         );
-        return new LoginResponseDTO(token, user);
+        return new LoginResponseVO(token, { id, role, avatar });
       }
     }
   }
