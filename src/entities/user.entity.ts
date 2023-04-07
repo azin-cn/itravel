@@ -163,6 +163,7 @@ export class User {
    * 未激活：0
    * 已激活：1
    */
+  @Exclude()
   @Column({ default: 1 })
   status: number;
 
