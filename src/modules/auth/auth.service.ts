@@ -142,7 +142,11 @@ export class AuthService {
     /**
      * 通过 token 将邮件发送给注册用户
      */
-    await this.mailerService.sendEMailForRegisterToken(email, token);
+    try {
+      await this.mailerService.sendEMailForRegisterToken(email, token);
+    } catch (error) {
+      throw new BizException('服务出错，请联系管理员');
+    }
     return user;
   }
 
