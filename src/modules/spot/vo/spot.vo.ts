@@ -60,4 +60,34 @@ export class SpotCountVO {
   value: number;
 }
 
-export class SpotBriefVO extends SpotBaseVO {}
+export class SpotBriefVO extends SpotBaseVO {
+  /**
+   * 区域
+   */
+  @ApiProperty({ description: '区域' })
+  region: string;
+
+  /**
+   * 区域id
+   */
+  @ApiProperty({ description: '区域id' })
+  regionId: string;
+
+  /**
+   * 区域等级
+   */
+  @ApiProperty({ description: '区域等级' })
+  level: 'country' | 'province' | 'city' | 'district';
+
+  /**
+   * 创建时间
+   */
+  @ApiProperty({ description: '创建时间' })
+  createdTime: string;
+
+  /**
+   * 更新时间
+   */
+  @ApiProperty({ description: '更新时间' })
+  updatedTime: string;
+}
