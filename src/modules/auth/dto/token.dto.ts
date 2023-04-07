@@ -1,6 +1,6 @@
 import { User } from 'src/entities/user.entity';
 
-export class LoginResponseDTO {
+export class LoginResponseVO {
   constructor(private token?: string, private user?: Partial<User>) {}
 
   getToken() {
