@@ -87,6 +87,22 @@ export class AuthService {
   }
 
   /**
+   * 数据简单脱敏
+   * @param user
+   * @returns
+   */
+  masksUser(user: User): User {
+    user.phone = null;
+    user.email = null;
+    user.password = null;
+    user.role = null;
+    user.status = null;
+    user.avatar = null;
+    user.scenicArea = null;
+    return user;
+  }
+
+  /**
    * 注册用户
    * @param u
    * @param type
@@ -95,8 +111,13 @@ export class AuthService {
   async register(u: UserAuthDTO, type: number): Promise<User> {
     const user = this.transformUserFromAuthDTO(u);
     const userRep = await this.userService.findUserByUniqueParam(user);
+
     if (userRep) {
-      throw new BadRequestException('用户已存在');
+      /**
+       * 已存在用户
+       */
+      if (userRep.status === USER_STATUS.ACTIVE)
+        throw new BadRequestException('用户名/手机号/邮箱已存在');
     }
 
     if (type === AUTH_TYPE.THIRD) {
@@ -122,7 +143,7 @@ export class AuthService {
    * @param user
    * @returns
    */
-  async registerWithEmail(user: User) {
+  async registerWithEmail(user: User): Promise<User> {
     const { username, password, email } = user;
     Assert.assertNotNil(username);
     Assert.assertNotNil(password);
@@ -135,9 +156,8 @@ export class AuthService {
      */
     user.status = 0;
     const userRep = await this.userRepository.save(user);
-    const token = await this.generateToken(
-      new JwtPayload(userRep.id, userRep.role, userRep.status),
-    );
+    const { id, role, status } = userRep;
+    const token = await this.generateToken(new JwtPayload(id, role, status));
 
     /**
      * 通过 token 将邮件发送给注册用户
@@ -147,7 +167,7 @@ export class AuthService {
     } catch (error) {
       throw new BizException('服务出错，请联系管理员');
     }
-    return user;
+    return this.masksUser(userRep);
   }
 
   /**

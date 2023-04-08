@@ -54,7 +54,7 @@ export class AuthController {
     @Query(TrasnformAuthPipe) query: AuthTypeDTO,
   ): Promise<ResultVO> {
     const { type } = query;
-    const { id } = await this.authService.register(userDTO, type);
-    return ResultVO.success({ id });
+    const user = await this.authService.register(userDTO, type);
+    return ResultVO.success(user);
   }
 }
