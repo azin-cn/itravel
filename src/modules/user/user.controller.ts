@@ -31,7 +31,7 @@ export class UserController {
   async getUserBriefInfo(
     @Param('id', TransformUUIDPipe) id: string,
   ): Promise<ResultVO> {
-    return ResultVO.success();
+    return ResultVO.success(id);
   }
 
   @ApiOperation({ summary: '获取用户详情信息' })
