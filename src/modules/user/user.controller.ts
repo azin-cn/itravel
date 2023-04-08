@@ -21,14 +21,12 @@ import { UserDTO } from './dto/user.dto';
 
 @ApiTags('User')
 @Controller('user')
-@UseGuards(AuthGuard('jwt'))
 @UseInterceptors(ClassSerializerInterceptor)
 export class UserController {
   constructor(private userService: UserService) {}
 
   @ApiOperation({ summary: '获取用户简略信息' })
   @ApiParam({ name: 'id', type: String })
-  @UseGuards()
   @Get('brief/:id')
   async getUserBriefInfo(
     @Param('id', TransformUUIDPipe) id: string,
@@ -38,6 +36,7 @@ export class UserController {
 
   @ApiOperation({ summary: '获取用户详情信息' })
   @ApiParam({ name: 'id', type: String })
+  @UseGuards(AuthGuard('jwt'))
   @Get(':id')
   async getUserById(
     @Param('id', TransformUUIDPipe) id: string,
@@ -49,6 +48,7 @@ export class UserController {
 
   @ApiOperation({ summary: '更新用户信息' })
   @ApiBody({ type: UserDTO })
+  @UseGuards(AuthGuard('jwt'))
   @Put()
   @UsePipes(new TransformUserPipe())
   async putUser(@Body() user: User): Promise<ResultVO> {
@@ -61,6 +61,7 @@ export class UserController {
 
   @ApiOperation({ summary: '删除用户信息' })
   @ApiParam({ name: 'id' })
+  @UseGuards(AuthGuard('jwt'))
   @Delete(':id')
   async deleteUser(
     @Param('id', TransformUUIDPipe) id: string,
