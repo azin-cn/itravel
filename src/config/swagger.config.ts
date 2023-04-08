@@ -5,7 +5,7 @@ export const getSwaggerConf = () =>
   new DocumentBuilder()
     .setTitle('ITravel Document')
     .setDescription('ITravel API description')
-    .addBearerAuth()
+    .addBearerAuth({ type: 'http' }, 'Authorization')
     .setVersion('1.0.0')
     .build();
 
