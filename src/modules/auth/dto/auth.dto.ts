@@ -29,7 +29,7 @@ export class UserAuthDTO extends UserBaseDTO {
    * 账户如手机、邮箱、用户名
    */
   @ApiProperty({ description: '账户如手机、邮箱、用户名' })
-  @IsNotEmpty({ message: '请输入账户名如手机、邮箱、用户名' })
+  @IsOptional()
   @Validate(IsAccount)
   account: string;
 
