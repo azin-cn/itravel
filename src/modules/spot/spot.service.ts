@@ -47,14 +47,33 @@ export class SpotService {
    * @returns
    */
   async findSpotById(id: string): Promise<Spot> {
-    const qb = this.spotRepository.createQueryBuilder('spot');
+    const qb = this.spotRepository
+      .createQueryBuilder('spot')
+      .where('spot.isDeleted = :isDeleted', { isDeleted: false });
 
-    qb.where('spot.id = :id', { id });
+    /**
+     * 将province和city取出作为tag标识
+     */
+    qb.andWhere('spot.id = :id', { id })
+      .leftJoinAndSelect(
+        'spot.province',
+        'province',
+        'province.id = spot.province_id',
+      )
+      .leftJoinAndSelect('spot.city', 'city', 'city.id = spot.city_id');
+    const spot = await qb.getOne();
 
-    // const spot = await this.spotRepository.findOneBy({ id });
-    const spot = await qb.getOneOrFail();
+    Assert.isNotEmptySpot(spot);
+    return spot;
+  }
 
-    console.log(spot);
+  /**
+   * 查询指定景点信息
+   * @param id
+   * @returns
+   */
+  async findSpotByIdAdmin(id: string): Promise<Spot> {
+    const spot = await this.spotRepository.findOneBy({ id });
     Assert.isNotEmptySpot(spot);
     return spot;
   }
