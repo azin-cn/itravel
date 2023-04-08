@@ -31,7 +31,7 @@ export class MailerService {
     const { hostname } = getCommonConf();
 
     try {
-      this.nestMailerService.sendMail({
+      await this.nestMailerService.sendMail({
         to, // 要发送的目标邮箱
         // from: 'noreply@nestjs.com', // 自定义发送者的邮箱，默认在mudule已配置了，可以不配置
         subject: 'ITravel 注册激活 ✔', // 标题
@@ -43,6 +43,7 @@ export class MailerService {
           : 'welcome', // 发送的文字
       });
     } catch (error) {
+      console.log(error);
       throw new BizException('邮件服务发生故障');
     }
   }
