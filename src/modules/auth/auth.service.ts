@@ -118,6 +118,18 @@ export class AuthService {
        */
       if (userRep.status === USER_STATUS.ACTIVE)
         throw new BadRequestException('用户名/手机号/邮箱已存在');
+
+      /**
+       * 用户存在但未激活，通过邮箱激活
+       * 检查参数邮箱是否存在：未激活需要邮箱参数
+       * 检查数据库邮箱是否存在且与参数邮箱匹配：未激活且邮箱不一致则为某一用户已使用此用户名
+       */
+      Assert.assertNotNil(user.email, '邮箱不存在');
+      Assert.isEqual(user.email, userRep.email, '用户名已被注册');
+      const { id, role, status } = userRep;
+      const token = await this.generateToken(new JwtPayload(id, role, status));
+      await this.mailerService.sendEMailForRegisterToken(userRep.email, token);
+      return this.masksUser(userRep);
     }
 
     if (type === AUTH_TYPE.THIRD) {
