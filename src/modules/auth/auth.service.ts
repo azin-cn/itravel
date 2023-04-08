@@ -177,6 +177,10 @@ export class AuthService {
     try {
       await this.mailerService.sendEMailForRegisterToken(email, token);
     } catch (error) {
+      /**
+       * 邮件发送异常，删除数据库数据
+       */
+      await this.userRepository.delete(userRep.id);
       throw new BizException('服务出错，请联系管理员');
     }
     return this.masksUser(userRep);
