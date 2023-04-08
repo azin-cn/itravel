@@ -473,13 +473,13 @@ ORDER BY weight desc
 主要是利用子查询的功能，将 spot-month，spot-feature、area 的权重相加进行排序
 
 ```sql
-select 
-		spot.id, spot.name, 
-		sm.smw, sf.sfw, 
+select
+		spot.id, spot.name,
+		sm.smw, sf.sfw,
     -- ${itemArea}.weight
 		province.weight `pw`, (sm.smw + sf.sfw + province.weight) weight,
 		province.name `pname`
-from spot 
+from spot
 
 left join (
 		select spot_id, sum(weight) as smw from spot_month
@@ -494,9 +494,13 @@ left join (
 	      group by spot_id
 		) `sf`
 		on sf.spot_id = spot.id
-		
+
 left join country on country.id = spot.country_id -- area
 left join province on province.id = spot.province_id -- itemArea
 where country.name = '中国' AND province.`name` = '广东'
 order by weight desc
 ```
+
+## 开发的逻辑流程
+
+不能控制的错误需要进行 try catch 捕获，而可以把控的，即有对应的过滤器则可以直接调用相应的函数，这样可以大大减少 try catch 的结构
