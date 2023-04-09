@@ -130,12 +130,6 @@ export class SpotFMVO extends SpotBaseVO {
     const instance = new SpotFMVO();
 
     const metadata = SpotFMVO.getMetadata(instance);
-    console.log(
-      metadata,
-      Object.getOwnPropertyNames(SpotFMVO),
-      Object.keys(Object.getOwnPropertyNames(SpotFMVO)),
-      instance,
-    );
 
     dataset?.forEach((item) => {
       /**
