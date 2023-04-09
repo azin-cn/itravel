@@ -13,7 +13,7 @@ export class ArticleBaseDTO {
   /**
    * 文章title
    */
-  @ApiPropertyOptional({ name: 'username', description: '用户名称' })
+  @ApiPropertyOptional({ name: 'title', description: '文章标题' })
   @IsNotEmpty({ message: '文章标题不为空' })
   @IsString({ message: '文章标题不是字符串' })
   @Length(6, 30, {
