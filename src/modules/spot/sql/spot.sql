@@ -131,4 +131,24 @@ FROM `spot` `spot`
     LEFT JOIN `spot_feature` `sf` ON `sf`.`spot_id` = `spot`.`id` AND (`sf`.`spot_id` = `spot`.`id`)
 WHERE
     `spot`.`is_deleted` = ?
-    AND `spot`.`id` = ? -- PARAMETERS: [false,"074bf0bf-5f77-4440-b54e-b0d4386ed54a"]
+    AND `spot`.`id` = ?;
+
+-- PARAMETERS: [false,"074bf0bf-5f77-4440-b54e-b0d4386ed54a"]
+
+-- 搜索指定景点适合的月份和特色
+
+select
+    spot.id,
+    spot.name,
+    `month`.id,
+    `month`.name, 
+    feature.id,
+    feature.name
+from spot
+    left join spot_month `sm` on sm.spot_id = spot.id 
+    left join spot_feature `sf` on sf.spot_id = spot.id
+    left join `month` on `month`.id = sm.month_id 
+    left join feature on feature.id = sf.feature_id
+where spot.id = '074bf0bf-5f77-4440-b54e-b0d4386ed54a';
+
+select feature_id from spot_feature where spot_feature.spot_id = '074bf0bf-5f77-4440-b54e-b0d4386ed54a';
