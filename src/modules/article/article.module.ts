@@ -5,9 +5,15 @@ import { ArticleController } from './article.controller';
 import { ArticleService } from './article.service';
 import { UserModule } from '../user/user.module';
 import { CommentModule } from '../comment/comment.module';
+import { SpotModule } from '../spot/spot.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Article]), UserModule, CommentModule],
+  imports: [
+    TypeOrmModule.forFeature([Article]),
+    UserModule,
+    CommentModule,
+    SpotModule,
+  ],
   controllers: [ArticleController],
   providers: [ArticleService],
   exports: [TypeOrmModule.forFeature([Article]), ArticleService],

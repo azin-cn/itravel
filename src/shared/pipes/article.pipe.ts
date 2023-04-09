@@ -10,10 +10,14 @@ import { Validator } from './utils';
 import { Article } from 'src/entities/article.entity';
 import { UserService } from 'src/modules/user/user.service';
 import { Assert } from 'src/utils/Assert';
+import { SpotService } from 'src/modules/spot/spot.service';
 
 @Injectable()
 export class TransformArticlePipe implements PipeTransform {
-  constructor(private userService: UserService) {}
+  constructor(
+    private userService: UserService,
+    private spotService: SpotService,
+  ) {}
   async transform(articleDTO: ArticleDTO, metadata: ArgumentMetadata) {
     /**
      * 转换数据类型
@@ -33,6 +37,11 @@ export class TransformArticlePipe implements PipeTransform {
     const author = await this.userService.findUserById(articleDTO.author);
     Assert.isNotEmptyUser(author, '用户不存在或已注销');
     article.author = author;
+
+    if (articleDTO.spot) {
+      const spot = await this.spotService.findSpotById(articleDTO.spot);
+      article.spot = spot;
+    }
 
     return article;
   }
