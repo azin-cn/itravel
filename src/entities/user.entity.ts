@@ -42,7 +42,7 @@ export class User {
    * 3：超级管理员
    */
   @Column({
-    type: 'number',
+    type: 'tinyint',
     default: USER_ROLES.VISITOR,
   })
   role: number;

@@ -115,7 +115,7 @@ export class Article {
    * ARTICLE.PUBLISH 1 已发布
    */
   @Column({
-    type: 'number',
+    type: 'tinyint',
     default: ARTICLE_STATUS.DRAFT,
   })
   status: number;
