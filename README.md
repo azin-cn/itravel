@@ -504,3 +504,8 @@ order by weight desc
 ## 开发的逻辑流程
 
 不能控制的错误需要进行 try catch 捕获，而可以把控的，即有对应的过滤器则可以直接调用相应的函数，这样可以大大减少 try catch 的结构
+
+## 记录一次查 bug 过程
+
+结果：TypeScript 中使用 Object.keys 方法对某一个 class 实例获取属性 key，这个实例的属性一定需要初始化，否则返回空数组！
+[stackoverflow - 54559745](https://stackoverflow.com/questions/54559745/object-keysmyobject-does-not-return-properties-of-class-in-typescript)
