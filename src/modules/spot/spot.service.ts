@@ -17,7 +17,7 @@ import { City } from 'src/entities/city.entity';
 import { District } from 'src/entities/district.entity';
 import { arrayNotEmpty, isNotEmpty } from 'class-validator';
 import { plainToInstance } from 'class-transformer';
-import { SpotBriefVO, SpotCountVO } from './vo/spot.vo';
+import { SpotBriefVO, SpotCountVO, SpotFMVO } from './vo/spot.vo';
 
 @Injectable()
 export class SpotService {
@@ -42,6 +42,19 @@ export class SpotService {
   ) {}
 
   /**
+   * 获取 qb
+   * @param id
+   * @returns
+   */
+  getSpotQBById(id: string): { qb: SelectQueryBuilder<Spot> } {
+    const qb = this.spotRepository
+      .createQueryBuilder('spot')
+      .where('spot.isDeleted = :isDeleted', { isDeleted: false })
+      .andWhere('spot.id = :id', { id });
+    return { qb };
+  }
+
+  /**
    * 查询指定景点信息
    * @param id
    * @returns
@@ -49,20 +62,9 @@ export class SpotService {
   async findSpotById(id: string): Promise<Spot> {
     const qb = this.spotRepository
       .createQueryBuilder('spot')
-      .where('spot.isDeleted = :isDeleted', { isDeleted: false });
-
-    /**
-     * 将province和city取出作为tag标识
-     */
-    qb.andWhere('spot.id = :id', { id })
-      .leftJoinAndSelect(
-        'spot.province',
-        'province',
-        'province.id = spot.province_id',
-      )
-      .leftJoinAndSelect('spot.city', 'city', 'city.id = spot.city_id');
+      .where('spot.isDeleted = :isDeleted', { isDeleted: false })
+      .andWhere('spot.id = :id', { id });
     const spot = await qb.getOne();
-
     Assert.isNotEmptySpot(spot);
     return spot;
   }
@@ -74,6 +76,23 @@ export class SpotService {
    */
   async findSpotByIdAdmin(id: string): Promise<Spot> {
     const spot = await this.spotRepository.findOneBy({ id });
+    Assert.isNotEmptySpot(spot);
+    return spot;
+  }
+
+  async findSpotInfoById(id: string): Promise<Spot> {
+    const { qb } = this.getSpotQBById(id);
+    /**
+     * 将province和city取出作为tag标识
+     */
+    qb.andWhere('spot.id = :id', { id })
+      .leftJoinAndSelect(
+        'spot.province',
+        'province',
+        'province.id = spot.province_id',
+      )
+      .leftJoinAndSelect('spot.city', 'city', 'city.id = spot.city_id');
+    const spot = await qb.getOne();
     Assert.isNotEmptySpot(spot);
     return spot;
   }
@@ -501,5 +520,28 @@ export class SpotService {
       .limit(limit);
     const spots = plainToInstance(SpotBriefVO, await qb.getRawMany());
     return spots;
+  }
+
+  /**
+   * 获取指定的 spot 的feature和month
+   */
+  async findSpotFeatureAndMonthById(id: string): Promise<SpotFMVO> {
+    const { qb } = this.getSpotQBById(id);
+    qb.leftJoin(SpotMonth, 'sm', 'sm.spot_id = spot.id')
+      .leftJoin(SpotFeature, 'sf', 'sf.spot_id = spot.id')
+      .leftJoin(Month, 'month', 'month.id = sm.month_id')
+      .leftJoin(Feature, 'feature', 'feature.id = sf.feature_id');
+
+    qb.select('spot.id, spot.name, spot.description, spot.thumb_url thumbUrl')
+      .addSelect('spot.created_time', 'createdTime')
+      .addSelect('spot.updated_time', 'updatedTime')
+      .addSelect('month.id', 'months_id')
+      .addSelect('month.name', 'months_name')
+      .addSelect('feature.id', 'features_id')
+      .addSelect('feature.name', 'features_name');
+
+    const spot = SpotFMVO.mapResultSetToVO(await qb.getRawMany());
+
+    return spot;
   }
 }
