@@ -41,3 +41,33 @@ GROUP BY `article`.`id`;
 -- PARAMETERS: [1,"601fa379-8b7a-489c-8d67-def1fbe71f9b"]
 
 select * from article where status = '0' ;
+
+SELECT COUNT(*) AS `value`
+FROM (
+        SELECT
+            article.*,
+            `author`.`id` article_author_id,
+            `author`.`username` article_author_username,
+            `author`.`description` article_author_description,
+            `author`.`title_id` article_author_title,
+            COALESCE(COUNT(`comment`.`id`), 0) AS `article_comment_count`
+        FROM
+            `article` `article`
+            LEFT JOIN `spot` `spot` ON `spot`.`id` = `article`.`spot_id`
+            AND (
+                `spot`.`id` = `article`.`spot_id`
+            )
+            LEFT JOIN `user` `author` ON `author`.`id` = `article`.`author_id`
+            AND (
+                `author`.`id` = `article`.`author_id`
+            )
+            LEFT JOIN `comment` `comment` ON `comment`.`article_id` = `article`.`id`
+        WHERE
+            1 = 1
+            AND `article`.`status` = 1
+            AND `spot`.`id` = "601fa379-8b7a-489c-8d67-def1fbe71f9b"
+        GROUP BY
+            `article`.`id`
+    ) `uniqueTableAlias`;
+
+-- PARAMETERS: [1,"601fa379-8b7a-489c-8d67-def1fbe71f9b"]
