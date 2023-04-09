@@ -41,7 +41,7 @@ export class User {
    * 2：管理员
    * 3：超级管理员
    */
-  @Column('simple-enum', { enum: USER_ROLES.getAll() })
+  @Column('enum', { enum: USER_ROLES.getAll(), default: USER_ROLES.VISITOR })
   role: number;
 
   /**

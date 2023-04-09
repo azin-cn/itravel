@@ -114,7 +114,7 @@ export class Article {
    * ARTICLE.DRAFT 0 未发布、草稿箱
    * ARTICLE.PUBLISH 1 已发布
    */
-  @Column('simple-enum', {
+  @Column('enum', {
     enum: ARTICLE_STATUS.getAll(),
     default: ARTICLE_STATUS.DRAFT,
   })
