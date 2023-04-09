@@ -80,7 +80,7 @@ export class SpotService {
     return spot;
   }
 
-  async findSpotInfoById(id: string): Promise<Spot> {
+  async findSpotBriefInfoWithRegionById(id: string): Promise<Spot> {
     const { qb } = this.getSpotQBById(id);
     /**
      * 将province和city取出作为tag标识

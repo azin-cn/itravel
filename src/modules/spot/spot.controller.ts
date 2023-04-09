@@ -55,11 +55,13 @@ export class SpotController {
     return ResultVO.success(spots);
   }
 
-  @ApiOperation({ summary: '通过ID获取景点信息' })
+  @ApiOperation({ summary: '获取景点的简略信息(携带地址)' })
   @ApiParam({ name: 'id' })
   @Get(':id')
-  async getSpotById(@Param('id', TransformUUIDPipe) id: string) {
-    const spot = await this.spotService.findSpotInfoById(id);
+  async getSpotBriefInfoWithRegionById(
+    @Param('id', TransformUUIDPipe) id: string,
+  ): Promise<ResultVO> {
+    const spot = await this.spotService.findSpotBriefInfoWithRegionById(id);
     Assert.isNotEmptySpot(spot);
     return ResultVO.success(spot);
   }
@@ -76,7 +78,9 @@ export class SpotController {
 
   @ApiOperation({ summary: '获取指定景点的feature和month' })
   @Get('fm/:id')
-  async getSpotMonthAndFeatures(@Param('id', TransformUUIDPipe) id: string) {
+  async getSpotMonthAndFeatures(
+    @Param('id', TransformUUIDPipe) id: string,
+  ): Promise<ResultVO> {
     const spotFMInfo = await this.spotService.findSpotFeatureAndMonthById(id);
     Assert.assertNotNil(spotFMInfo);
     return ResultVO.success(spotFMInfo);
