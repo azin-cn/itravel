@@ -1,8 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Pagination, paginate } from 'nestjs-typeorm-paginate';
 import { Article } from 'src/entities/article.entity';
 import { Comment } from 'src/entities/comment.entity';
 import { Tag } from 'src/entities/tag.entity';
+import { ARTICLE_STATUS } from 'src/shared/constants/article.constant';
+import { PaginationOptions } from 'src/shared/dto/pagination.dto';
 import { Assert } from 'src/utils/Assert';
 import { DeleteResult, Repository } from 'typeorm';
 
@@ -114,5 +117,32 @@ export class ArticleService {
    */
   async deleteAdmin(id: string): Promise<DeleteResult> {
     return this.articleRepository.delete(id);
+  }
+
+  /**
+   * 获取指定旅游景点相关的文章
+   */
+  async findArticlesBySpotId(
+    id: string,
+    options?: PaginationOptions,
+  ): Promise<Pagination<Article>> {
+    const qb = this.articleRepository
+      .createQueryBuilder('article')
+      .where('1=1 AND article.status= :status', {
+        status: ARTICLE_STATUS.PUBLISH,
+      })
+      /**
+       * spot 实体
+       */
+      .leftJoinAndSelect('article.spot', 'spot', 'spot.id = article.spot_id')
+      .leftJoin('article.comments', 'comment')
+      /**
+       * 子查询获取评论数量，附加到Article实体中的commentCount
+       * 重点：映射数据时，应该将此别名设置为蛇形，并结合typeorm中默认的表名
+       */
+      .addSelect('COALESCE(COUNT(comment.id), 0)', 'article_comment_count')
+      .andWhere('spot.id = :id', { id })
+      .groupBy('article.id');
+    return paginate(qb, options);
   }
 }

@@ -8,18 +8,12 @@ import {
   ParseUUIDPipe,
   Post,
   Put,
+  Query,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { ArticleService } from './article.service';
-import {
-  ApiBody,
-  ApiOperation,
-  ApiParam,
-  ApiProperty,
-  ApiQuery,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import { TransformUUIDPipe } from 'src/shared/pipes/uuid.pipe';
 import { AuthGuard } from '@nestjs/passport';
 import { ResultVO } from 'src/shared/vo/ResultVO';
@@ -30,6 +24,8 @@ import { Author } from 'src/shared/decorators/author.decorator';
 import { AUTHOR_SCENE } from 'src/shared/constants/author.constant';
 import { Assert } from 'src/utils/Assert';
 import { ArticleDTO } from './dto/article.dto';
+import { TransformPaginationPipe } from 'src/shared/pipes/pagination.pipe';
+import { PaginationOptions } from 'src/shared/dto/pagination.dto';
 
 @ApiTags('文章')
 @Controller('article')
@@ -98,5 +94,18 @@ export class ArticleController {
     const { affected } = await this.articleService.delete(id);
     Assert.isNotZero(affected, '文章删除失败');
     return ResultVO.success();
+  }
+
+  @ApiOperation({ summary: '通过spotId获取文章' })
+  @Get('spot/:id')
+  async getArticlesBySpotId(
+    @Param('id', TransformUUIDPipe) id: string,
+    @Query(TransformPaginationPipe) options?: PaginationOptions,
+  ): Promise<ResultVO> {
+    const {
+      items,
+      meta: { totalItems, itemCount, totalPages },
+    } = await this.articleService.findArticlesBySpotId(id, options);
+    return ResultVO.list(items, itemCount);
   }
 }
