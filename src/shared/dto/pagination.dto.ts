@@ -2,6 +2,7 @@ import { BadRequestException } from '@nestjs/common';
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import { IsOptional, Validate } from 'class-validator';
+import { PAGINATION_DEFAULT } from '../constants/pagination.constant';
 
 export class PaginationOptions {
   /**
@@ -9,8 +10,8 @@ export class PaginationOptions {
    */
   @ApiProperty({ description: '页面条数' })
   @IsOptional()
-  @Transform((value) => {
-    if (value === undefined) return 20;
+  @Transform(({ value }) => {
+    if (value === undefined) return PAGINATION_DEFAULT.LIMIT;
     return Number(value);
   })
   @Validate(({ value }) => {
@@ -26,8 +27,8 @@ export class PaginationOptions {
    */
   @ApiProperty({ description: '页码' })
   @IsOptional()
-  @Transform((value) => {
-    if (value === undefined) return 1;
+  @Transform(({ value }) => {
+    if (value === undefined) return PAGINATION_DEFAULT.PAGE;
     return Number(value);
   })
   @Validate(({ value }) => {
