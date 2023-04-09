@@ -30,6 +30,14 @@ export class ArticleBaseDTO {
   author: string; // uuid 为 key
 
   /**
+   * 文章所属景点
+   */
+  @ApiPropertyOptional({ description: '文章所属景点' })
+  @IsOptional()
+  @IsUUID(undefined, { message: '文章作者ID非UUID' })
+  spot: string;
+
+  /**
    * 文章缩略图
    */
   @ApiPropertyOptional({ description: '文章缩略图' })
