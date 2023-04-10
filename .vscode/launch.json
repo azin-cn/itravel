@@ -2,15 +2,19 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "NestJS",
       "type": "node",
+      "name": "Debug NestJS",
       "request": "launch",
-      "runtimeExecutable": "pnpm",
-      "runtimeArgs": ["run-script", "start:debug"],
-      "restart": true,
-      "sourceMaps": true,
-      "skipFiles": ["<node_internals>/**"],
-      "outFiles": ["${workspaceFolder}/dist/**/*.js"]
+      "runtimeArgs": [
+        "--nolazy",
+        "-r",
+        "ts-node/register",
+        "-r",
+        "tsconfig-paths/register"
+      ],
+      "args": ["${workspaceFolder}/src/main.ts"],
+      "cwd": "${workspaceFolder}",
+      "restart": true
     }
   ]
 }
