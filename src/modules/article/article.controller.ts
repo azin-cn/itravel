@@ -13,7 +13,13 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { ArticleService } from './article.service';
-import { ApiBody, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
 import { TransformUUIDPipe } from 'src/shared/pipes/uuid.pipe';
 import { AuthGuard } from '@nestjs/passport';
 import { ResultVO } from 'src/shared/vo/ResultVO';
@@ -107,5 +113,12 @@ export class ArticleController {
       meta: { totalItems, itemCount, totalPages },
     } = await this.articleService.findArticlesBySpotId(id, options);
     return ResultVO.list(items, itemCount);
+  }
+
+  @ApiOperation({ summary: '随机获取文章' })
+  @Get('recom_article/rand')
+  async getRandArticles(): Promise<ResultVO> {
+    const articles = await this.articleService.findRandArticles();
+    return ResultVO.success(articles);
   }
 }

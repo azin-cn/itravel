@@ -176,4 +176,39 @@ export class ArticleService {
 
     return res;
   }
+
+  async findRandArticles(limit = 10): Promise<Article[]> {
+    const qb = this.articleRepository.createQueryBuilder('article');
+
+    qb.leftJoin('article.author', 'author')
+      .leftJoin('article.comments', 'comment')
+      .orderBy('RAND()')
+      .limit(limit)
+      .select([
+        'article.id',
+        'article.title',
+        'article.thumbUrl',
+        'article.summary',
+        'article.content',
+        'article.status',
+        'article.publishTime',
+        'article.createdTime',
+        'article.updatedTime',
+        'article.likeCount',
+        'article.favCount',
+        'article.viewCount',
+        'author.id',
+        'author.username',
+        'author.avatar',
+        'author.description',
+        'author.title',
+      ])
+      .addSelect('COALESCE(COUNT(comment.id), 0)', 'commentCount')
+      .groupBy('article.id');
+    const { entities, raw } = await qb.getRawAndEntities();
+    entities.forEach((article, index) => {
+      article.commentCount = Number(raw[index].commentCount);
+    });
+    return entities;
+  }
 }
