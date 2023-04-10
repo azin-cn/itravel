@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Pagination, paginate } from 'nestjs-typeorm-paginate';
+import { Pagination, paginateRawAndEntities } from 'nestjs-typeorm-paginate';
 import { Article } from 'src/entities/article.entity';
 import { Comment } from 'src/entities/comment.entity';
 import { Tag } from 'src/entities/tag.entity';
@@ -131,18 +131,49 @@ export class ArticleService {
       .where('1=1 AND article.status= :status', {
         status: ARTICLE_STATUS.PUBLISH,
       })
-      /**
-       * spot 实体
-       */
-      .leftJoinAndSelect('article.spot', 'spot', 'spot.id = article.spot_id')
+      .leftJoin('article.spot', 'spot')
+      .leftJoin('article.author', 'author')
       .leftJoin('article.comments', 'comment')
       /**
        * 子查询获取评论数量，附加到Article实体中的commentCount
        * 重点：映射数据时，应该将此别名设置为蛇形，并结合typeorm中默认的表名
        */
-      .addSelect('COALESCE(COUNT(comment.id), 0)', 'article_comment_count')
+      .select([
+        'article.id',
+        'article.title',
+        'article.thumbUrl',
+        'article.summary',
+        'article.content',
+        'article.status',
+        'article.publishTime',
+        'article.createdTime',
+        'article.updatedTime',
+        'article.likeCount',
+        'article.favCount',
+        'article.viewCount',
+        'author.id',
+        'author.username',
+        'author.avatar',
+        'author.description',
+        'author.title',
+        'spot.id',
+        'spot.name',
+        'spot.description',
+      ])
+      .addSelect('COALESCE(COUNT(comment.id), 0)', 'commentCount')
       .andWhere('spot.id = :id', { id })
-      .groupBy('article.id');
-    return paginate(qb, options);
+      .groupBy('article.id')
+      .orderBy('article.updatedTime', 'DESC');
+
+    const [res, raw]: [Pagination<Article>, any] = await paginateRawAndEntities(
+      qb,
+      options,
+    );
+
+    res.items.forEach(
+      (item, index) => (item.commentCount = parseInt(raw[index].commentCount)),
+    );
+
+    return res;
   }
 }
