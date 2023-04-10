@@ -1,10 +1,15 @@
-import { ClassSerializerInterceptor, Controller } from '@nestjs/common';
+import {
+  ClassSerializerInterceptor,
+  Controller,
+  ParseIntPipe,
+} from '@nestjs/common';
 import {
   Body,
   Delete,
   Get,
   Param,
   Put,
+  Query,
   UseGuards,
   UseInterceptors,
   UsePipes,
@@ -15,7 +20,13 @@ import { ResultVO } from 'src/shared/vo/ResultVO';
 import { TransformUserPipe } from 'src/shared/pipes/user.pipe';
 import { TransformUUIDPipe } from 'src/shared/pipes/uuid.pipe';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiBody, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
 import { Assert } from 'src/utils/Assert';
 import { UserDTO } from './dto/user.dto';
 
@@ -72,5 +83,13 @@ export class UserController {
     const { affected } = await this.userService.delete(id);
     Assert.isNotZero(affected, '无此用户，删除失败！');
     return ResultVO.success();
+  }
+
+  @ApiOperation({ summary: '随机获取用户' })
+  @ApiQuery({ type: Number, name: 'limit' })
+  @Get('recom_user/rand')
+  async getRandUsers(): Promise<ResultVO> {
+    const users = await this.userService.findRandUsers();
+    return ResultVO.success(users);
   }
 }

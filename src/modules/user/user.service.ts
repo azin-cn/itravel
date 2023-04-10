@@ -7,6 +7,8 @@ import { BizException } from 'src/shared/exceptions/BizException';
 import { TitleService } from '../title/title.service';
 import { USER_STATUS } from 'src/shared/constants/user.constant';
 import { Assert } from 'src/utils/Assert';
+import { Pagination, paginate } from 'nestjs-typeorm-paginate';
+import { PaginationOptions } from 'src/shared/dto/pagination.dto';
 
 export declare class UniqueParamOptions {
   status?: number;
@@ -262,5 +264,41 @@ export class UserService {
     const { affected } = await this.userRepository.update(user.id, user);
     Assert.isNotZero(affected, '更新失败，无此用户');
     return this.findUserById(user.id);
+  }
+
+  /**
+   * 数据简单脱敏
+   * @param user
+   * @returns
+   */
+  masksUser(user: User): User {
+    user.phone = null;
+    user.email = null;
+    user.password = null;
+    user.role = null;
+    user.status = null;
+    user.scenicArea = null;
+    return user;
+  }
+
+  /**
+   * 随机获取用户
+   * @param limit
+   * @returns
+   */
+  async findRandUsers(limit = 10): Promise<User[]> {
+    const qb = this.userRepository.createQueryBuilder('user');
+    qb.orderBy('RAND()')
+      .limit(limit)
+      .select([
+        'user.id',
+        'user.username',
+        'user.description',
+        'user.avatar',
+        'user.visitors',
+        'user.scenicArea',
+      ]);
+    const users = await qb.getMany();
+    return users;
   }
 }
