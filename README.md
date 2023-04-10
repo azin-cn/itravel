@@ -509,3 +509,16 @@ order by weight desc
 
 结果：TypeScript 中使用 Object.keys 方法对某一个 class 实例获取属性 key，这个实例的属性一定需要初始化，否则返回空数组！
 [stackoverflow - 54559745](https://stackoverflow.com/questions/54559745/object-keysmyobject-does-not-return-properties-of-class-in-typescript)
+
+## 在 typeorm 无法正确映射属性时，可以利用 getRawAndEntities 将数据进行映射，以下是分页插件的操作
+
+```ts
+const [res, raw]: [Pagination<Article>, any] = await paginateRawAndEntities(
+  qb,
+  options,
+);
+
+res.items.forEach(
+  (item, index) => (item.commentCount = parseInt(raw[index].commentCount)),
+);
+```
