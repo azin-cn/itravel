@@ -8,12 +8,14 @@ import { ARTICLE_STATUS } from 'src/shared/constants/article.constant';
 import { PaginationOptions } from 'src/shared/dto/pagination.dto';
 import { Assert } from 'src/utils/Assert';
 import { DeleteResult, Repository } from 'typeorm';
+import { UserService } from '../user/user.service';
 
 @Injectable()
 export class ArticleService {
   constructor(
     @InjectRepository(Article)
     private articleRepository: Repository<Article>,
+    private userService: UserService,
   ) {}
 
   /**
@@ -39,8 +41,7 @@ export class ArticleService {
       .leftJoinAndSelect('article.tags', 'tags');
 
     const article = await qb.getOne();
-
-    Assert.isNotEmptyArticle(article);
+    article.author = this.userService.masksUser(article.author);
 
     return article;
   }
