@@ -45,7 +45,7 @@ export class ArticleController {
   async getArticleById(
     @Param('id', TransformUUIDPipe) id: string,
   ): Promise<ResultVO> {
-    const article = await this.articleService.findArticleById(id);
+    const article = await this.articleService.findArticleByArticleId(id);
     return ResultVO.success(article);
   }
 
