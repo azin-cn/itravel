@@ -21,6 +21,12 @@ export class Category {
   id: string;
 
   /**
+   * 名称
+   */
+  @Column('tinytext')
+  name: string;
+
+  /**
    * 创建用户
    * 将User的主键作为Category的user字段的值即user字段是外键
    */

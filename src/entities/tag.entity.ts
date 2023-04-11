@@ -23,7 +23,7 @@ export class Tag {
   /**
    * tag 名称
    */
-  @Column()
+  @Column('tinytext')
   name: string;
 
   /**
