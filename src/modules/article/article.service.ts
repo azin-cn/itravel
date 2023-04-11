@@ -222,17 +222,25 @@ export class ArticleService {
       .createQueryBuilder('article')
       .where('article.id = :id', { id })
       /**
-       * 查询作者的详细信息
+       * 作者信息
        */
-      .leftJoinAndSelect('article.author', 'author')
+      .leftJoin('article.author', 'author')
       /**
-       * 查询分类的详细信息
+       * 分类信息
        */
-      .leftJoinAndSelect('article.category', 'category')
+      .leftJoin('article.category', 'category')
       /**
-       * 查询tags的详细信息
+       * tags信息
        */
-      .leftJoinAndSelect('article.tags', 'tags');
+      .leftJoin('article.tags', 'tags')
+      /**
+       * 评论数量信息
+       */
+      .leftJoin('article.comments', 'comment')
+      /**
+       * 景点信息
+       */
+      .leftJoin('article.spot', 'spot');
 
     qb.select([
       'article.id',
@@ -258,10 +266,16 @@ export class ArticleService {
       'tags.name',
       'spot.id',
       'spot.name',
+      'spot.thumbUrl',
       'spot.description',
-    ]);
+    ])
+      .addSelect('COALESCE(COUNT(comment.id), 0)', 'commentCount')
+      .groupBy('tags.id');
 
-    const spot = await qb.getOne();
-    return spot;
+    const { entities, raw } = await qb.getRawAndEntities();
+    entities.forEach((article, index) => {
+      article.commentCount = Number(raw[index].commentCount);
+    });
+    return entities[0];
   }
 }
