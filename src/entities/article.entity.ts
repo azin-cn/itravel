@@ -92,6 +92,12 @@ export class Article {
   favCount: number;
 
   /**
+   * 图片集合
+   */
+  @Column({ type: 'text', nullable: true })
+  images: string[];
+
+  /**
    * 文章分类
    * 将category的主键作为article中的外键
    */
