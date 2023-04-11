@@ -39,7 +39,7 @@ import { PaginationOptions } from 'src/shared/dto/pagination.dto';
 export class ArticleController {
   constructor(private articleService: ArticleService) {}
 
-  @ApiOperation({ summary: '获取文章' })
+  @ApiOperation({ summary: '通过id获取文章' })
   @ApiParam({ name: 'id', type: String })
   @Get(':id')
   async getArticleById(
