@@ -212,4 +212,56 @@ export class ArticleService {
     });
     return entities;
   }
+
+  /**
+   * 通过id获取文章，与特定业务有关
+   * @param id
+   */
+  async findArticleByArticleId(id: string): Promise<Article> {
+    const qb = this.articleRepository
+      .createQueryBuilder('article')
+      .where('article.id = :id', { id })
+      /**
+       * 查询作者的详细信息
+       */
+      .leftJoinAndSelect('article.author', 'author')
+      /**
+       * 查询分类的详细信息
+       */
+      .leftJoinAndSelect('article.category', 'category')
+      /**
+       * 查询tags的详细信息
+       */
+      .leftJoinAndSelect('article.tags', 'tags');
+
+    qb.select([
+      'article.id',
+      'article.title',
+      'article.thumbUrl',
+      'article.summary',
+      'article.content',
+      'article.status',
+      'article.publishTime',
+      'article.createdTime',
+      'article.updatedTime',
+      'article.likeCount',
+      'article.favCount',
+      'article.viewCount',
+      'author.id',
+      'author.username',
+      'author.avatar',
+      'author.description',
+      'author.title',
+      'category.id',
+      'category.name',
+      'tags.id',
+      'tags.name',
+      'spot.id',
+      'spot.name',
+      'spot.description',
+    ]);
+
+    const spot = await qb.getOne();
+    return spot;
+  }
 }
