@@ -22,13 +22,13 @@ export class Comment {
   /**
    * 评论id
    */
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn('uuid', { comment: '评论id' })
   id: string;
 
   /**
    * 评论内容
    */
-  @Column('text')
+  @Column('text', { comment: '评论内容' })
   content: string;
 
   /**
@@ -36,6 +36,7 @@ export class Comment {
    */
   @ManyToOne(() => User, (user) => user.comments)
   @JoinColumn()
+  @Column({ comment: '评论作者' })
   user: User;
 
   /**
@@ -43,6 +44,7 @@ export class Comment {
    */
   @ManyToOne(() => User, (user) => user.comments)
   @JoinColumn()
+  @Column({ comment: '被回复的人' })
   toUser: User;
 
   /**
@@ -52,6 +54,7 @@ export class Comment {
     nullable: true,
   })
   @JoinColumn()
+  @Column({ comment: '回复的根评论' })
   parent: Comment;
 
   /**
@@ -67,25 +70,26 @@ export class Comment {
    */
   @ManyToOne(() => Article, (article) => article.comments)
   @JoinColumn()
+  @Column({ comment: '评论所在文章' })
   article: Article;
 
   /**
    * 是否删除
    */
   @Exclude()
-  @Column({ default: false })
+  @Column({ default: false, comment: '是否删除' })
   isDeleted: boolean;
 
   /**
    * 创建时间
    * YYYY-MM-DD HH:mm:ss
    */
-  @CreateDateColumn({ type: 'timestamp' })
+  @CreateDateColumn({ type: 'timestamp', comment: '创建时间' })
   createdTime: string;
 
   /**
    * 更新时间
    */
-  @UpdateDateColumn({ type: 'timestamp' })
+  @UpdateDateColumn({ type: 'timestamp',comment: '更新时间' })
   updatedTime: string;
 }
