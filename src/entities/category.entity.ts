@@ -17,13 +17,13 @@ export class Category {
   /**
    * id
    */
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn('uuid', { comment: '类别id' })
   id: string;
 
   /**
    * 名称
    */
-  @Column('tinytext')
+  @Column('tinytext', { comment: '类别名称' })
   name: string;
 
   /**
@@ -46,18 +46,18 @@ export class Category {
    * 是否删除
    */
   @Exclude()
-  @Column({ default: false })
+  @Column({ default: false, comment: '是否删除' })
   isDeleted: boolean;
 
   /**
    * 创建时间
    */
-  @CreateDateColumn({ type: 'timestamp' })
+  @CreateDateColumn({ type: 'timestamp', comment: '创建时间' })
   createdTime: string;
 
   /**
    * 更新时间
    */
-  @UpdateDateColumn({ type: 'timestamp' })
+  @UpdateDateColumn({ type: 'timestamp', comment: '更新时间' })
   updatedTime: string;
 }
