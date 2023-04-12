@@ -23,13 +23,13 @@ export class Article {
   /**
    * 文章ID
    */
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn('uuid', { comment: '文章ID' })
   id: string;
 
   /**
    * 文章title
    */
-  @Column()
+  @Column('text', { comment: '文章title' })
   title: string;
 
   /**
@@ -43,19 +43,19 @@ export class Article {
   /**
    * 文章缩略图
    */
-  @Column({ nullable: true })
+  @Column({ nullable: true, comment: '文章缩略图URL' })
   thumbUrl: string;
 
   /**
    * 文章的简要
    */
-  @Column({ type: 'text', default: null })
+  @Column({ type: 'text', nullable: true, comment: '文章的简要' })
   summary: string;
 
   /**
    * 文章内容
    */
-  @Column('text')
+  @Column('text', { comment: '文章内容' })
   content: string;
 
   /**
@@ -70,31 +70,31 @@ export class Article {
    * 评论数量
    * 隐藏字段，防止在查询时返回，只用作 Article 实体返回数据
    */
-  @Column({ default: 0, select: false })
+  @Column({ default: 0, select: false, comment: '评论数量' })
   commentCount: number;
 
   /**
    * 浏览量
    */
-  @Column({ default: 0 })
+  @Column({ default: 0, comment: '浏览量' })
   viewCount: number;
 
   /**
    * 点赞量
    */
-  @Column({ default: 0 })
+  @Column({ default: 0, comment: '点赞量' })
   likeCount: number;
 
   /**
    * 收藏量
    */
-  @Column({ default: 0 })
+  @Column({ default: 0, comment: '收藏量' })
   favCount: number;
 
   /**
    * 图片集合
    */
-  @Column({ type: 'text', nullable: true })
+  @Column({ type: 'text', nullable: true, comment: '图片集合' })
   images: string[];
 
   /**
@@ -123,6 +123,7 @@ export class Article {
   @Column({
     type: 'tinyint',
     default: ARTICLE_STATUS.DRAFT,
+    comment: '文章状态',
   })
   status: number;
 
@@ -135,26 +136,26 @@ export class Article {
   /**
    * 发布时间
    */
-  @Column({ nullable: true, type: 'timestamp' })
+  @Column({ nullable: true, type: 'timestamp', comment: '发布时间' })
   publishTime: Date;
 
   /**
    * 是否删除
    */
   @Exclude()
-  @Column({ default: false })
+  @Column({ default: false, comment: '是否删除' })
   isDeleted: boolean;
 
   /**
    * 创建时间
    * YYYY-MM-DD HH:mm:ss
    */
-  @CreateDateColumn({ type: 'timestamp' })
+  @CreateDateColumn({ type: 'timestamp', comment: '创建时间' })
   createdTime: string;
 
   /**
    * 更新时间
    */
-  @UpdateDateColumn({ type: 'timestamp' })
+  @UpdateDateColumn({ type: 'timestamp', comment: '更新时间' })
   updatedTime: string;
 }
