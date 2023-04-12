@@ -10,6 +10,10 @@ export const getMailerConf = (): MailerOptions => ({
       user: getOrdefault('MAILER_ACCOUNT', ''),
       pass: getOrdefault('MAILER_PASSWORD', ''),
     },
+    // tls: {
+    //   ciphers: 'SSLv3',
+    // },
+    secureOptions: 'TLSv1_2',
   },
   preview: true,
   defaults: {
