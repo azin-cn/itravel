@@ -219,7 +219,7 @@ export class AuthService {
         /**
          * 登陆时用户存在，验证密码
          * 若密码不匹配则抛出异常
-         * 若密码匹配则返回用户信息
+         * 若密码匹配则返回登录token和用户id
          */
         const isPwdMatch = bcrypt.compareSync(user.password, userRep.password);
         if (!isPwdMatch) throw new BadRequestException('账户或密码错误');
