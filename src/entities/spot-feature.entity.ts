@@ -16,7 +16,7 @@ export class SpotFeature {
   /**
    * id
    */
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn('uuid', { comment: 'id' })
   id: string;
 
   /**
@@ -36,25 +36,25 @@ export class SpotFeature {
   /**
    * 比重
    */
-  @Column({ default: 0, type: 'tinyint' })
+  @Column({ default: 0, type: 'tinyint', comment: '比重' })
   weight: number;
 
   /**
    * 是否删除
    */
   @Exclude()
-  @Column({ default: false, comment: '' })
+  @Column({ default: false, comment: '是否删除' })
   isDeleted: boolean;
 
   /**
    * 创建时间
    */
-  @CreateDateColumn({ type: 'timestamp' })
+  @CreateDateColumn({ type: 'timestamp', comment: '创建时间' })
   createdTime: string;
 
   /**
    * 更新时间
    */
-  @UpdateDateColumn({ type: 'timestamp' })
+  @UpdateDateColumn({ type: 'timestamp', comment: '更新时间' })
   updatedTime: string;
 }

@@ -25,13 +25,13 @@ export class User {
   /**
    * user id
    */
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn('uuid', { comment: 'user id' })
   id: string;
 
   /**
    * 用户名称
    */
-  @Column({ nullable: true })
+  @Column({ nullable: true, comment: '用户名称' })
   username: string;
 
   /**
@@ -44,6 +44,7 @@ export class User {
   @Column({
     type: 'tinyint',
     default: USER_ROLES.VISITOR,
+    comment: '用户角色',
   })
   role: number;
 
@@ -53,6 +54,7 @@ export class User {
   @Column({
     default:
       'https://th.bing.com/th/id/OIP.37mLTapohqg7soL2wzLFyQAAAA?pid=ImgDet&rs=1',
+    comment: '用户头像',
   })
   avatar: string;
 
@@ -62,7 +64,7 @@ export class User {
    * 如果注册时没有提供密码，则设置一个随机的密码作为默认密码
    */
   @Exclude()
-  @Column({ nullable: true, default: strRandom(32) })
+  @Column({ nullable: true, default: strRandom(32), comment: '用户密码' })
   password: string;
 
   /**
@@ -80,31 +82,31 @@ export class User {
   /**
    * 用户简介
    */
-  @Column({ nullable: true })
+  @Column({ nullable: true, comment: '用户简介' })
   description: string;
 
   /**
    * 用户邮箱
    */
-  @Column({ nullable: true })
+  @Column({ nullable: true, comment: '用户邮箱' })
   email: string;
 
   /**
    * 用户号码
    */
-  @Column({ nullable: true })
+  @Column({ nullable: true, comment: '用户号码' })
   phone: string;
 
   /**
    * 是否为园区，0 标识普通游客，1，2，方便以后拓展景区等级
    */
-  @Column({ default: 0 })
+  @Column({ default: 0, comment: '是否为园区' })
   scenicArea: number;
 
   /**
    * 访客数量
    */
-  @Column({ default: 0 })
+  @Column({ default: 0, comment: '访客数量' })
   visitors: number;
 
   /**
@@ -157,7 +159,7 @@ export class User {
    * 上一次登录时间
    * YYYY-MM-DD HH:mm:ss
    */
-  @Column({ nullable: true, type: 'timestamp' })
+  @Column({ nullable: true, type: 'timestamp', comment: '上一次登录时间' })
   lastTime: string;
 
   /**
@@ -167,7 +169,7 @@ export class User {
    * 已激活：1
    */
   @Exclude()
-  @Column({ default: 1 })
+  @Column({ default: 1, comment: '是否激活' })
   status: number;
 
   /**
@@ -175,18 +177,18 @@ export class User {
    * @Exclude() 结合 ClassSerializerInterceptor 拦截器使用能将密码字段排除后返回
    */
   @Exclude()
-  @Column({ default: false })
+  @Column({ default: false, comment: '是否删除' })
   isDeleted: boolean;
 
   /**
    * 创建时间
    */
-  @CreateDateColumn({ type: 'timestamp' })
+  @CreateDateColumn({ type: 'timestamp', comment: '创建时间' })
   createdTime: string;
 
   /**
    * 更新时间
    */
-  @UpdateDateColumn({ type: 'timestamp' })
+  @UpdateDateColumn({ type: 'timestamp', comment: '更新时间' })
   updatedTime: string;
 }

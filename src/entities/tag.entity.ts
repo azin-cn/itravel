@@ -17,13 +17,13 @@ export class Tag {
   /**
    * 主键，tag id
    */
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn('uuid', { comment: 'tag id' })
   id: string;
 
   /**
    * tag 名称
    */
-  @Column('tinytext')
+  @Column('tinytext', { comment: 'tag 名称' })
   name: string;
 
   /**
@@ -44,19 +44,19 @@ export class Tag {
    * 是否删除
    */
   @Exclude()
-  @Column({ default: false })
+  @Column({ default: false, comment: '是否删除' })
   isDeleted: boolean;
 
   /**
    * 创建时间
    * YYYY-MM-DD HH:mm:ss
    */
-  @CreateDateColumn({ type: 'timestamp' })
+  @CreateDateColumn({ type: 'timestamp', comment: '创建时间' })
   createdTime: string;
 
   /**
    * 更新时间
    */
-  @UpdateDateColumn({ type: 'timestamp' })
+  @UpdateDateColumn({ type: 'timestamp', comment: '更新时间' })
   updatedTime: string;
 }

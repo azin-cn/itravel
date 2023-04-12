@@ -36,7 +36,6 @@ export class Comment {
    */
   @ManyToOne(() => User, (user) => user.comments)
   @JoinColumn()
-  @Column({ comment: '评论作者' })
   user: User;
 
   /**
@@ -44,7 +43,6 @@ export class Comment {
    */
   @ManyToOne(() => User, (user) => user.comments)
   @JoinColumn()
-  @Column({ comment: '被回复的人' })
   toUser: User;
 
   /**
@@ -54,7 +52,6 @@ export class Comment {
     nullable: true,
   })
   @JoinColumn()
-  @Column({ comment: '回复的根评论' })
   parent: Comment;
 
   /**
@@ -70,7 +67,6 @@ export class Comment {
    */
   @ManyToOne(() => Article, (article) => article.comments)
   @JoinColumn()
-  @Column({ comment: '评论所在文章' })
   article: Article;
 
   /**
@@ -90,6 +86,6 @@ export class Comment {
   /**
    * 更新时间
    */
-  @UpdateDateColumn({ type: 'timestamp',comment: '更新时间' })
+  @UpdateDateColumn({ type: 'timestamp', comment: '更新时间' })
   updatedTime: string;
 }

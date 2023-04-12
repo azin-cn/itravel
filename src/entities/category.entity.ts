@@ -32,7 +32,6 @@ export class Category {
    */
   @ManyToOne(() => User, (user) => user.categories)
   @JoinColumn()
-  @Column({ comment: '创建用户' })
   user: User;
 
   /**

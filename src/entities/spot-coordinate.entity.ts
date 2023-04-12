@@ -13,13 +13,13 @@ export class SpotCoordinate {
   /**
    * id
    */
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn('uuid', { comment: 'id' })
   id: string;
 
   /**
    * 坐标
    */
-  @Column({ type: 'point' })
+  @Column({ type: 'point', comment: '坐标' })
   point: Point;
 
   /**

@@ -59,7 +59,6 @@ export class City {
    */
   @ManyToOne(() => Province, (p) => p.cities)
   @JoinColumn()
-  @Column({ comment: '所属省份' })
   province: Province;
 
   /**

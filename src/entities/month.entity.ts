@@ -6,13 +6,13 @@ export class Month {
   /**
    * 月份id
    */
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn('uuid', { comment: '月份id' })
   id: string;
 
   /**
    * 月份名称
    */
-  @Column({ type: 'tinytext' })
+  @Column({ type: 'tinytext', comment: '月份名称' })
   name: string;
 
   /**

@@ -23,25 +23,25 @@ export class Spot {
   /**
    * id
    */
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn('uuid', { comment: 'id' })
   id: string;
 
   /**
    * name
    */
-  @Column({ type: 'tinytext' })
+  @Column({ type: 'tinytext', comment: '景点名称' })
   name: string;
 
   /**
    * 简介
    */
-  @Column({ type: 'mediumtext' })
+  @Column({ type: 'mediumtext', comment: '简介' })
   description: string;
 
   /**
    * 缩略图，创建时不为空
    */
-  @Column({ type: 'text' })
+  @Column({ type: 'text', comment: '缩略图' })
   thumbUrl: string;
 
   /**
@@ -69,7 +69,7 @@ export class Spot {
   spotCoordinates: SpotCoordinate[];
 
   /**
-   * 包含的国家
+   * 所属的国家
    * TODO：未来实现不同国家
    */
   @ManyToOne(() => Country, (c) => c.spots)
@@ -101,18 +101,18 @@ export class Spot {
    * 是否删除
    */
   @Exclude()
-  @Column({ default: false })
+  @Column({ default: false, comment: '是否删除' })
   isDeleted: boolean;
 
   /**
    * 创建时间
    */
-  @CreateDateColumn({ type: 'timestamp' })
+  @CreateDateColumn({ type: 'timestamp', comment: '创建时间' })
   createdTime: string;
 
   /**
    * 更新时间
    */
-  @UpdateDateColumn({ type: 'timestamp' })
+  @UpdateDateColumn({ type: 'timestamp', comment: '更新时间' })
   updatedTime: string;
 }

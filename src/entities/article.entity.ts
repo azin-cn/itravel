@@ -38,7 +38,6 @@ export class Article {
    */
   @ManyToOne((type) => User, (user) => user.articles) // 注入User，user.articles 关联的属性
   @JoinColumn()
-  @Column({ comment: '文章作者' })
   author: User;
 
   /**
@@ -104,7 +103,6 @@ export class Article {
    */
   @ManyToOne(() => Category, (category) => category.articles)
   @JoinColumn()
-  @Column({ comment: '文章分类' })
   category: Category;
 
   /**
@@ -134,7 +132,6 @@ export class Article {
    */
   @ManyToOne(() => Spot, (s) => s.articles)
   @JoinColumn()
-  @Column({ comment: '关联的景点' })
   spot: Spot;
 
   /**
