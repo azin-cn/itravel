@@ -86,6 +86,12 @@ export class User {
   description: string;
 
   /**
+   * 用户缩略图
+   */
+  @Column({ nullable: true, comment: '用户缩略图' })
+  thumbUrl: string;
+
+  /**
    * 用户邮箱
    */
   @Column({ nullable: true, comment: '用户邮箱' })
