@@ -42,7 +42,8 @@ export class UserController {
   async getUserBriefInfo(
     @Param('id', TransformUUIDPipe) id: string,
   ): Promise<ResultVO> {
-    return ResultVO.success(id);
+    const user = await this.userService.findUserBriefInfoById(id);
+    return ResultVO.success(user);
   }
 
   @ApiOperation({ summary: '获取用户详情信息' })
