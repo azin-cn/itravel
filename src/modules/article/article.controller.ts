@@ -121,4 +121,18 @@ export class ArticleController {
     const articles = await this.articleService.findRandArticles();
     return ResultVO.success(articles);
   }
+
+  @ApiOperation({ summary: '通过user id获取文章' })
+  @Get('user/:id')
+  async getArticlesByUserId(
+    @Param('id', TransformUUIDPipe) id: string,
+    @Query(TransformPaginationPipe) options: PaginationOptions,
+  ): Promise<ResultVO> {
+    const {
+      items,
+      meta: { itemCount },
+    } = await this.articleService.findBriefArticlesByUserId(id, options);
+
+    return ResultVO.list(items, itemCount);
+  }
 }
