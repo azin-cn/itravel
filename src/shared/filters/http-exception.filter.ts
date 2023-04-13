@@ -27,7 +27,11 @@ export class ProcessException {
         response.status(HttpStatus.OK).json(result);
         break;
       default:
-        response.status(HttpStatus.OK).json(result);
+        if (status >= 500) {
+          response.status(status).json(result);
+        } else {
+          response.status(HttpStatus.OK).json(result);
+        }
     }
   }
 }
