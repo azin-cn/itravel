@@ -1,6 +1,11 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeleteResult, Repository, UpdateResult } from 'typeorm';
+import {
+  DeleteResult,
+  Repository,
+  SelectQueryBuilder,
+  UpdateResult,
+} from 'typeorm';
 import { User } from 'src/entities/user.entity';
 import { Title } from 'src/entities/title.entity';
 import { BizException } from 'src/shared/exceptions/BizException';
@@ -282,12 +287,24 @@ export class UserService {
   }
 
   /**
+   * 获取活跃用户的查询器
+   * @returns
+   */
+  getQBWithActiveUser(): { qb: SelectQueryBuilder<User> } {
+    const qb = this.userRepository
+      .createQueryBuilder('user')
+      .where('user.isDeleted = :isDeleted', { isDeleted: false })
+      .andWhere('user.status = :status', { status: USER_STATUS.ACTIVE });
+    return { qb };
+  }
+
+  /**
    * 随机获取用户
    * @param limit
    * @returns
    */
   async findRandUsers(limit = 10): Promise<User[]> {
-    const qb = this.userRepository.createQueryBuilder('user');
+    const { qb } = this.getQBWithActiveUser();
     qb.select([
       'user.id',
       'user.username',
@@ -300,5 +317,25 @@ export class UserService {
       .limit(limit);
     const users = await qb.getMany();
     return users;
+  }
+
+  /**
+   * 通过id获取用户的简略信息
+   * @param id
+   * @returns
+   */
+  async findUserBriefInfoById(id: string) {
+    const { qb } = this.getQBWithActiveUser();
+    qb.select([
+      'user.id',
+      'user.username',
+      'user.description',
+      'user.avatar',
+      'user.visitors',
+      'user.scenicArea',
+    ]).andWhere('user.id = :id', { id });
+    const user = await qb.getOne();
+    Assert.isNotEmptyUser(user);
+    return user;
   }
 }
