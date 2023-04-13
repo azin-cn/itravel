@@ -288,16 +288,16 @@ export class UserService {
    */
   async findRandUsers(limit = 10): Promise<User[]> {
     const qb = this.userRepository.createQueryBuilder('user');
-    qb.orderBy('RAND()')
-      .limit(limit)
-      .select([
-        'user.id',
-        'user.username',
-        'user.description',
-        'user.avatar',
-        'user.visitors',
-        'user.scenicArea',
-      ]);
+    qb.select([
+      'user.id',
+      'user.username',
+      'user.description',
+      'user.avatar',
+      'user.visitors',
+      'user.scenicArea',
+    ])
+      .orderBy('RAND()')
+      .limit(limit);
     const users = await qb.getMany();
     return users;
   }
