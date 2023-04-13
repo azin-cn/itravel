@@ -291,32 +291,59 @@ export class ArticleService {
   ): Promise<Pagination<Article>> {
     const qb = this.articleRepository
       .createQueryBuilder('article')
-      .where('1=1');
-
-    qb.leftJoin('article.author', 'author')
+      .where('1=1')
+      /**
+       * 作者信息
+       */
+      .leftJoin('article.author', 'author')
+      /**
+       * 分类信息
+       */
+      .leftJoin('article.category', 'category')
+      /**
+       * tags信息
+       */
+      .leftJoin('article.tags', 'tags')
+      /**
+       * 评论数量信息
+       */
       .leftJoin('article.comments', 'comment')
-      .select([
-        'article.id',
-        'article.title',
-        'article.thumbUrl',
-        'article.summary',
-        // 'article.content',
-        'article.status',
-        'article.publishTime',
-        'article.createdTime',
-        'article.updatedTime',
-        'article.likeCount',
-        'article.favCount',
-        'article.viewCount',
-        'author.id',
-        'author.username',
-        'author.avatar',
-        'author.description',
-        'author.title',
-        'author.thumbUrl',
-      ])
+      /**
+       * 景点信息
+       */
+      .leftJoin('article.spot', 'spot');
+
+    qb.select([
+      'article.id',
+      'article.title',
+      'article.thumbUrl',
+      'article.summary',
+      // 'article.content',
+      'article.status',
+      'article.publishTime',
+      'article.createdTime',
+      'article.updatedTime',
+      'article.likeCount',
+      'article.favCount',
+      'article.viewCount',
+      'author.id',
+      'author.username',
+      'author.avatar',
+      'author.title',
+      'author.description',
+      'author.thumbUrl',
+      'category.id',
+      'category.name',
+      'tags.id',
+      'tags.name',
+      'spot.id',
+      'spot.name',
+      'spot.thumbUrl',
+      'spot.description',
+    ])
       .addSelect('COALESCE(COUNT(comment.id), 0)', 'commentCount')
       .groupBy('article.id')
+      .addGroupBy('tags.id')
       .andWhere('author.id = :id', { id });
 
     const [res, raw]: [Pagination<Article>, any] = await paginateRawAndEntities(
