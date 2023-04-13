@@ -205,8 +205,9 @@ export class ArticleService {
         'author.id',
         'author.username',
         'author.avatar',
-        'author.description',
         'author.title',
+        'author.description',
+        'author.thumbUrl',
       ])
       .addSelect('COALESCE(COUNT(comment.id), 0)', 'commentCount')
       .groupBy('article.id');
@@ -262,8 +263,9 @@ export class ArticleService {
       'author.id',
       'author.username',
       'author.avatar',
-      'author.description',
       'author.title',
+      'author.description',
+      'author.thumbUrl',
       'category.id',
       'category.name',
       'tags.id',
@@ -311,6 +313,7 @@ export class ArticleService {
         'author.avatar',
         'author.description',
         'author.title',
+        'author.thumbUrl',
       ])
       .addSelect('COALESCE(COUNT(comment.id), 0)', 'commentCount')
       .groupBy('article.id')
