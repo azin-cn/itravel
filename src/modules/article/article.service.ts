@@ -1,6 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Pagination, paginateRawAndEntities } from 'nestjs-typeorm-paginate';
+import {
+  IPaginationOptions,
+  Pagination,
+  paginateRawAndEntities,
+} from 'nestjs-typeorm-paginate';
 import { Article } from 'src/entities/article.entity';
 import { Comment } from 'src/entities/comment.entity';
 import { Tag } from 'src/entities/tag.entity';
@@ -277,5 +281,53 @@ export class ArticleService {
       article.commentCount = Number(raw[index].commentCount);
     });
     return entities[0];
+  }
+
+  async findBriefArticlesByUserId(
+    id: string,
+    options?: IPaginationOptions,
+  ): Promise<Pagination<Article>> {
+    const qb = this.articleRepository
+      .createQueryBuilder('article')
+      .where('1=1');
+
+    qb.leftJoin('article.author', 'author')
+      .leftJoin('article.comments', 'comment')
+      .select([
+        'article.id',
+        'article.title',
+        'article.thumbUrl',
+        'article.summary',
+        // 'article.content',
+        'article.status',
+        'article.publishTime',
+        'article.createdTime',
+        'article.updatedTime',
+        'article.likeCount',
+        'article.favCount',
+        'article.viewCount',
+        'author.id',
+        'author.username',
+        'author.avatar',
+        'author.description',
+        'author.title',
+      ])
+      .addSelect('COALESCE(COUNT(comment.id), 0)', 'commentCount')
+      .groupBy('article.id')
+      .andWhere('author.id = :id', { id });
+
+    const [res, raw]: [Pagination<Article>, any] = await paginateRawAndEntities(
+      qb,
+      options,
+    );
+
+    /**
+     * 将数据映射为整数
+     */
+    res.items.forEach(
+      (item, index) => (item.commentCount = parseInt(raw[index].commentCount)),
+    );
+
+    return res;
   }
 }
