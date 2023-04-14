@@ -55,17 +55,6 @@ export class SpotController {
     return ResultVO.success(spots);
   }
 
-  @ApiOperation({ summary: '获取景点的简略信息(携带地址)' })
-  @ApiParam({ name: 'id' })
-  @Get(':id')
-  async getSpotBriefInfoWithRegionById(
-    @Param('id', TransformUUIDPipe) id: string,
-  ): Promise<ResultVO> {
-    const spot = await this.spotService.findSpotBriefInfoWithRegionById(id);
-    Assert.isNotEmptySpot(spot);
-    return ResultVO.success(spot);
-  }
-
   @ApiOperation({ summary: '随机获取推荐景点' })
   // @ApiQuery({ type: SpotDTO })
   @Get('recom_spots/rand')
@@ -102,6 +91,29 @@ export class SpotController {
   @ApiOperation({ summary: '更新景点' })
   @Put()
   async putSpot(@Body(TransformSpotDTOPipe) spotDTO: SpotDTO) {}
+
+  /**
+   * 根据关键字获取景点
+   * @param s
+   * @returns
+   */
+  @ApiOperation({ summary: '根据名称获取景点' })
+  @Get('search')
+  async getSpotByWords(@Query('s') s: string): Promise<ResultVO> {
+    const spots = await this.spotService.findSpotsByWords(s);
+    return ResultVO.success(spots);
+  }
+
+  @ApiOperation({ summary: '获取景点的简略信息(携带地址)' })
+  @ApiParam({ name: 'id' })
+  @Get(':id')
+  async getSpotBriefInfoWithRegionById(
+    @Param('id', TransformUUIDPipe) id: string,
+  ): Promise<ResultVO> {
+    const spot = await this.spotService.findSpotBriefInfoWithRegionById(id);
+    Assert.isNotEmptySpot(spot);
+    return ResultVO.success(spot);
+  }
 
   /**
    * 测试新增数据
