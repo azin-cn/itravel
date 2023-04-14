@@ -544,4 +544,23 @@ export class SpotService {
 
     return spot;
   }
+
+  /**
+   * 根据指定名称搜索
+   * @param keywords
+   * @param limit
+   * @returns
+   */
+  async findSpotsByWords(keywords: string, limit = 10): Promise<Spot[]> {
+    const qb = this.spotRepository.createQueryBuilder('spot').where('1=1');
+
+    qb.select(['spot.id', 'spot.name'])
+      .andWhere(
+        'LOWER(spot.name) LIKE LOWER(:keywords) OR LOWER(spot.description) LIKE (:keywords)',
+        { keywords },
+      )
+      .limit(limit);
+    const spots = await qb.getMany();
+    return spots;
+  }
 }
