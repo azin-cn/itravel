@@ -76,4 +76,8 @@ export class ArticleDTO extends ArticleBaseDTO {
   @IsOptional()
   @IsUUID(undefined, { message: '文章ID非UUID' })
   id: string;
+
+  @ApiProperty({ description: '文章图库' })
+  @IsNotEmpty()
+  images: string[];
 }
