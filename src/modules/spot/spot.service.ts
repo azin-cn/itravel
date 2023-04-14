@@ -552,6 +552,7 @@ export class SpotService {
    * @returns
    */
   async findSpotsByWords(keywords: string, limit = 10): Promise<Spot[]> {
+    keywords = `%${keywords}%`;
     const qb = this.spotRepository.createQueryBuilder('spot').where('1=1');
 
     qb.select(['spot.id', 'spot.name'])

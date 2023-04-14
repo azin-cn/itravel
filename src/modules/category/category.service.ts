@@ -21,6 +21,7 @@ export class CategoryService {
     userId: string,
     limit = 10,
   ): Promise<Category[]> {
+    keywords = `%${keywords}%`;
     const qb = this.categoryRepository
       .createQueryBuilder('category')
       .where('1=1');
