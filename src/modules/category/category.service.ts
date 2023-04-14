@@ -16,7 +16,8 @@ export class CategoryService {
    * @param limit
    * @returns
    */
-  async findCategoriesByUserId(
+  async findCategoriesByWordsAndUserId(
+    keywords: string,
     userId: string,
     limit = 10,
   ): Promise<Category[]> {
@@ -27,6 +28,7 @@ export class CategoryService {
     qb.leftJoin('category.user', 'user')
       .select(['category.id', 'category.name', 'user.id', 'user.username'])
       .andWhere('user.id = :userId', { userId })
+      .andWhere('LOWER(category.name) LIKE LOWER(:keywords)', { keywords })
       .limit(limit);
 
     const categories = await qb.getMany();

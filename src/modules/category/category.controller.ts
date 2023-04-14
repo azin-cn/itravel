@@ -10,10 +10,11 @@ export class CategoryController {
 
   @ApiOperation({ summary: '根据用户id获取分类' })
   @Get('user')
-  async getCagetoriesByUserId(
+  async getCagetoriesByWordsAndUserId(
     @Query('id', TransformUUIDPipe) id: string,
+    @Query('s') s: string,
   ): Promise<ResultVO> {
-    const categories = await this.categoryService.findCategoriesByUserId(id);
+    const categories = await this.categoryService.findCategoriesByWordsAndUserId(s, id);
     return ResultVO.success(categories);
   }
 }
