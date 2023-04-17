@@ -331,6 +331,7 @@ export class UserService {
       'user.id',
       'user.username',
       'user.description',
+      'user.thumbUrl',
       'user.avatar',
       'user.visitors',
       'user.scenicArea',
