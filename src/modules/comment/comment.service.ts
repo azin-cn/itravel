@@ -66,12 +66,41 @@ export class CommentService {
     qb.where('comment.article_id = :id', { id })
       .andWhere('comment.parent_id IS NULL AND comment.isDeleted = false')
       .leftJoinAndSelect('comment.parent', 'parent')
-      .leftJoinAndSelect('comment.user', 'user')
-      .leftJoinAndSelect('comment.toUser', 'toUser')
       .leftJoinAndSelect('comment.children', 'children')
-      .leftJoinAndSelect('children.parent', 'childParent')
-      .leftJoinAndSelect('children.user', 'childUser')
-      .leftJoinAndSelect('children.toUser', 'childToUser');
+      .leftJoin('comment.user', 'user')
+      .leftJoin('comment.toUser', 'toUser')
+      .leftJoin('children.user', 'childUser')
+      .leftJoin('children.toUser', 'childToUser');
+
+    qb.addSelect([
+      'user.id',
+      'user.username',
+      'user.description',
+      'user.thumbUrl',
+      'user.avatar',
+      'user.visitors',
+
+      'toUser.id',
+      'toUser.username',
+      'toUser.description',
+      'toUser.thumbUrl',
+      'toUser.avatar',
+      'toUser.visitors',
+
+      'childUser.id',
+      'childUser.username',
+      'childUser.description',
+      'childUser.thumbUrl',
+      'childUser.avatar',
+      'childUser.visitors',
+
+      'childToUser.id',
+      'childToUser.username',
+      'childToUser.description',
+      'childToUser.thumbUrl',
+      'childToUser.avatar',
+      'childToUser.visitors',
+    ]);
 
     return paginate(qb, options);
   }
