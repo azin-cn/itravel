@@ -67,6 +67,7 @@ export class CommentService {
       .andWhere('comment.parent_id IS NULL AND comment.isDeleted = false')
       .leftJoinAndSelect('comment.parent', 'parent')
       .leftJoinAndSelect('comment.children', 'children')
+      .leftJoinAndSelect('children.parent', 'childParent')
       .leftJoin('comment.user', 'user')
       .leftJoin('comment.toUser', 'toUser')
       .leftJoin('children.user', 'childUser')
