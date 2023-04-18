@@ -32,4 +32,20 @@ export class TagService {
     const tags = await qb.getMany();
     return tags;
   }
+
+  /**
+   * 通过ids获取分类数组
+   * @param ids
+   * @returns
+   */
+  async findTagsByIds(ids: string[]): Promise<Tag[]> {
+    const qb = this.tagRepository
+      .createQueryBuilder('tag')
+      .where('1=1')
+      .andWhere('tag.id IN (:...ids)', { ids })
+      .select(['tag.id', 'tag.name']);
+
+    const tags = await qb.getMany();
+    return tags;
+  }
 }
