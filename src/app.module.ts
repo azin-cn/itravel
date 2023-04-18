@@ -24,6 +24,7 @@ import { FeaturesModule } from './modules/feature/features.module';
 import { SpotFeatureModule } from './modules/spot-feature/spot-feature.module';
 import { SpotMonthModule } from './modules/spot-month/spot-month.module';
 import { RegionModule } from './modules/region/region.module';
+import { UploadModule } from './modules/upload/upload.module';
 
 @Module({
   imports: [
@@ -54,6 +55,7 @@ import { RegionModule } from './modules/region/region.module';
     SpotFeatureModule,
     SpotMonthModule,
     RegionModule,
+    UploadModule,
   ],
   controllers: [AppController],
   providers: [AppService, ...GLOBAL_FILTERS, ...GLOBAL_PIPES],
