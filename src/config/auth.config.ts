@@ -12,7 +12,7 @@ export const getJWTConf = (): JwtModuleOptions => ({
 });
 
 export const getAuthConf = () => ({
-  httpPrefix: getOrdefault('HTTP_PREFIX', ''),
+  httpPrefix: getOrdefault('AUTH_HTTP_PREFIX', ''),
   jwt: getJWTConf(),
 });
 
