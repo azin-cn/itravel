@@ -14,7 +14,8 @@ export class CategoryController {
     @Query('id', TransformUUIDPipe) id: string,
     @Query('s') s: string,
   ): Promise<ResultVO> {
-    const categories = await this.categoryService.findCategoriesByWordsAndUserId(s, id);
+    const categories =
+      await this.categoryService.findCategoriesByWordsAndUserId(s, id);
     return ResultVO.success(categories);
   }
 }
