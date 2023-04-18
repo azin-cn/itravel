@@ -16,7 +16,7 @@ export class ArticleBaseDTO {
   @ApiPropertyOptional({ name: 'title', description: '文章标题' })
   @IsNotEmpty({ message: '文章标题不为空' })
   @IsString({ message: '文章标题不是字符串' })
-  @Length(6, 30, {
+  @Length(6, 60, {
     message: '文章标题长度必须为 $constraint1 到 $constraint2 之间',
   })
   title: string;
@@ -42,7 +42,7 @@ export class ArticleBaseDTO {
    */
   @ApiPropertyOptional({ description: '文章缩略图' })
   @IsOptional()
-  @IsUrl(undefined, { message: '缩略图不是正确URL' })
+  // @IsUrl(undefined, { message: '缩略图不是正确URL' })
   thumbUrl: string;
 
   /**
