@@ -10,7 +10,10 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { SpotService } from './spot.service';
-import { TransformUUIDPipe } from 'src/shared/pipes/uuid.pipe';
+import {
+  TransformUUIDArrayPipe,
+  TransformUUIDPipe,
+} from 'src/shared/pipes/uuid.pipe';
 import { Assert } from 'src/utils/Assert';
 import { ResultVO } from 'src/shared/vo/ResultVO';
 import {
@@ -113,6 +116,15 @@ export class SpotController {
     const spot = await this.spotService.findSpotBriefInfoWithRegionById(id);
     Assert.isNotEmptySpot(spot);
     return ResultVO.success(spot);
+  }
+
+  @ApiOperation({ summary: '根据ids获取spot数组' })
+  @Get('ids')
+  async getSpotsByIds(
+    @Query('ids', TransformUUIDArrayPipe) ids: string[],
+  ): Promise<ResultVO> {
+    const spots = await this.spotService.findSpotsByIds(ids);
+    return ResultVO.success(spots);
   }
 
   /**

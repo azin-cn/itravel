@@ -564,4 +564,19 @@ export class SpotService {
     const spots = await qb.getMany();
     return spots;
   }
+
+  /**
+   * 通过spot ids获取spot options
+   * @param ids
+   */
+  async findSpotsByIds(ids: string[]): Promise<Spot[]> {
+    const qb = this.spotRepository
+      .createQueryBuilder('spot')
+      .where('1=1')
+      .andWhere('spot.id IN (:...ids)', { ids })
+      .select(['spot.id', 'spot.name']);
+
+    const spots = await qb.getMany();
+    return spots;
+  }
 }
