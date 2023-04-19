@@ -4,9 +4,10 @@ import { SearchService } from './search.service';
 import { UserModule } from '../user/user.module';
 import { ArticleModule } from '../article/article.module';
 import { CommentModule } from '../comment/comment.module';
+import { SpotModule } from '../spot/spot.module';
 
 @Module({
-  imports: [UserModule, ArticleModule, CommentModule],
+  imports: [UserModule, ArticleModule, CommentModule, SpotModule],
   controllers: [SearchController],
   providers: [SearchService],
 })
