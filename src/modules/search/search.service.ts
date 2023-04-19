@@ -13,6 +13,8 @@ import { Spot } from 'src/entities/spot.entity';
 import { User } from 'src/entities/user.entity';
 import { ILike, Repository } from 'typeorm';
 import { SpotBriefVO } from '../spot/vo/spot.vo';
+import { USER_STATUS } from 'src/shared/constants/user.constant';
+import { ARTICLE_STATUS } from 'src/shared/constants/article.constant';
 
 @Injectable()
 export class SearchService {
@@ -83,10 +85,21 @@ export class SearchService {
       'spot.description',
     ])
       .addSelect('COALESCE(COUNT(comment.id), 0)', 'commentCount')
-      .where('LOWER(article.title) LIKE LOWER(:keywords)', { keywords })
-      .orWhere('LOWER(article.summary) LIKE LOWER(:keywords)', { keywords })
-      .orWhere('LOWER(article.content) LIKE LOWER(:keywords)', { keywords })
-      .orWhere('LOWER(comment.content) LIKE LOWER(:keywords)', { keywords })
+      .where(
+        `(
+          LOWER(article.title) LIKE LOWER(:keywords) 
+          OR 
+          LOWER(article.summary) LIKE LOWER(:keywords)
+          OR
+          LOWER(article.content) LIKE LOWER(:keywords)
+          OR
+          LOWER(comment.content) LIKE LOWER(:keywords)
+         )
+         `,
+        { keywords },
+      )
+      .andWhere('article.isDeleted = false')
+      .andWhere('article.status = :status', { status: ARTICLE_STATUS.PUBLISH })
       .orderBy('article.updatedTime')
       .groupBy('article.id')
       .addGroupBy('tags.id');
@@ -113,8 +126,18 @@ export class SearchService {
     keywords = `%${keywords}%`;
     const userHandler = this.userRepository
       .createQueryBuilder('user')
-      .where('LOWER(user.username) LIKE LOWER(:keywords)', { keywords })
-      .orWhere('LOWER(user.description) LIKE LOWER(:keywords)', { keywords })
+      .where(
+        `
+        (
+          LOWER(user.username) LIKE LOWER(:keywords)
+          OR
+          LOWER(user.description) LIKE LOWER(:keywords)
+        )
+        `,
+        { keywords },
+      )
+      .andWhere('user.status = :status', { status: USER_STATUS.ACTIVE })
+      .andWhere('user.isDeleted = false')
       .orderBy('user.updatedTime');
 
     const users = await paginate<User>(userHandler, options);
