@@ -1,13 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { plainToInstance } from 'class-transformer';
 import {
   IPaginationOptions,
   Pagination,
   paginate,
+  paginateRaw,
 } from 'nestjs-typeorm-paginate';
 import { Article } from 'src/entities/article.entity';
+import { Spot } from 'src/entities/spot.entity';
 import { User } from 'src/entities/user.entity';
 import { ILike, Repository } from 'typeorm';
+import { SpotBriefVO } from '../spot/vo/spot.vo';
 
 @Injectable()
 export class SearchService {
@@ -16,6 +20,8 @@ export class SearchService {
     private userRepository: Repository<User>,
     @InjectRepository(Article)
     private articleRepository: Repository<Article>,
+    @InjectRepository(Spot)
+    private spotRepository: Repository<Spot>,
   ) {}
 
   async searchArticle(
@@ -61,9 +67,36 @@ export class SearchService {
       .createQueryBuilder('user')
       .where('LOWER(user.username) LIKE LOWER(:keywords)', { keywords })
       .orWhere('LOWER(user.description) LIKE LOWER(:keywords)', { keywords })
-      .orderBy('article.updatedTime');
+      .orderBy('user.updatedTime');
 
     const users = await paginate<User>(userHandler, options);
     return users;
+  }
+
+  async searchSpot(
+    keywords: string,
+    options?: IPaginationOptions,
+  ): Promise<Pagination<SpotBriefVO>> {
+    keywords = `%${keywords}%`;
+    const qb = this.spotRepository.createQueryBuilder('spot');
+    qb.leftJoin('spot.articles', 'article')
+      .leftJoin('spot.province', 'province', 'province.id = spot.province_id')
+      .orWhere('LOWER(spot.name) LIKE LOWER(:keywords)', { keywords })
+      .orWhere('LOWER(spot.description) LIKE LOWER(:keywords)', { keywords })
+      .orWhere('LOWER(article.title) LIKE LOWER(:keywords)', { keywords })
+      .orWhere('LOWER(article.summary) LIKE LOWER(:keywords)', { keywords })
+      .orWhere('LOWER(article.content) LIKE LOWER(:keywords)', { keywords })
+      .orderBy('spot.updatedTime');
+    qb.select('spot.id, spot.name, spot.description, spot.thumb_url thumbUrl')
+      .addSelect('province.name', 'region')
+      .addSelect('province.id', 'regionId')
+      .addSelect(`'province' as level`);
+
+    const raw = await paginateRaw(qb, options);
+    const spotBreifs = new Pagination(
+      plainToInstance(SpotBriefVO, raw.items),
+      raw.meta,
+    );
+    return spotBreifs;
   }
 }
