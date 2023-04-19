@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose, Transform } from 'class-transformer';
+import { IPaginationMeta, Pagination } from 'nestjs-typeorm-paginate';
 import { Feature } from 'src/entities/feature.entity';
 import { Month } from 'src/entities/month.entity';
 
@@ -178,5 +179,16 @@ export class SpotFMVO extends SpotBaseVO {
     });
 
     return instance;
+  }
+}
+
+/**
+ * 带有分页的SpotBriefVO
+ */
+export class SpotBriefPaginationVO<
+  T extends IPaginationMeta = IPaginationMeta,
+> extends Pagination<SpotBriefVO, T> {
+  constructor(item: SpotBriefVO[], meta: T) {
+    super(item, meta);
   }
 }
