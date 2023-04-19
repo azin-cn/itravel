@@ -20,8 +20,20 @@ import { TransformNotEmptyPipe } from 'src/shared/pipes/not-empty.pipe';
 export class SearchController {
   constructor(private searchService: SearchService) {}
 
+  @ApiOperation({ summary: '模糊搜索景点' })
+  @Get('spot')
+  async searchSpot(
+    @Query('s', TransformNotEmptyPipe) s: string,
+    @Query(TransformPaginationPipe) options: PaginationOptions,
+  ): Promise<ResultVO> {
+    const {
+      items,
+      meta: { itemCount },
+    } = await this.searchService.searchSpot(s, options);
+    return ResultVO.list(items, itemCount);
+  }
+
   @ApiOperation({ summary: '模糊搜索文章' })
-  @ApiQuery({ type: String, example: 'ac23600f-35ea-4bc6-8801-73974151c930' })
   @Get('article')
   async searchArticle(
     @Query('s', TransformNotEmptyPipe) s: string,
@@ -36,8 +48,6 @@ export class SearchController {
   }
 
   @ApiOperation({ summary: '模糊搜索用户' })
-  @ApiQuery({ type: String, example: 'ac23600f-35ea-4bc6-8801-73974151c930' })
-  @ApiQuery({ type: PaginationOptions })
   @Get('user')
   async searchUser(
     @Query('s', TransformNotEmptyPipe) s: string,
