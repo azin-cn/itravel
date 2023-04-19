@@ -6,6 +6,7 @@ import {
   Pagination,
   paginate,
   paginateRaw,
+  paginateRawAndEntities,
 } from 'nestjs-typeorm-paginate';
 import { Article } from 'src/entities/article.entity';
 import { Spot } from 'src/entities/spot.entity';
@@ -30,32 +31,79 @@ export class SearchService {
   ): Promise<Pagination<Article>> {
     keywords = `%${keywords}%`;
 
-    const articleHandler = this.articleRepository
+    const qb = this.articleRepository
       .createQueryBuilder('article')
-
       /**
-       * 评论必然存在于文章中，可以使用innerJoin
+       * 作者信息
+       */
+      .leftJoin('article.author', 'author')
+      /**
+       * 分类信息
+       */
+      .leftJoin('article.category', 'category')
+      /**
+       * tags信息
+       */
+      .leftJoin('article.tags', 'tags')
+      /**
+       * 评论数量信息
        */
       .leftJoin('article.comments', 'comment')
       /**
-       * 子查询获取评论数量，附加到Article实体中的commentCount
-       * 重点：映射数据时，应该将此别名设置为蛇形，并结合typeorm中默认的表名
+       * 景点信息
        */
-      .addSelect('COALESCE(COUNT(comment.id), 0)', 'article_comment_count')
+      .leftJoin('article.spot', 'spot');
+
+    qb.select([
+      'article.id',
+      'article.title',
+      'article.thumbUrl',
+      'article.summary',
+      // 'article.content',
+      'article.status',
+      'article.publishTime',
+      'article.createdTime',
+      'article.updatedTime',
+      'article.likeCount',
+      'article.favCount',
+      'article.viewCount',
+      'author.id',
+      'author.username',
+      'author.avatar',
+      'author.title',
+      'author.description',
+      'author.thumbUrl',
+      'category.id',
+      'category.name',
+      'tags.id',
+      'tags.name',
+      'spot.id',
+      'spot.name',
+      'spot.thumbUrl',
+      'spot.description',
+    ])
+      .addSelect('COALESCE(COUNT(comment.id), 0)', 'commentCount')
       .where('LOWER(article.title) LIKE LOWER(:keywords)', { keywords })
       .orWhere('LOWER(article.summary) LIKE LOWER(:keywords)', { keywords })
       .orWhere('LOWER(article.content) LIKE LOWER(:keywords)', { keywords })
       .orWhere('LOWER(comment.content) LIKE LOWER(:keywords)', { keywords })
       .orderBy('article.updatedTime')
-      .groupBy('article.id');
+      .groupBy('article.id')
+      .addGroupBy('tags.id');
+
+    const [res, raw]: [Pagination<Article>, any] = await paginateRawAndEntities(
+      qb,
+      options,
+    );
 
     /**
-     * 另外一种使用方式
-     * const articles = paginate<Article>({item, total, page, limit})
+     * 将数据映射为整数
      */
-    const articles = await paginate<Article>(articleHandler, options);
+    res.items.forEach(
+      (item, index) => (item.commentCount = parseInt(raw[index].commentCount)),
+    );
 
-    return articles;
+    return res;
   }
 
   async searchUser(
