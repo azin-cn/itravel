@@ -122,7 +122,7 @@ export class Article {
    */
   @Column({
     type: 'tinyint',
-    default: ARTICLE_STATUS.DRAFT,
+    default: ARTICLE_STATUS.PUBLISH,
     comment: '文章状态',
   })
   status: number;

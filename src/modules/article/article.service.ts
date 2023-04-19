@@ -187,8 +187,7 @@ export class ArticleService {
 
     qb.leftJoin('article.author', 'author')
       .leftJoin('article.comments', 'comment')
-      .orderBy('RAND()')
-      .limit(limit)
+
       .select([
         'article.id',
         'article.title',
@@ -210,6 +209,10 @@ export class ArticleService {
         'author.thumbUrl',
       ])
       .addSelect('COALESCE(COUNT(comment.id), 0)', 'commentCount')
+      .orderBy('RAND()')
+      .where('1=1')
+      .andWhere('article.status = :status', { status: ARTICLE_STATUS.PUBLISH })
+      .limit(limit)
       .groupBy('article.id');
     const { entities, raw } = await qb.getRawAndEntities();
     entities.forEach((article, index) => {
@@ -226,6 +229,7 @@ export class ArticleService {
     const qb = this.articleRepository
       .createQueryBuilder('article')
       .where('article.id = :id', { id })
+      .andWhere('article.status = :status', { status: ARTICLE_STATUS.PUBLISH })
       /**
        * 作者信息
        */
