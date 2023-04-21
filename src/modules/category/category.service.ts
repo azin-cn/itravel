@@ -19,8 +19,10 @@ export class CategoryService {
     const qb = this.categoryRepository
       .createQueryBuilder('category')
       .where('1=1')
-      .andWhere('category.id IN (:...ids)', { ids })
       .select(['category.id', 'category.name']);
+    if (ids?.length) {
+      qb.andWhere('category.id IN (:...ids)', { ids });
+    }
     const categories = await qb.getMany();
     return categories;
   }

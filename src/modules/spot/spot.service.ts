@@ -573,8 +573,10 @@ export class SpotService {
     const qb = this.spotRepository
       .createQueryBuilder('spot')
       .where('1=1')
-      .andWhere('spot.id IN (:...ids)', { ids })
       .select(['spot.id', 'spot.name']);
+    if (ids?.length) {
+      qb.andWhere('spot.id IN (:...ids)', { ids });
+    }
 
     const spots = await qb.getMany();
     return spots;

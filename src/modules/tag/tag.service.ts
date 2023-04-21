@@ -42,8 +42,10 @@ export class TagService {
     const qb = this.tagRepository
       .createQueryBuilder('tag')
       .where('1=1')
-      .andWhere('tag.id IN (:...ids)', { ids })
       .select(['tag.id', 'tag.name']);
+    if (ids?.length) {
+      qb.andWhere('tag.id IN (:...ids)', { ids });
+    }
 
     const tags = await qb.getMany();
     return tags;
