@@ -112,7 +112,6 @@ export class SpotController {
   async getSpotsByIds(
     @Query('ids', TransformUUIDArrayPipe) ids: string[],
   ): Promise<ResultVO> {
-    console.log(ids, "'根据ids获取spot数组'");
     const spots = await this.spotService.findSpotsByIds(ids);
     return ResultVO.success(spots);
   }
