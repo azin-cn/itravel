@@ -19,8 +19,11 @@ export class TransformUUIDPipe implements PipeTransform {
 @Injectable()
 export class TransformUUIDArrayPipe implements PipeTransform {
   transform(value: string, metadata: ArgumentMetadata): string[] {
+    if (!value) return [];
+
     const uuids = value.split(',').map((item) => {
       item = item.trim();
+      console.log(item, isUUID(item));
       if (!isUUID(item)) {
         throw new BadRequestException('请求ID必须是UUID类型');
       }
