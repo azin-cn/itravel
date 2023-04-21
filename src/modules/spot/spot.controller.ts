@@ -107,6 +107,16 @@ export class SpotController {
     return ResultVO.success(spots);
   }
 
+  @ApiOperation({ summary: '根据ids获取spot数组' })
+  @Get('ids')
+  async getSpotsByIds(
+    @Query('ids', TransformUUIDArrayPipe) ids: string[],
+  ): Promise<ResultVO> {
+    console.log(ids, "'根据ids获取spot数组'");
+    const spots = await this.spotService.findSpotsByIds(ids);
+    return ResultVO.success(spots);
+  }
+
   @ApiOperation({ summary: '获取景点的简略信息(携带地址)' })
   @ApiParam({ name: 'id' })
   @Get(':id')
@@ -116,15 +126,6 @@ export class SpotController {
     const spot = await this.spotService.findSpotBriefInfoWithRegionById(id);
     Assert.isNotEmptySpot(spot);
     return ResultVO.success(spot);
-  }
-
-  @ApiOperation({ summary: '根据ids获取spot数组' })
-  @Get('ids')
-  async getSpotsByIds(
-    @Query('ids', TransformUUIDArrayPipe) ids: string[],
-  ): Promise<ResultVO> {
-    const spots = await this.spotService.findSpotsByIds(ids);
-    return ResultVO.success(spots);
   }
 
   /**
