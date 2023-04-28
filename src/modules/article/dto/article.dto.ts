@@ -1,5 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
+  IsArray,
   IsNotEmpty,
   IsOptional,
   IsString,
@@ -79,5 +80,6 @@ export class ArticleDTO extends ArticleBaseDTO {
 
   @ApiProperty({ description: '文章图库' })
   @IsNotEmpty()
+  @IsArray({ message: 'images字段必须是字符串数组' })
   images: string[];
 }
