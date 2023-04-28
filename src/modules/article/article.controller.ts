@@ -6,6 +6,7 @@ import {
   Get,
   Param,
   ParseUUIDPipe,
+  Patch,
   Post,
   Put,
   Query,
@@ -74,10 +75,10 @@ export class ArticleController {
   @ApiOperation({ summary: '更新文章' })
   @ApiParam({ name: 'id', type: String })
   @ApiBody({ type: ArticleDTO })
-  @Put(':id')
+  @Patch(':id')
   @Author(AUTHOR_SCENE.ARTICLE)
   @UseGuards(AuthGuard('jwt'), AuthorGuard)
-  async putArticle(
+  async patchArticle(
     @Param('id', ParseUUIDPipe) id: string,
     @Body(TransformArticlePipe) article: Article,
   ) {

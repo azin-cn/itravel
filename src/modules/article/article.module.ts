@@ -6,11 +6,13 @@ import { ArticleService } from './article.service';
 import { UserModule } from '../user/user.module';
 import { CommentModule } from '../comment/comment.module';
 import { SpotModule } from '../spot/spot.module';
+import { CategoryModule } from '../category/category.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Article]),
     UserModule,
+    CategoryModule,
     CommentModule,
     SpotModule,
   ],
