@@ -101,7 +101,9 @@ export class CommentService {
       'childToUser.thumbUrl',
       'childToUser.avatar',
       'childToUser.visitors',
-    ]);
+    ])
+      .orderBy('comment.updatedTime', 'DESC')
+      .addOrderBy('children.updatedTime', 'DESC');
 
     return paginate(qb, options);
   }
