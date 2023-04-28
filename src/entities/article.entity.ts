@@ -9,6 +9,9 @@ import {
   JoinTable,
   JoinColumn,
   OneToMany,
+  AfterLoad,
+  BeforeInsert,
+  BeforeUpdate,
 } from 'typeorm';
 import { User } from './user.entity';
 import { Tag } from './tag.entity';
@@ -94,7 +97,7 @@ export class Article {
   /**
    * 图片集合
    */
-  @Column({ type: 'text', nullable: true, comment: '图片集合' })
+  @Column({ type: 'json', nullable: true, comment: '图片集合' })
   images: string[];
 
   /**
