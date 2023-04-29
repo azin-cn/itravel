@@ -131,7 +131,7 @@ export class ArticleController {
   ): Promise<ResultVO> {
     const {
       items,
-      meta: { itemCount,totalItems },
+      meta: { itemCount, totalItems },
     } = await this.articleService.findBriefArticlesByUserId(id, options);
 
     return ResultVO.list(items, totalItems);
