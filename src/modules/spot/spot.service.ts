@@ -587,9 +587,9 @@ export class SpotService {
    * @param id
    * @returns
    */
-  async findSpotPanoramaById(id: string): Promise<string> {
+  async findSpotPanoramaById(id: string): Promise<Spot> {
     const spot = await this.spotRepository.findOneBy({ id, isDeleted: false });
     Assert.isNotEmptySpot(spot);
-    return spot.panorama;
+    return spot;
   }
 }

@@ -83,8 +83,8 @@ export class SpotController {
   async getSpotPanorama(
     @Param('id', TransformUUIDPipe) id: string,
   ): Promise<ResultVO> {
-    const panorama = await this.spotService.findSpotPanoramaById(id);
-    return ResultVO.success(panorama);
+    const spot = await this.spotService.findSpotPanoramaById(id);
+    return ResultVO.success(spot);
   }
 
   /**
