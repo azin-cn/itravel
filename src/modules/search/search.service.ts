@@ -157,6 +157,7 @@ export class SearchService {
       .orWhere('LOWER(article.title) LIKE LOWER(:keywords)', { keywords })
       .orWhere('LOWER(article.summary) LIKE LOWER(:keywords)', { keywords })
       .orWhere('LOWER(article.content) LIKE LOWER(:keywords)', { keywords })
+      .orWhere('LOWER(province.name) LIKE LOWER(:keywords)', { keywords })
       .orderBy('spot.updatedTime');
     qb.select('spot.id, spot.name, spot.description, spot.thumb_url thumbUrl')
       .addSelect('province.name', 'region')
