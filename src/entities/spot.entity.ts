@@ -100,7 +100,7 @@ export class Spot {
   /**
    * 景点全景图
    */
-  @Column({ type: 'json', comment: '景点全景图' })
+  @Column({ type: 'text', comment: '景点全景图' })
   panorama: string;
 
   /**
