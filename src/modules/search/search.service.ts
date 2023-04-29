@@ -152,7 +152,7 @@ export class SearchService {
     const qb = this.spotRepository.createQueryBuilder('spot');
     qb.leftJoin('spot.articles', 'article')
       .leftJoin('spot.province', 'province', 'province.id = spot.province_id')
-      .orWhere('LOWER(spot.name) LIKE LOWER(:keywords)', { keywords })
+      .where('LOWER(spot.name) LIKE LOWER(:keywords)', { keywords })
       .orWhere('LOWER(spot.description) LIKE LOWER(:keywords)', { keywords })
       .orWhere('LOWER(article.title) LIKE LOWER(:keywords)', { keywords })
       .orWhere('LOWER(article.summary) LIKE LOWER(:keywords)', { keywords })
@@ -161,7 +161,8 @@ export class SearchService {
     qb.select('spot.id, spot.name, spot.description, spot.thumb_url thumbUrl')
       .addSelect('province.name', 'region')
       .addSelect('province.id', 'regionId')
-      .addSelect(`'province' as level`);
+      .addSelect(`'province' as level`)
+      .groupBy('spot.id');
 
     const raw = await paginateRaw(qb, options);
     const spotBreifs = new Pagination(
