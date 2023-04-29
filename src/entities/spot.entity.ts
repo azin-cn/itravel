@@ -98,6 +98,12 @@ export class Spot {
   district: District;
 
   /**
+   * 景点全景图
+   */
+  @Column({ type: 'json', comment: '景点全景图' })
+  panorama: string;
+
+  /**
    * 是否删除
    */
   @Exclude()

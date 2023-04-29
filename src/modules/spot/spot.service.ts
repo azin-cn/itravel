@@ -581,4 +581,15 @@ export class SpotService {
     const spots = await qb.getMany();
     return spots;
   }
+
+  /**
+   * 通过id获取景点全景图
+   * @param id
+   * @returns
+   */
+  async findSpotPanoramaById(id: string): Promise<string> {
+    const spot = await this.spotRepository.findOneBy({ id, isDeleted: false });
+    Assert.isNotEmptySpot(spot);
+    return spot.panorama;
+  }
 }

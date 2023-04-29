@@ -78,6 +78,15 @@ export class SpotController {
     return ResultVO.success(spotFMInfo);
   }
 
+  @ApiOperation({ summary: '获取景点的全景图' })
+  @Get('panorama/:id')
+  async getSpotPanorama(
+    @Param('id', TransformUUIDPipe) id: string,
+  ): Promise<ResultVO> {
+    const panorama = await this.spotService.findSpotPanoramaById(id);
+    return ResultVO.success(panorama);
+  }
+
   /**
    * 新增景点
    */
