@@ -169,6 +169,7 @@ export class SearchService {
       plainToInstance(SpotBriefVO, raw.items),
       raw.meta,
     );
+    console.log(spotBreifs.items.length, raw.items.length, raw.meta.totalPages);
     return spotBreifs;
   }
 }

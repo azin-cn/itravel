@@ -42,7 +42,7 @@ export class CommentController {
       items,
       meta: { totalItems, itemCount, totalPages },
     } = await this.commentService.findFormatCommentsByArticleId(id, options);
-    return ResultVO.list(items, itemCount);
+    return ResultVO.list(items, totalItems);
   }
 
   @ApiOperation({ summary: '提交评论' })

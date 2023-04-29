@@ -113,7 +113,7 @@ export class ArticleController {
       items,
       meta: { totalItems, itemCount, totalPages },
     } = await this.articleService.findArticlesBySpotId(id, options);
-    return ResultVO.list(items, itemCount);
+    return ResultVO.list(items, totalItems);
   }
 
   @ApiOperation({ summary: '随机获取文章' })
@@ -131,9 +131,9 @@ export class ArticleController {
   ): Promise<ResultVO> {
     const {
       items,
-      meta: { itemCount },
+      meta: { itemCount,totalItems },
     } = await this.articleService.findBriefArticlesByUserId(id, options);
 
-    return ResultVO.list(items, itemCount);
+    return ResultVO.list(items, totalItems);
   }
 }

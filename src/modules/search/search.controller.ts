@@ -28,9 +28,9 @@ export class SearchController {
   ): Promise<ResultVO> {
     const {
       items,
-      meta: { itemCount },
+      meta: { itemCount, totalItems },
     } = await this.searchService.searchSpot(s, options);
-    return ResultVO.list(items, itemCount);
+    return ResultVO.list(items, totalItems);
   }
 
   @ApiOperation({ summary: '模糊搜索文章' })
@@ -41,10 +41,10 @@ export class SearchController {
   ): Promise<ResultVO> {
     const {
       items,
-      meta: { itemCount },
+      meta: { itemCount, totalItems },
     } = await this.searchService.searchArticle(s, options);
 
-    return ResultVO.list(items, itemCount);
+    return ResultVO.list(items, totalItems);
   }
 
   @ApiOperation({ summary: '模糊搜索用户' })
@@ -55,9 +55,8 @@ export class SearchController {
   ): Promise<ResultVO> {
     const {
       items,
-      meta: { itemCount },
+      meta: { itemCount, totalItems },
     } = await this.searchService.searchUser(s, options);
-
-    return ResultVO.list(items, itemCount);
+    return ResultVO.list(items, totalItems);
   }
 }
