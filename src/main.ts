@@ -7,10 +7,12 @@ import {
   getSwaggerConf,
   getSwaggerCustomOptions,
 } from './config/swagger.config';
+import { getOrdefault } from './config/utils';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors();
+  app.setGlobalPrefix(getOrdefault('API_PREFIX', 'api'));
 
   const document = SwaggerModule.createDocument(app, getSwaggerConf());
   // await RedocModule.setup('/docs', app, document, getRedocOptions());
