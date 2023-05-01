@@ -27,7 +27,7 @@ export class UploadController {
   async uploadFile(
     @UploadedFile('file') file: Express.Multer.File,
   ): Promise<ResultVO> {
-    const hostname = getOrdefault('HOSTNAME', 'localhost');
+    const hostname = getOrdefault('CUSTOMER_HOSTNAME', 'localhost');
     const uploadDir = getOrdefault('UPLOAD_DIR', 'upload');
     const { filename, originalname } = file;
     /**

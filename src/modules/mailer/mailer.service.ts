@@ -1,16 +1,14 @@
 import { Inject, Injectable } from '@nestjs/common';
-import {
-  MailerModule,
-  MailerService as NestMailService,
-} from '@nestjs-modules/mailer';
+import { MailerService as NestMailService } from '@nestjs-modules/mailer';
 import { BizException } from 'src/shared/exceptions/BizException';
+import { ConfigService } from '@nestjs/config';
 import { getCommonConf } from 'src/config/common.config';
 
 @Injectable()
 export class MailerService {
   constructor(
-    @Inject(NestMailService)
     private nestMailerService: NestMailService,
+    private configService: ConfigService,
   ) {}
 
   async example(str?: string) {
