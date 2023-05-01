@@ -1,3 +1,6 @@
+#!/bin/bash
+
+set -e
 cd /opt/docker/dev-itravel
 # 清除
 sudo rm -rf ./www/*
