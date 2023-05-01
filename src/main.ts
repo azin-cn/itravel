@@ -11,7 +11,10 @@ import { getOrdefault } from './config/utils';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.enableCors();
+  app.enableCors({
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  });
   // bug 配置文件是异步加载的，在这里不能获取到配置文件内容
   app.setGlobalPrefix(getOrdefault('API_PREFIX', '/api/v1'));
 
