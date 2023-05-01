@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { MiddlewareConsumer } from '@nestjs/common';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AppController } from './app.controller';
@@ -25,6 +26,7 @@ import { SpotFeatureModule } from './modules/spot-feature/spot-feature.module';
 import { SpotMonthModule } from './modules/spot-month/spot-month.module';
 import { RegionModule } from './modules/region/region.module';
 import { UploadModule } from './modules/upload/upload.module';
+import { LoggerMiddleware } from './shared/middlewares/logger.middleware';
 
 @Module({
   imports: [
@@ -60,4 +62,8 @@ import { UploadModule } from './modules/upload/upload.module';
   controllers: [AppController],
   providers: [AppService, ...GLOBAL_FILTERS, ...GLOBAL_PIPES],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes('*');
+  }
+}
