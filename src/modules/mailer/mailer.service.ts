@@ -26,7 +26,8 @@ export class MailerService {
   }
 
   async sendEMailForRegisterToken(to: string, token: string) {
-    const { hostname } = getCommonConf();
+    // TODO useConfigService get env
+    const { hostname, authPrefix } = getCommonConf();
 
     try {
       await this.nestMailerService.sendMail({
@@ -35,8 +36,8 @@ export class MailerService {
         subject: 'ITravel 注册激活 ✔', // 标题
         // text: str ? `Test: ${str}` : 'welcome', // 发送的文字
         html: token
-          ? `Hi, 欢迎来到 Itravel，请点击链接以激活您的账号: <a href='${hostname}/auth/activate?token=${token}'>🔗激活链接</a>
-            <p>若点击无法打开访问，请在浏览器中输入链接 <i>${hostname}/auth/activate?token=${token}</i> 以激活您的账户</p>
+          ? `Hi, 欢迎来到 Itravel，请点击链接以激活您的账号: <a href='${authPrefix}?token=${token}'>🔗激活链接</a>
+            <p>若点击无法打开访问，请在浏览器中输入链接 <a>${authPrefix}?token=${token}</a> 以激活您的账户</p>
           `
           : 'welcome', // 发送的文字
       });
