@@ -25,11 +25,6 @@ if [ "$(docker ps -a -q -f name=^dev-itravel$)" ]; then
   sudo docker rm dev-itravel
 fi
 
-# 删除无用 none 镜像
-if [ "$(docker images -f "dangling=true" -q)" ]; then
-  sudo docker rmi $(docker images -f "dangling=true" -q)
-  sudo docker images | grep '<none>'
-fi
 
 # 运行
 sudo bash /root/docker-script/docker-dev-itravel.sh
