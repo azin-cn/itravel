@@ -529,3 +529,17 @@ res.items.forEach(
   (item, index) => (item.commentCount = parseInt(raw[index].commentCount)),
 );
 ```
+
+## Nginx 默认限制上传大小
+
+Nginx 会根据字段 `client_max_body_size` 来限制客户端上传文件的大小，如果在 `http` 和 `server` 中都没有 `client_max_body_size`字段，那么 Nginx 会默认限制为 `1M`，可以覆盖设置。
+
+```conf
+http {
+  client_max_body_size 10M;
+
+  server {
+      client_max_body_size 20M;
+  }
+}
+```
