@@ -212,7 +212,9 @@ export class AuthService {
        * 账户密码登录
        */
       Assert.assertNotNil(user.password, '密码不能为空');
-      const userRep = await this.userService.findUserByUniqueParam(user);
+      const userRep = await this.userService.findUserByUniqueParam(user, {
+        status: USER_STATUS.ACTIVE,
+      });
       Assert.isNotEmptyUser(userRep);
 
       if (userRep) {
