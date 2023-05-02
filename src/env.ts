@@ -15,6 +15,9 @@ const isProd = process.env.NODE_ENV === 'production';
  * 缺点：js、ts 文件更适用于 js、ts 项目
  * 在项目根目录或者 src 目录下创建 config 文件夹，内部可选择性的创建 database.config.ts | global.config.ts 等
  *
+ * **请注意如需要在App初始化时就同步获取环境变量，应该使用ConfigService获取或者使用dotenv优先加载，否则环境变量可能为空**
+ * 这是因为配置文件的加载是异步的！
+ *
  * 注意不能使用 __dirname，这不会上传到GitHub，只需要在部署时，复制env文件到根目录即可
  */
 export function parseEnv() {

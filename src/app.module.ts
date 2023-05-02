@@ -33,6 +33,8 @@ import { LoggerMiddleware } from './shared/middlewares/logger.middleware';
     ConfigModule.forRoot({
       isGlobal: true, // 设置为全局，并自动读取配置文件
       // envFilePath: [envConfig.path], 采用 ts 文件配置形式，dotenv会默认读取根路径下的env文件
+      // 读取时异步的，需要使用ConfigService|dotenv才能真正正确的获取数据（提供promise的形式），
+      // 其他方式可能早于App初始化获取，所获取的数据为空
       envFilePath: [envConfig.path],
     }),
     TypeOrmModule.forRootAsync({

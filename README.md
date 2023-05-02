@@ -17,6 +17,13 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
+## Attention
+
+请确保先完成一下步骤后再执行其他操作。
+
+- [👉 Nestjs 打包问题](#Nestjs-Pack-Problem)
+- [👉 Nestjs 打包 .env 问题](#Nestjs-Pack-Env)
+
 ## Process
 
 ### 学习使用 TypeORM
@@ -323,7 +330,7 @@ export class HttpResponseInterceptor implement NestInterceptor {
 
 只能是一个普通的 JSON 对象，使用 instanceToPlain 即可
 
-## Nestjs 打包问题
+## Nestjs 打包问题 {#Nestjs-Pack-Problem}
 
 - 使用 webpack 进行打包，进行一定的 webpack 配置
   - https://juejin.cn/post/6937618804767719460
@@ -342,7 +349,7 @@ export class HttpResponseInterceptor implement NestInterceptor {
 }
 ```
 
-## Nestjs 打包 .env 问题
+## Nestjs 打包 .env 问题 {#Nestjs-Pack-Env}
 
 Nestjs 不会打包非 `ts, js` 的文件，所以在选择配置文件类型时，`.env.production, .env.development` 不会被打包到 dist 目录。
 
