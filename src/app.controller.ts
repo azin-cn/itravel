@@ -38,4 +38,9 @@ export class AppController {
     await this.appService.replaceApiPrefix();
     return 'success';
   }
+  @Post('updateSpotPanorama')
+  async updateSpotPanorama() {
+    await this.appService.updateSpotPanorama();
+    return 'success';
+  }
 }

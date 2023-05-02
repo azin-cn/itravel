@@ -404,4 +404,13 @@ export class AppService {
       this.spotRepository.update(spot.id, { thumbUrl });
     });
   }
+
+  async updateSpotPanorama(
+    panorama = 'https://img.zcool.cn/community/019d425a5c4793a8012113c7dac382.jpg@1280w_1l_2o_100sh.jpg',
+  ) {
+    const spots = await this.spotRepository.find();
+    spots.forEach((item) => {
+      this.spotRepository.update(item.id, { panorama });
+    });
+  }
 }
