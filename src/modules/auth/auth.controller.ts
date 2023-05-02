@@ -5,6 +5,7 @@ import {
   Get,
   Post,
   Query,
+  Res,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -15,6 +16,8 @@ import { AuthService } from './auth.service';
 import { ResultVO } from 'src/shared/vo/ResultVO';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
+import { Response } from 'express';
+import { getOrdefault } from 'src/config/utils';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -23,8 +26,10 @@ export class AuthController {
   constructor(private authService: AuthService) {}
   @ApiOperation({ summary: '用户激活' })
   @Get('activate')
-  async userActive(@Query('token') token: string): Promise<ResultVO> {
+  async userActive(@Query('token') token: string, @Res() res: Response) {
     const user = await this.authService.activateUserByToken(token);
+    const staticDir = getOrdefault('STATIC_DIR', 'static');
+    res.sendFile('html/activate.html', { root: staticDir });
     return ResultVO.success(user);
   }
 
