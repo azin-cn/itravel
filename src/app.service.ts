@@ -372,7 +372,18 @@ export class AppService {
      * https://localhost
      * https://localhost:7000
      */
-    const localhost = /(https?:\/\/)?localhost(:\d+)?/g;
+    // const localhost = /(https?:\/\/)?localhost(:\d+)?/g;
+    this.replaceOrigin();
+  }
+  async replaceApiPrefix() {
+    const origin = /https:\/\/itravel\.todayto\.com/;
+    const prefix = 'https://itravel.todayto.com/api/v1';
+    this.replaceOrigin(origin, prefix);
+  }
+  async replaceOrigin(
+    localhost = /(https?:\/\/)?localhost(:\d+)?/g,
+    online = 'https://itravel.todayto.com',
+  ) {
     const articles = await this.articleRepository.find();
     let counter1 = 0;
     articles.forEach((article) => {

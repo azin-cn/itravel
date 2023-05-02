@@ -33,4 +33,9 @@ export class AppController {
     await this.appService.replaceLocalhostToOnlineDomain();
     return 'success';
   }
+  @Post('replaceApiPrefix')
+  async replaceApiPrefix() {
+    await this.appService.replaceApiPrefix();
+    return 'success';
+  }
 }
