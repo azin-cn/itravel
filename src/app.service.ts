@@ -363,7 +363,9 @@ export class AppService {
     });
   }
 
-  async replaceLocalhostToOnlineDomain(online = 'https://itravel.todayto.com') {
+  async replaceLocalhostToOnlineDomain(
+    online = 'https://itravel.todayto.com/api/v1',
+  ) {
     /**
      * localhost
      * localhost:7000
@@ -382,7 +384,7 @@ export class AppService {
   }
   async replaceOrigin(
     localhost = /(https?:\/\/)?localhost(:\d+)?/g,
-    online = 'https://itravel.todayto.com',
+    online = 'https://itravel.todayto.com/api/v1',
   ) {
     const articles = await this.articleRepository.find();
     let counter1 = 0;
