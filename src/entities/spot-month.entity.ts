@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { Month } from './month.entity';
 import { Spot } from './spot.entity';
+import { Exclude } from 'class-transformer';
 
 /**
  * 更好地处理和存储每个月份与景点之间的关系，
@@ -20,7 +21,7 @@ export class SpotMonth {
   /**
    * SpotMonth id
    */
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn('uuid', { comment: 'id' })
   id: string;
 
   /**
@@ -40,24 +41,25 @@ export class SpotMonth {
   /**
    * 比重
    */
-  @Column({ default: 0, type: 'tinyint' })
+  @Column({ default: 0, type: 'tinyint', comment: '比重' })
   weight: number;
 
   /**
    * 是否删除
    */
-  @Column({ default: false })
+  @Exclude()
+  @Column({ default: false, comment: '是否删除' })
   isDeleted: boolean;
 
   /**
    * 创建时间
    */
-  @CreateDateColumn({ type: 'timestamp' })
+  @CreateDateColumn({ type: 'timestamp', comment: '创建时间' })
   createdTime: string;
 
   /**
    * 更新时间
    */
-  @UpdateDateColumn({ type: 'timestamp' })
+  @UpdateDateColumn({ type: 'timestamp', comment: '更新时间' })
   updatedTime: string;
 }

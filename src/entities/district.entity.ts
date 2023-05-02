@@ -14,43 +14,43 @@ export class District {
   /**
    * 县区id
    */
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn('uuid', { comment: '县区id' })
   id: string;
 
   /**
    * 县区名称
    */
-  @Column({ type: 'tinytext' })
+  @Column({ type: 'tinytext', comment: '县区名称' })
   name: string;
 
   /**
    * 县区全名/官方名称
    */
-  @Column({ type: 'tinytext', nullable: true })
+  @Column({ type: 'tinytext', nullable: true, comment: '县区全名/官方名称' })
   fullName: string;
 
   /**
    * 县区权重
    */
-  @Column({ default: 0, type: 'tinyint' })
+  @Column({ default: 0, type: 'tinyint', comment: '县区权重' })
   weight: number;
 
   /**
    * 高德地图id
    */
-  @Column({ nullable: true })
+  @Column({ nullable: true, comment: '高德地图id' })
   aid: string;
 
   /**
    * 百度地图id
    */
-  @Column({ nullable: true })
+  @Column({ nullable: true, comment: '百度地图id' })
   bid: string;
 
   /**
    * 腾讯地图id
    */
-  @Column({ nullable: true })
+  @Column({ nullable: true, comment: '腾讯地图id' })
   tid: string;
 
   /**

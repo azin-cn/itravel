@@ -13,13 +13,13 @@ export class Feature {
   /**
    * id
    */
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn('uuid', { comment: 'feature id' })
   id: string;
 
   /**
    * 特色名称
    */
-  @Column({ type: 'tinytext' })
+  @Column({ type: 'tinytext', comment: '特色名称' })
   name: string;
 
   /**
@@ -31,12 +31,12 @@ export class Feature {
   /**
    * 创建时间
    */
-  @CreateDateColumn({ type: 'timestamp' })
+  @CreateDateColumn({ type: 'timestamp', comment: '创建时间' })
   createdTime: string;
 
   /**
    * 更新时间
    */
-  @UpdateDateColumn({ type: 'timestamp' })
+  @UpdateDateColumn({ type: 'timestamp', comment: '更新时间' })
   updatedTime: string;
 }

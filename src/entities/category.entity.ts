@@ -4,40 +4,43 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Spot } from './spot.entity';
-import { Feature } from './feature.entity';
+import { User } from './user.entity';
+import { Article } from './article.entity';
 import { Exclude } from 'class-transformer';
 
 @Entity()
-export class SpotFeature {
+export class Category {
   /**
    * id
    */
-  @PrimaryGeneratedColumn('uuid', { comment: 'id' })
+  @PrimaryGeneratedColumn('uuid', { comment: '类别id' })
   id: string;
 
   /**
-   * 对应的景点
+   * 名称
    */
-  @ManyToOne(() => Spot, (s) => s.spotFeatures)
-  @JoinColumn()
-  spot: Spot;
+  @Column('tinytext', { comment: '类别名称' })
+  name: string;
 
   /**
-   * 对应的特色
+   * 创建用户
+   * 将User的主键作为Category的user字段的值即user字段是外键
    */
-  @ManyToOne(() => Feature, (f) => f.spotFeatures)
+  @ManyToOne(() => User, (user) => user.categories)
   @JoinColumn()
-  feature: Feature;
+  user: User;
 
   /**
-   * 比重
+   * 一对多，一篇文章只属于一个分类
    */
-  @Column({ default: 0, type: 'tinyint', comment: '比重' })
-  weight: number;
+  @OneToMany(() => Article, (article) => article.category, {
+    cascade: ['insert', 'update'],
+  })
+  articles: Article[];
 
   /**
    * 是否删除

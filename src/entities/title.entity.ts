@@ -2,42 +2,29 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
-  ManyToOne,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Spot } from './spot.entity';
-import { Feature } from './feature.entity';
+import { User } from './user.entity';
 import { Exclude } from 'class-transformer';
 
-@Entity()
-export class SpotFeature {
+@Entity('title')
+export class Title {
   /**
-   * id
+   * 头衔 id
    */
-  @PrimaryGeneratedColumn('uuid', { comment: 'id' })
+  @PrimaryGeneratedColumn('uuid', { comment: '头衔 id' })
   id: string;
 
   /**
-   * 对应的景点
+   * 头像名称
    */
-  @ManyToOne(() => Spot, (s) => s.spotFeatures)
-  @JoinColumn()
-  spot: Spot;
+  @Column({ comment: '头像名称' })
+  name: string;
 
-  /**
-   * 对应的特色
-   */
-  @ManyToOne(() => Feature, (f) => f.spotFeatures)
-  @JoinColumn()
-  feature: Feature;
-
-  /**
-   * 比重
-   */
-  @Column({ default: 0, type: 'tinyint', comment: '比重' })
-  weight: number;
+  @OneToOne(() => User, (user) => user.title)
+  user: User;
 
   /**
    * 是否删除
@@ -48,6 +35,7 @@ export class SpotFeature {
 
   /**
    * 创建时间
+   * YYYY-MM-DD HH:mm:ss
    */
   @CreateDateColumn({ type: 'timestamp', comment: '创建时间' })
   createdTime: string;
