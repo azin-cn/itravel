@@ -8,6 +8,7 @@ import {
   getSwaggerCustomOptions,
 } from './config/swagger.config';
 import { getOrdefault } from './config/utils';
+import { Response } from 'express';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -15,6 +16,11 @@ async function bootstrap() {
     origin: '*',
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   });
+  app.use((req, res: Response, next) => {
+    res.setHeader('Cache-Control', 'no-store');
+    next();
+  });
+
   // bug 配置文件是异步加载的，在这里不能获取到配置文件内容
   app.setGlobalPrefix(getOrdefault('API_PREFIX', '/api/v1'));
 

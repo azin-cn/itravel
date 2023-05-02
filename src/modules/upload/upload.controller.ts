@@ -1,6 +1,7 @@
 import {
   Controller,
   Get,
+  Header,
   Param,
   Post,
   Res,
@@ -14,7 +15,6 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { Express, Response } from 'express';
 import { UploadVO } from './vo/spot.vo';
 import { getOrdefault } from 'src/config/utils';
-import * as path from 'path';
 
 @ApiTags('上传')
 @Controller('upload')
@@ -43,6 +43,7 @@ export class UploadController {
 
   @ApiOperation({ summary: '通过路径获取文件(伪静态)' })
   @Get(':path(*)')
+  @Header('Cache-Control', 'no-cache')
   async getFile(@Param('path') filepath: string, @Res() res: Response) {
     console.log(filepath);
     const uploadDir = getOrdefault('UPLOAD_DIR', 'upload');
