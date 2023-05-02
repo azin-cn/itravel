@@ -3,11 +3,14 @@
 set -e
 cd /opt/docker/dev-itravel
 
-# 清除
+# 清除代码文件，静态文件在 ./upload，不进入docker
 sudo rm -rf ./www/*
 
 # 解压，跳过头层
 sudo tar -zxvf ./tmp/dist.tar.gz -C ./www --strip-components=1
+
+# 移动原有的upload，覆盖
+rsync -a ./www/upload ./
 
 # 复制 config
 cp -r ./config ./www
@@ -20,6 +23,12 @@ sudo docker build -t dev-itravel .
 if [ "$(docker ps -a -q -f name=^dev-itravel$)" ]; then
   sudo docker stop dev-itravel
   sudo docker rm dev-itravel
+fi
+
+# 删除无用 none 镜像
+if [ "$(docker images -f "dangling=true" -q)" ]; then
+  docker rmi $(docker images -f "dangling=true" -q)
+  docker images | grep '<none>'
 fi
 
 # 运行
