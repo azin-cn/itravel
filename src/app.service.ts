@@ -377,10 +377,10 @@ export class AppService {
     let counter1 = 0;
     articles.forEach((article) => {
       // article.
-      const images = article.images.map((item) => {
+      const images = article.images?.map((item) => {
         return item.replace(localhost, online);
       });
-      const thumbUrl = article.thumbUrl.replace(localhost, online);
+      const thumbUrl = article.thumbUrl?.replace(localhost, online);
       console.log(counter1++, article.id);
       this.articleRepository.update(article.id, { images, thumbUrl });
     });
@@ -388,7 +388,7 @@ export class AppService {
     let counter2 = 0;
     const spots = await this.spotRepository.find();
     spots.forEach((spot) => {
-      const thumbUrl = spot.thumbUrl.replace(localhost, online);
+      const thumbUrl = spot.thumbUrl?.replace(localhost, online);
       console.log(counter2++, spot.id);
       this.spotRepository.update(spot.id, { thumbUrl });
     });

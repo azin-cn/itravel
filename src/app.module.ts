@@ -1,3 +1,4 @@
+import { User } from './entities/user.entity';
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -12,6 +13,12 @@ import { SpotMonth } from './entities/spot-month.entity';
 import { SpotFeature } from './entities/spot-feature.entity';
 import { Month } from './entities/month.entity';
 import { Feature } from './entities/feature.entity';
+import { Article } from './entities/article.entity';
+import { Tag } from './entities/tag.entity';
+import { Category } from './entities/category.entity';
+import { SpotCoordinate } from './entities/spot-coordinate.entity';
+import { Comment } from './entities/comment.entity';
+import { Title } from './entities/title.entity';
 
 @Module({
   imports: [
@@ -41,6 +48,13 @@ import { Feature } from './entities/feature.entity';
       Feature,
       SpotMonth,
       SpotFeature,
+      Article,
+      User,
+      Tag,
+      Category,
+      SpotCoordinate,
+      Comment,
+      Title,
     ]),
   ],
   controllers: [AppController],
