@@ -27,8 +27,8 @@ fi
 
 # 删除无用 none 镜像
 if [ "$(docker images -f "dangling=true" -q)" ]; then
-  docker rmi $(docker images -f "dangling=true" -q)
-  docker images | grep '<none>'
+  sudo docker rmi $(docker images -f "dangling=true" -q)
+  sudo docker images | grep '<none>'
 fi
 
 # 运行
