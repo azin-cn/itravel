@@ -28,4 +28,9 @@ export class AppController {
     await this.appService.updateSpotDescription();
     return 'success';
   }
+  @Post('replaceLocalhostToOnlineDomain')
+  async replaceLocalhostToOnlineDomain() {
+    await this.appService.replaceLocalhostToOnlineDomain();
+    return 'success';
+  }
 }

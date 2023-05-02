@@ -16,6 +16,7 @@ import { SpotMonth } from './entities/spot-month.entity';
 import { SpotFeature } from './entities/spot-feature.entity';
 import { Month } from './entities/month.entity';
 import { Feature } from './entities/feature.entity';
+import { Article } from './entities/article.entity';
 
 @Injectable()
 export class AppService {
@@ -38,6 +39,8 @@ export class AppService {
     private cityRepository: Repository<City>,
     @InjectRepository(District)
     private districtRepository: Repository<District>,
+    @InjectRepository(Article)
+    private articleRepository: Repository<Article>,
   ) {}
 
   getHello(): string {
@@ -357,6 +360,37 @@ export class AppService {
       }
       await this.spotRepository.update(spot.id, { description });
       console.log('当前计数：', counter++, '总计数：', spots.length);
+    });
+  }
+
+  async replaceLocalhostToOnlineDomain(online = 'https://itravel.todayto.com') {
+    /**
+     * localhost
+     * localhost:7000
+     * http://localhost
+     * http://localhost:7000
+     * https://localhost
+     * https://localhost:7000
+     */
+    const localhost = /(https?:\/\/)?localhost(:\d+)?/g;
+    const articles = await this.articleRepository.find();
+    let counter1 = 0;
+    articles.forEach((article) => {
+      // article.
+      const images = article.images.map((item) => {
+        return item.replace(localhost, online);
+      });
+      const thumbUrl = article.thumbUrl.replace(localhost, online);
+      console.log(counter1++, article.id);
+      this.articleRepository.update(article.id, { images, thumbUrl });
+    });
+
+    let counter2 = 0;
+    const spots = await this.spotRepository.find();
+    spots.forEach((spot) => {
+      const thumbUrl = spot.thumbUrl.replace(localhost, online);
+      console.log(counter2++, spot.id);
+      this.spotRepository.update(spot.id, { thumbUrl });
     });
   }
 }
