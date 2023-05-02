@@ -22,7 +22,6 @@ sudo docker build -t dev-itravel .
 # 删除无用 none 镜像
 if [ "$(sudo docker images -f "dangling=true" -q)" ]; then
   sudo docker rmi $(docker images -f "dangling=true" -q)
-  sudo docker images | grep '<none>'
 fi
 
 # 停止并删除，当容器不存在时会报错，需要加以判断
