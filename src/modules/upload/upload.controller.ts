@@ -15,6 +15,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { Express, Response } from 'express';
 import { UploadVO } from './vo/spot.vo';
 import { getOrdefault } from 'src/config/utils';
+import { FileSizeLimitExceededExceptionFilter } from 'src/shared/filters/file-size.filter';
 
 @ApiTags('上传')
 @Controller('upload')
@@ -22,7 +23,14 @@ export class UploadController {
   constructor(private uploadService: UploadService) {}
 
   @ApiOperation({ summary: '上传图像' })
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(
+    FileInterceptor('file', {
+      limits: {
+        fileSize: 1024 * 1024 * getOrdefault('FILE_SIZE_LIMIT', 20), // 20m
+      },
+    }),
+    FileSizeLimitExceededExceptionFilter,
+  )
   @Post()
   async uploadFile(
     @UploadedFile('file') file: Express.Multer.File,
