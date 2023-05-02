@@ -12,7 +12,7 @@ export const getMuterConf = (): MulterModuleOptions => ({
       `../../${getOrdefault(
         'UPLOAD_DIR',
         'upload',
-      )}/${new Date().toLocaleDateString()}`,
+      )}/${new Date().toLocaleDateString('zh-CN')}`,
     ),
     filename: (req, file: Express.Multer.File, cb) => {
       const filename = `${file.originalname}-${randomUUID()}.${
