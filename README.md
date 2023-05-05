@@ -543,3 +543,15 @@ http {
   }
 }
 ```
+
+## Nginx 重定向区分 PC 和移动端
+
+根据请求头中的 User-Agent 来确定是否为移动端设备，在 PC 端的 Nginx location 中加入以下以下配置，移动端的 location 暂不加入
+
+```shell
+location ^~ / {
+    if ($http_user_agent ~* "(iPhone|Android|Windows Phone)") {
+        rewrite ^ https://m.itravel.todayto.com$request_uri redirect;
+    }
+}
+```
