@@ -27,6 +27,7 @@ import { SpotMonthModule } from './modules/spot-month/spot-month.module';
 import { RegionModule } from './modules/region/region.module';
 import { UploadModule } from './modules/upload/upload.module';
 import { LoggerMiddleware } from './shared/middlewares/logger.middleware';
+import { AdminModule } from './modules/admin/admin.module';
 
 @Module({
   imports: [
@@ -60,6 +61,7 @@ import { LoggerMiddleware } from './shared/middlewares/logger.middleware';
     SpotMonthModule,
     RegionModule,
     UploadModule,
+    AdminModule,
   ],
   controllers: [AppController],
   providers: [AppService, ...GLOBAL_FILTERS, ...GLOBAL_PIPES],
