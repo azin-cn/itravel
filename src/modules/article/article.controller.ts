@@ -136,4 +136,13 @@ export class ArticleController {
 
     return ResultVO.list(items, totalItems);
   }
+
+  @ApiOperation({ summary: '获取移动端首页推荐文章' })
+  @Get('mobile/index/recom')
+  async getMobileIndexArticles(
+    @Query(TransformPaginationPipe) options: PaginationOptions,
+  ): Promise<ResultVO> {
+    const articles = await this.articleService.findMobileIndexArticles(options);
+    return ResultVO.success(articles);
+  }
 }
