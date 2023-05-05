@@ -425,7 +425,8 @@ export class ArticleService {
     ])
       .addSelect('COALESCE(COUNT(comment.id), 0)', 'commentCount')
       .groupBy('article.id')
-      .addGroupBy('tags.id');
+      .addGroupBy('tags.id')
+      .orderBy('RAND()');
 
     const [res, raw]: [Pagination<Article>, any] = await paginateRawAndEntities(
       qb,
