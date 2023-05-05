@@ -366,4 +366,79 @@ export class ArticleService {
 
     return res;
   }
+
+  async findMobileIndexArticles(
+    options?: IPaginationOptions,
+  ): Promise<Article[]> {
+    const qb = this.articleRepository
+      .createQueryBuilder('article')
+      .where('article.status = :status', { status: ARTICLE_STATUS.PUBLISH })
+      /**
+       * 作者信息
+       */
+      .leftJoin('article.author', 'author')
+      /**
+       * 分类信息
+       */
+      .leftJoin('article.category', 'category')
+      /**
+       * tags信息
+       */
+      .leftJoin('article.tags', 'tags')
+      /**
+       * 评论数量信息
+       */
+      .leftJoin('article.comments', 'comment')
+      /**
+       * 景点信息
+       */
+      .leftJoin('article.spot', 'spot');
+
+    qb.select([
+      'article.id',
+      'article.title',
+      'article.thumbUrl',
+      'article.summary',
+      'article.content',
+      'article.status',
+      'article.publishTime',
+      'article.createdTime',
+      'article.updatedTime',
+      'article.likeCount',
+      'article.favCount',
+      'article.viewCount',
+      'article.images',
+      'author.id',
+      'author.username',
+      'author.avatar',
+      'author.title',
+      'author.description',
+      'author.thumbUrl',
+      'category.id',
+      'category.name',
+      'tags.id',
+      'tags.name',
+      'spot.id',
+      'spot.name',
+      'spot.thumbUrl',
+      'spot.description',
+    ])
+      .addSelect('COALESCE(COUNT(comment.id), 0)', 'commentCount')
+      .groupBy('article.id')
+      .addGroupBy('tags.id');
+
+    const [res, raw]: [Pagination<Article>, any] = await paginateRawAndEntities(
+      qb,
+      options,
+    );
+
+    /**
+     * 将数据映射为整数
+     */
+    res.items.forEach(
+      (item, index) => (item.commentCount = parseInt(raw[index].commentCount)),
+    );
+
+    return res.items;
+  }
 }
