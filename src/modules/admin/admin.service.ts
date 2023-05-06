@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Article } from 'src/entities/article.entity';
 import { Comment } from 'src/entities/comment.entity';
 import { Spot } from 'src/entities/spot.entity';
-import { MoreThanOrEqual, Repository } from 'typeorm';
+import { Between, MoreThanOrEqual, Repository } from 'typeorm';
 import * as dayjs from 'dayjs';
 import { ARTICLE_STATUS } from 'src/shared/constants/article.constant';
 import { WorkspaceCounterVO, WorkspaceVO } from './vo/admin.vo';
@@ -58,7 +58,7 @@ export class AdminService {
         where: {
           isDeleted: false,
           status: ARTICLE_STATUS.PUBLISH,
-          createdTime: MoreThanOrEqual(yesterday),
+          createdTime: Between(yesterday, today),
         },
       }),
       this.commentRepository.count({
@@ -75,7 +75,7 @@ export class AdminService {
       this.commentRepository.count({
         where: {
           isDeleted: false,
-          createdTime: MoreThanOrEqual(yesterday),
+          createdTime: Between(yesterday, today),
         },
       }),
     ]);
