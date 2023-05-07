@@ -16,6 +16,8 @@ export class TransformPaginationPipe implements PipeTransform {
     value.limit ||= PAGINATION_DEFAULT.LIMIT;
     value.page ||= PAGINATION_DEFAULT.PAGE;
 
+    if (value.page <= 0) value.page = PAGINATION_DEFAULT.PAGE;
+
     /**
      * 转换数据格式
      */
