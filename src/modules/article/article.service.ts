@@ -350,6 +350,8 @@ export class ArticleService {
       .addSelect('COALESCE(COUNT(comment.id), 0)', 'commentCount')
       .groupBy('article.id')
       .addGroupBy('tags.id')
+      .orderBy('article.updatedTime', 'DESC')
+      .andWhere('article.status = :status', { status: ARTICLE_STATUS.PUBLISH })
       .andWhere('author.id = :id', { id });
 
     const [res, raw]: [Pagination<Article>, any] = await paginateRawAndEntities(
