@@ -7,6 +7,11 @@ import { Between, MoreThanOrEqual, Repository } from 'typeorm';
 import * as dayjs from 'dayjs';
 import { ARTICLE_STATUS } from 'src/shared/constants/article.constant';
 import { WorkspaceCounterVO, WorkspaceVO } from './vo/admin.vo';
+import {
+  IPaginationOptions,
+  Pagination,
+  paginate,
+} from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export class AdminService {
@@ -116,5 +121,22 @@ export class AdminService {
     const data = new WorkspaceVO();
     data.counter = await this.findWorkspaceCounter();
     return data;
+  }
+
+  /**
+   *
+   */
+  async findSpotsByConditions(
+    options?: IPaginationOptions,
+  ): Promise<Pagination<Spot>> {
+    const qb = this.spotRepository.createQueryBuilder('spot').where('1=1');
+
+    qb.leftJoinAndSelect('spot.country', 'country')
+      .leftJoinAndSelect('spot.province', 'province')
+      .leftJoinAndSelect('spot.city', 'city')
+      .leftJoinAndSelect('spot.district', 'district');
+
+    const res = await paginate(qb, options);
+    return res;
   }
 }
