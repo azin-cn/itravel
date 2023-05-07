@@ -23,6 +23,7 @@ $ npm run start:prod
 
 - [👉 Nestjs 打包问题](#Nestjs-Pack-Problem)
 - [👉 Nestjs 打包 .env 问题](#Nestjs-Pack-Env)
+- [👉 TypeOrm 中同一个 QueryBuilder，参数值覆盖问题](#TypeOrm-Params-Cover)
 
 ## Process
 
@@ -553,5 +554,40 @@ location ^~ / {
     if ($http_user_agent ~* "(iPhone|Android|Windows Phone)") {
         rewrite ^ https://m.itravel.todayto.com$request_uri redirect;
     }
+}
+```
+
+## TypeOrm 中同一个 QueryBuilder，参数值覆盖问题 {#TypeOrm-Params-Cover}
+
+在同一个 QueryBuilder 中，如果是不同的查询条件不同的参数，在使用时应该使用不同的参数名，如果将 `region name` 都命名为 `keywords`，那么就会发生参数值覆盖的问题。
+
+```ts
+if (conditions.region) {
+  qb.andWhere(
+    `
+      (
+        LOWER(country.name) LIKE LOWER(:region) 
+        OR LOWER(province.name) LIKE (:region) 
+        OR LOWER(city.name) LIKE (:region)
+        OR LOWER(district.name) LIKE (:region) 
+      )
+    `,
+    { region: conditions.region },
+  );
+}
+
+if (conditions.name) {
+  qb.andWhere(
+    `
+      (
+        LOWER(spot.name) LIKE LOWER(:name) 
+        OR 
+        LOWER(spot.description) LIKE (:name)
+      )
+    `,
+    {
+      name: conditions.name,
+    },
+  );
 }
 ```
