@@ -12,6 +12,7 @@ import {
   Pagination,
   paginate,
 } from 'nestjs-typeorm-paginate';
+import { SpotSearchDTO } from './dto/admin.dto';
 
 @Injectable()
 export class AdminService {
@@ -127,6 +128,7 @@ export class AdminService {
    *
    */
   async findSpotsByConditions(
+    conditions: SpotSearchDTO,
     options?: IPaginationOptions,
   ): Promise<Pagination<Spot>> {
     const qb = this.spotRepository.createQueryBuilder('spot').where('1=1');
@@ -135,6 +137,55 @@ export class AdminService {
       .leftJoinAndSelect('spot.province', 'province')
       .leftJoinAndSelect('spot.city', 'city')
       .leftJoinAndSelect('spot.district', 'district');
+
+    if (conditions.id) {
+      qb.andWhere(`LOWER(spot.id) LIKE LOWER(:id)`, {
+        id: `%${conditions.id}%`,
+      });
+    }
+
+    if (conditions.region) {
+      qb.andWhere(
+        `
+        (
+          LOWER(country.name) LIKE LOWER(:region) 
+          OR LOWER(province.name) LIKE (:region) 
+          OR LOWER(city.name) LIKE (:region)
+          OR LOWER(district.name) LIKE (:region) 
+        )
+         `,
+        { region: `%${conditions.region}%` },
+      );
+    }
+
+    if (conditions.name) {
+      qb.andWhere(
+        `
+        (
+          LOWER(spot.name) LIKE LOWER(:name) 
+          OR 
+          LOWER(spot.description) LIKE (:name)
+        )
+        `,
+        {
+          name: `%${conditions.name}%`,
+        },
+      );
+    }
+
+    if (conditions.create_date_after) {
+      qb.andWhere('spot.createdTime >= :startDate', {
+        startDate: conditions.create_date_after,
+      });
+    }
+
+    if (conditions.create_date_before) {
+      qb.andWhere('spot.createdTime <= :endDate', {
+        endDate: conditions.create_date_before,
+      });
+    }
+
+    console.log(conditions);
 
     const res = await paginate(qb, options);
     return res;
