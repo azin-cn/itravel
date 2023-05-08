@@ -14,6 +14,13 @@ import { ResultVO } from 'src/shared/vo/ResultVO';
 export class MonthController {
   constructor(private monthService: MonthsService) {}
 
+  @ApiOperation({ summary: '获取所有月份' })
+  @Get('all')
+  async getAllMonth(): Promise<ResultVO> {
+    const months = await this.monthService.findAll();
+    return ResultVO.success(months);
+  }
+
   @ApiOperation({ summary: '获取月份信息' })
   @Get()
   async getMonths(): Promise<ResultVO> {
