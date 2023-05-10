@@ -41,13 +41,15 @@ SELECT
     `district`.`aid` AS `district_aid`,
     `district`.`bid` AS `district_bid`,
     `district`.`tid` AS `district_tid`,
-    `district`.`city_id` AS `district_city_id`,
-    `sm`.`id` sm.name `sf`.`id` sf.name
+    `district`.`city_id` AS `district_city_id`
 FROM `spot` `spot`
     LEFT JOIN `country` `country` ON `country`.`id` = `spot`.`country_id`
     LEFT JOIN `province` `province` ON `province`.`id` = `spot`.`province_id`
     LEFT JOIN `city` `city` ON `city`.`id` = `spot`.`city_id`
     LEFT JOIN `district` `district` ON `district`.`id` = `spot`.`district_id`
-    LEFT JOIN `spot_month` `sm` ON `sm`.`spot_id` = `spot`.`id`
-    LEFT JOIN `spot_feature` `sf` ON `sf`.`spot_id` = `spot`.`id`
-LIMIT 10
+WHERE
+    1 = 1
+    AND (
+        LOWER(`spot`.`name`) LIKE LOWER("千")
+    )
+LIMIT 20 -- PARAMETERS: ["千","千"]
