@@ -15,7 +15,7 @@ export class FeatureController {
   constructor(private featureService: FeaturesService) {}
   @ApiOperation({ summary: '获取所有景点信息' })
   @Get('all')
-  async getAllFeatures(): Promise<ResultVO> {
+  async getAllFeature(): Promise<ResultVO> {
     const features = await this.featureService.findAll();
     return ResultVO.success(features);
   }
