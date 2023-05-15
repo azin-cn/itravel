@@ -155,14 +155,12 @@ export class SpotService {
     const spotMonths = monthReps.map((monthRep) => {
       const sm = new SpotMonth();
       sm.month = monthRep;
-      sm.spot = spot;
       return sm;
     });
 
     const spotFeatures = featureReps.map((featureRep) => {
       const sf = new SpotFeature();
       sf.feature = featureRep;
-      sf.spot = spot;
       return sf;
     });
 
