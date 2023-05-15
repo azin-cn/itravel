@@ -591,3 +591,33 @@ if (conditions.name) {
   );
 }
 ```
+
+## TypeOrm 插入数据时出现的循环依赖
+
+在我使用 `TypeOrm` 创建 `Spot` 的过程中，出现了栈溢出的报错，排查之后发现如下情况
+
+```ts
+const spotMonths = monthReps.map((monthRep) => {
+  const sm = new SpotMonth();
+  sm.month = monthRep;
+  return sm;
+});
+
+const spotFeatures = featureReps.map((featureRep) => {
+  const sf = new SpotFeature();
+  sf.feature = featureRep;
+  return sf;
+});
+
+this.spotRepository.save(spot);
+```
+
+在插入之前，我默认将 `spot` 和 `spot_month` 表关联起来，导致 `spot` 重复
+
+### 解决方案
+
+在 `spot` 插入时，会自动关联 `spot` 与 `spot_month` 中的 `spot_id` 字段，这是由于在实体关系映射时设置了映射关系，所以无需手动指定
+
+### 介绍
+
+`spot` 表是一个景点表，`spot_month` 是一个关联 `spot` 和 `month` 的中间表，具有 `spot_id` 和 `month_id` 字段，实体关系映射已经指定关系
