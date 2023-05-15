@@ -4,6 +4,7 @@ import {
   Controller,
   Get,
   Param,
+  Patch,
   Post,
   Put,
   Query,
@@ -88,23 +89,6 @@ export class SpotController {
   }
 
   /**
-   * 新增景点
-   */
-  @ApiOperation({ summary: '新增景点' })
-  @Post()
-  async postSpot(@Body(TransformSpotDTOPipe) spotDTO: SpotDTO) {
-    const spot = await this.spotService.create(spotDTO);
-    return ResultVO.success(spot);
-  }
-
-  /**
-   * 更新景点
-   */
-  @ApiOperation({ summary: '更新景点' })
-  @Put()
-  async putSpot(@Body(TransformSpotDTOPipe) spotDTO: SpotDTO) {}
-
-  /**
    * 根据关键字获取景点
    * @param s
    * @returns
@@ -134,6 +118,25 @@ export class SpotController {
     const spot = await this.spotService.findSpotBriefInfoWithRegionById(id);
     Assert.isNotEmptySpot(spot);
     return ResultVO.success(spot);
+  }
+
+  /**
+   * 新增景点
+   */
+  @ApiOperation({ summary: '新增景点' })
+  @Post()
+  async postSpot(@Body(TransformSpotDTOPipe) spotDTO: SpotDTO) {
+    const spot = await this.spotService.create(spotDTO);
+    return ResultVO.success(spot);
+  }
+
+  /**
+   * 更新景点
+   */
+  @ApiOperation({ summary: '更新景点' })
+  @Patch(':id')
+  async putSpot(@Body(TransformSpotDTOPipe) spotDTO: SpotDTO) {
+    // 更新景点信息
   }
 
   /**
