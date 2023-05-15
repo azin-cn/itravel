@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Month } from 'src/entities/month.entity';
 import { Spot } from 'src/entities/spot.entity';
 import { Assert } from 'src/utils/Assert';
-import { Repository, SelectQueryBuilder } from 'typeorm';
+import { Repository, SelectQueryBuilder, UpdateResult } from 'typeorm';
 import { SpotDTO } from './dto/spot.dto';
 import { SpotFeature } from 'src/entities/spot-feature.entity';
 import { SpotMonth } from 'src/entities/spot-month.entity';
@@ -113,11 +113,11 @@ export class SpotService {
   }
 
   /**
-   * 创建景点，需要认证
-   * @param spot
+   * 插入前的关键操作
+   * @param spotDTO
    * @returns
    */
-  async create(spotDTO: SpotDTO): Promise<Spot> {
+  async relate(spotDTO: SpotDTO): Promise<Spot> {
     const { months, features, district } = spotDTO;
 
     /**
@@ -166,6 +166,8 @@ export class SpotService {
       return sf;
     });
 
+    const { thumbUrl, panorama } = spotDTO;
+
     /**
      * (四) 处理数据
      */
@@ -175,8 +177,35 @@ export class SpotService {
     spot.country = provinceRep.country;
     spot.spotMonths = spotMonths;
     spot.spotFeatures = spotFeatures;
+    spot.thumbUrl = thumbUrl;
+    spot.panorama = panorama;
 
+    return spot;
+  }
+
+  /**
+   * 创建景点，需要认证
+   * @param spot
+   * @returns
+   */
+  async create(spotDTO: SpotDTO): Promise<Spot> {
+    Assert.assertNotNil(spotDTO.thumbUrl, '景点缩略图不存在');
+    Assert.assertNotNil(spotDTO.panorama, '景点全景图不存在');
+
+    const spot = await this.relate(spotDTO);
+    console.log(spot);
     return this.spotRepository.save(spot);
+  }
+
+  /**
+   * 更新景点
+   * @param spotDTO
+   * @returns
+   */
+  async update(spotDTO: SpotDTO): Promise<UpdateResult> {
+    Assert.assertNotNil(spotDTO.id, '更新景点ID为空');
+    const spot = await this.relate(spotDTO);
+    return this.spotRepository.update(spot.id, spot);
   }
 
   /**
