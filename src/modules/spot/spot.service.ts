@@ -15,7 +15,7 @@ import { Country } from 'src/entities/country.entity';
 import { Province } from 'src/entities/province.entity';
 import { City } from 'src/entities/city.entity';
 import { District } from 'src/entities/district.entity';
-import { arrayNotEmpty, isNotEmpty } from 'class-validator';
+import { arrayNotEmpty, isNotEmpty, isNotEmptyObject } from 'class-validator';
 import { plainToInstance } from 'class-transformer';
 import { SpotBriefVO, SpotCountVO, SpotFMVO } from './vo/spot.vo';
 
@@ -182,6 +182,77 @@ export class SpotService {
   }
 
   /**
+   * 关联区域
+   * @param spotDTO
+   * @param spot
+   * @param required
+   * @returns
+   */
+  async relateRegion(
+    spotDTO: SpotDTO,
+    spot?: Spot,
+    required = false,
+  ): Promise<Spot> {
+    const { district } = spotDTO;
+
+    /**
+     * 只需要判断最小单位，通过最小单位查出较大的单位
+     * TODO: 有些城市可能最小的单位是区，如北京市朝阳区
+     */
+    Assert.assertNotNil(district);
+    const districtRep = await this.regionService.findDistrictById(district);
+    if (required) Assert.assertNotNil(districtRep);
+
+    const cityRep = await this.regionService.findCityById(districtRep.city.id);
+    Assert.assertNotNil(cityRep);
+
+    const provinceRep = await this.regionService.findProvinceById(
+      cityRep.province.id,
+    );
+    Assert.assertNotNil(provinceRep);
+
+    spot = spot || new Spot(); // ||=
+
+    spot.district = districtRep;
+    spot.city = cityRep;
+    spot.province = provinceRep;
+    spot.country = provinceRep.country;
+    return spot;
+  }
+
+  async relateFM(
+    spotDTO: SpotDTO,
+    spot?: Spot,
+    required = false,
+  ): Promise<Spot> {
+    const { months, features } = spotDTO;
+    const monthReps = await this.monthService.findMonthsByIds(months);
+    const featureReps = await this.featureService.findFeaturesByIds(features);
+
+    if (required) {
+      Assert.isNotEmptyObject(monthReps);
+      Assert.isNotEmptyObject(featureReps);
+    }
+
+    const spotMonths = monthReps.map((monthRep) => {
+      const sm = new SpotMonth();
+      sm.month = monthRep;
+      return sm;
+    });
+
+    const spotFeatures = featureReps.map((featureRep) => {
+      const sf = new SpotFeature();
+      sf.feature = featureRep;
+      return sf;
+    });
+
+    spot = spot || new Spot();
+    spot.spotMonths = spotMonths;
+    spot.spotFeatures = spotFeatures;
+    return spot;
+  }
+
+  /**
    * 创建景点，需要认证
    * @param spot
    * @returns
@@ -191,7 +262,6 @@ export class SpotService {
     Assert.assertNotNil(spotDTO.panorama, '景点全景图不存在');
 
     const spot = await this.relate(spotDTO);
-    console.log(spot);
     return this.spotRepository.save(spot);
   }
 
@@ -200,10 +270,29 @@ export class SpotService {
    * @param spotDTO
    * @returns
    */
-  async update(spotDTO: SpotDTO): Promise<UpdateResult> {
-    Assert.assertNotNil(spotDTO.id, '更新景点ID为空');
-    const spot = await this.relate(spotDTO);
-    return this.spotRepository.update(spot.id, spot);
+  async update(id: string, spotDTO: SpotDTO): Promise<Spot> {
+    const spot = plainToInstance(Spot, spotDTO);
+    const { district } = spotDTO;
+
+    if (district) {
+      const spotRegion = await this.relateRegion(spotDTO);
+      spot.district = spotRegion.district;
+      spot.city = spotRegion.city;
+      spot.province = spotRegion.province;
+      spot.country = spotRegion.country;
+    }
+
+    const { months, features } = spotDTO;
+    if (isNotEmptyObject(months) || isNotEmptyObject(features)) {
+      const spotFM = await this.relateFM(spotDTO);
+      spot.spotMonths = spotFM.spotMonths;
+      spot.spotFeatures = spotFM.spotFeatures;
+    }
+
+    const { affected } = await this.spotRepository.update(id, spot);
+
+    Assert.isNotZero(affected, '景点更新失败');
+    return this.findSpotById(id);
   }
 
   /**
