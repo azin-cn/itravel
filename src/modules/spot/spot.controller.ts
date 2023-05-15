@@ -135,8 +135,12 @@ export class SpotController {
    */
   @ApiOperation({ summary: '更新景点' })
   @Patch(':id')
-  async putSpot(@Body(TransformSpotDTOPipe) spotDTO: SpotDTO) {
-    // 更新景点信息
+  async putSpot(
+    @Body(TransformSpotDTOPipe) spotDTO: SpotDTO,
+    @Param('id', TransformUUIDPipe) id: string,
+  ) {
+    const spot = await this.spotService.update(id, spotDTO);
+    return ResultVO.success(spot);
   }
 
   /**
