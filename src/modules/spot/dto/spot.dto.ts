@@ -1,10 +1,15 @@
 import { BadRequestException } from '@nestjs/common';
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import {
+  ApiOperation,
+  ApiProperty,
+  ApiPropertyOptional,
+} from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import {
   IsOptional,
   IsString,
   IsUUID,
+  IsUrl,
   MinLength,
   isUUID,
 } from 'class-validator';
@@ -27,6 +32,24 @@ export class SpotBaseDTO {
   @IsString()
   @MinLength(1, { message: '简介为空' })
   description: string;
+
+  /**
+   * 缩略图
+   */
+  @ApiPropertyOptional({ description: '缩略图' })
+  @IsOptional()
+  @IsString()
+  @IsUrl()
+  thumbUrl: string;
+
+  /**
+   * 全景图
+   */
+  @ApiPropertyOptional({ description: '缩略图' })
+  @IsOptional()
+  @IsString()
+  @IsUrl()
+  panorama: string;
 
   /**
    * 所属的country id
