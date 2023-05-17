@@ -1,4 +1,7 @@
-import { TransformAdminSearchArticleConditionsPipe, TransformAdminSearchSpotConditionsPipe } from '../../shared/pipes/admin-search-condition.pipe';
+import {
+  TransformAdminSearchArticleConditionsPipe,
+  TransformAdminSearchSpotConditionsPipe,
+} from '../../shared/pipes/admin-search-condition.pipe';
 import { Controller, Get, Query } from '@nestjs/common';
 import {
   ApiBody,
@@ -48,7 +51,8 @@ export class AdminController {
   @ApiOperation({ summary: '查询文章数据' })
   @Get('article/query')
   async getArticlesByConditions(
-    @Query(TransformAdminSearchArticleConditionsPipe) conditions: ArticleSearchDTO,
+    @Query(TransformAdminSearchArticleConditionsPipe)
+    conditions: ArticleSearchDTO,
     @Query(TransformPaginationPipe) options: PaginationOptions,
   ): Promise<ResultVO> {
     const {
