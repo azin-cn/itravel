@@ -74,8 +74,8 @@ export class AdminController {
   @ApiOperation({ summary: '更新文章状态' })
   @Patch('article_status/:id/:status')
   async updateArticleStatus(
-    @Param(TransformUUIDPipe) id: string,
-    @Param(ParseIntPipe) status: number,
+    @Param('id', TransformUUIDPipe) id: string,
+    @Param('status', ParseIntPipe) status: number,
   ): Promise<ResultVO> {
     const { affected } = await this.adminService.updateArticleStatus(
       id,
