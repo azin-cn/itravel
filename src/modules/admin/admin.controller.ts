@@ -1,4 +1,4 @@
-import { TransformAdminSearchSpotConditionsPipe } from './../../shared/pipes/admin-search-spot-condition.pipe';
+import { TransformAdminSearchArticleConditionsPipe, TransformAdminSearchSpotConditionsPipe } from '../../shared/pipes/admin-search-condition.pipe';
 import { Controller, Get, Query } from '@nestjs/common';
 import {
   ApiBody,
@@ -11,7 +11,7 @@ import { ResultVO } from 'src/shared/vo/ResultVO';
 import { AdminService } from './admin.service';
 import { TransformPaginationPipe } from 'src/shared/pipes/pagination.pipe';
 import { PaginationOptions } from 'src/shared/dto/pagination.dto';
-import { SpotSearchDTO } from './dto/admin.dto';
+import { ArticleSearchDTO, SpotSearchDTO } from './dto/admin.dto';
 
 @ApiTags('Admin')
 @Controller('admin')
@@ -42,6 +42,19 @@ export class AdminController {
       items,
       meta: { totalItems },
     } = await this.adminService.findSpotsByConditions(conditions, options);
+    return ResultVO.list(items, totalItems);
+  }
+
+  @ApiOperation({ summary: '查询文章数据' })
+  @Get('article/query')
+  async getArticlesByConditions(
+    @Query(TransformAdminSearchArticleConditionsPipe) conditions: ArticleSearchDTO,
+    @Query(TransformPaginationPipe) options: PaginationOptions,
+  ): Promise<ResultVO> {
+    const {
+      items,
+      meta: { totalItems },
+    } = await this.adminService.findArticlesByConditions(conditions, options);
     return ResultVO.list(items, totalItems);
   }
 }
