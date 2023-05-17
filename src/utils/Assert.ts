@@ -155,4 +155,16 @@ export class Assert {
   ): asserts val is Spot {
     if (!val) throw new NotFoundException(msg);
   }
+
+  /**
+   * 判断是否为有效的文章状态码
+   * @param val
+   * @param msg
+   */
+  static isArticleStatus(
+    val: unknown,
+    msg = '文章状态码错误',
+  ): asserts val is 0 | 1 {
+    if (![0, 1].includes(val as number)) throw new BadRequestException(msg);
+  }
 }
