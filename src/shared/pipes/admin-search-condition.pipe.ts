@@ -42,6 +42,6 @@ export class TransformAdminSearchArticleConditionsPipe
      */
     await Validator.validate(ArticleSearchDTO);
 
-    return ArticleSearchDTO;
+    return articleSearchDTO;
   }
 }
