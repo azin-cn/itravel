@@ -42,4 +42,14 @@ export class ArticleSearchDTO {
   @IsString()
   // @IsDate({ message: '时间格式不正确' })
   create_date_after: string;
+
+  @IsOptional()
+  @IsString()
+  // @IsDate({ message: '时间格式不正确' })
+  update_date_before: string;
+
+  @IsOptional()
+  @IsString()
+  // @IsDate({ message: '时间格式不正确' })
+  update_date_after: string;
 }
