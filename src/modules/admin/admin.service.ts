@@ -195,7 +195,8 @@ export class AdminService {
   ): Promise<Pagination<Article>> {
     const qb = this.articleRepository
       .createQueryBuilder('article')
-      .where('1=1');
+      .where('1=1')
+      .orderBy('article.updatedTime', 'DESC');
 
     qb.leftJoinAndSelect('article.author', 'author')
       .leftJoinAndSelect('article.spot', 'spot')
@@ -206,6 +207,38 @@ export class AdminService {
       qb.andWhere(`LOWER(article.id) LIKE LOWER(:id)`, {
         id: `%${conditions.id}%`,
       });
+    }
+
+    if (conditions.keywords) {
+      qb.andWhere(
+        `
+        (
+          LOWER(article.title) LIKE LOWER('%${conditions.keywords}%')
+          OR
+          LOWER(article.summary) LIKE LOWER('%${conditions.keywords}%')
+          OR
+          LOWER(article.content) LIKE LOWER('%${conditions.keywords}%')
+        )
+        `,
+      );
+    }
+
+    if (conditions.username) {
+      qb.andWhere(
+        `LOWER(author.username) LIKE LOWER('%${conditions.username}%')`,
+      );
+    }
+
+    if (conditions.spot) {
+      qb.andWhere(
+        `
+        (
+          LOWER(spot.name) LIKE LOWER('%${conditions.spot}%')
+          OR
+          LOWER(spot.description) LIKE LOWER('%${conditions.spot}%')
+        )
+        `,
+      );
     }
 
     if (conditions.create_date_after) {
@@ -221,13 +254,13 @@ export class AdminService {
     }
 
     if (conditions.update_date_after) {
-      qb.andWhere('article.createdTime >= :startUpdateDate', {
+      qb.andWhere('article.updatedTime >= :startUpdateDate', {
         startUpdateDate: conditions.create_date_after,
       });
     }
 
     if (conditions.update_date_before) {
-      qb.andWhere('article.createdTime <= :endUpdateDate', {
+      qb.andWhere('article.updatedTime <= :endUpdateDate', {
         endUpdateDate: conditions.update_date_before,
       });
     }

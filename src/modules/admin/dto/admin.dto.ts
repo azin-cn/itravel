@@ -34,6 +34,9 @@ export class ArticleSearchDTO {
   username: string;
 
   @IsOptional()
+  spot: string;
+
+  @IsOptional()
   @IsString()
   // @IsDate({ message: '时间格式不正确' })
   create_date_before: string;
