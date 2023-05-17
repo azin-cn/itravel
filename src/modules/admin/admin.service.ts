@@ -198,6 +198,7 @@ export class AdminService {
       .where('1=1');
 
     qb.leftJoinAndSelect('article.author', 'author')
+      .leftJoinAndSelect('article.spot', 'spot')
       .leftJoinAndSelect('article.category', 'category')
       .leftJoinAndSelect('article.tags', 'tags');
 
