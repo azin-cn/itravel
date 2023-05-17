@@ -12,7 +12,7 @@ import {
   Pagination,
   paginate,
 } from 'nestjs-typeorm-paginate';
-import { SpotSearchDTO } from './dto/admin.dto';
+import { ArticleSearchDTO, SpotSearchDTO } from './dto/admin.dto';
 
 @Injectable()
 export class AdminService {
@@ -185,9 +185,42 @@ export class AdminService {
       });
     }
 
-    console.log(conditions);
-
     const res = await paginate(qb, options);
     return res;
+  }
+
+  async findArticlesByConditions(
+    conditions: ArticleSearchDTO,
+    options?: IPaginationOptions,
+  ): Promise<Pagination<Article>> {
+    const qb = this.articleRepository
+      .createQueryBuilder('article')
+      .where('1=1');
+
+    qb.leftJoinAndSelect('article.author', 'author')
+      .leftJoinAndSelect('article.category', 'category')
+      .leftJoinAndSelect('article.tags', 'tags');
+
+    if (conditions.id) {
+      qb.andWhere(`LOWER(article.id) LIKE LOWER(:id)`, {
+        id: `%${conditions.id}%`,
+      });
+    }
+
+    if (conditions.create_date_after) {
+      qb.andWhere('article.createdTime >= :startDate', {
+        startDate: conditions.create_date_after,
+      });
+    }
+
+    if (conditions.create_date_before) {
+      qb.andWhere('article.createdTime <= :endDate', {
+        endDate: conditions.create_date_before,
+      });
+    }
+
+    const articles = paginate(qb, options);
+
+    return articles;
   }
 }
