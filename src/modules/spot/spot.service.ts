@@ -36,6 +36,10 @@ export class SpotService {
     private cityRepository: Repository<City>,
     @InjectRepository(District)
     private districtRepository: Repository<District>,
+    @InjectRepository(SpotMonth)
+    private spotMonthRepository: Repository<SpotMonth>,
+    @InjectRepository(SpotFeature)
+    private spotFeatureRepository: Repository<SpotFeature>,
     private regionService: RegionService,
     private monthService: MonthsService,
     private featureService: FeaturesService,
@@ -220,38 +224,6 @@ export class SpotService {
     return spot;
   }
 
-  async relateFM(
-    spotDTO: SpotDTO,
-    spot?: Spot,
-    required = false,
-  ): Promise<Spot> {
-    const { months, features } = spotDTO;
-    const monthReps = await this.monthService.findMonthsByIds(months);
-    const featureReps = await this.featureService.findFeaturesByIds(features);
-
-    if (required) {
-      Assert.isNotEmptyObject(monthReps);
-      Assert.isNotEmptyObject(featureReps);
-    }
-
-    const spotMonths = monthReps.map((monthRep) => {
-      const sm = new SpotMonth();
-      sm.month = monthRep;
-      return sm;
-    });
-
-    const spotFeatures = featureReps.map((featureRep) => {
-      const sf = new SpotFeature();
-      sf.feature = featureRep;
-      return sf;
-    });
-
-    spot = spot || new Spot();
-    spot.spotMonths = spotMonths;
-    spot.spotFeatures = spotFeatures;
-    return spot;
-  }
-
   /**
    * 创建景点，需要认证
    * @param spot
@@ -271,7 +243,11 @@ export class SpotService {
    * @returns
    */
   async update(id: string, spotDTO: SpotDTO): Promise<Spot> {
-    const spot = plainToInstance(Spot, spotDTO);
+    const spot = new Spot();
+
+    spot.name = spotDTO.name;
+    spot.description = spotDTO.description;
+
     const { district } = spotDTO;
 
     if (district) {
@@ -282,15 +258,16 @@ export class SpotService {
       spot.country = spotRegion.country;
     }
 
-    const { months, features } = spotDTO;
-    if (isNotEmptyObject(months) || isNotEmptyObject(features)) {
-      const spotFM = await this.relateFM(spotDTO);
-      spot.spotMonths = spotFM.spotMonths;
-      spot.spotFeatures = spotFM.spotFeatures;
-    }
-
     const { affected } = await this.spotRepository.update(id, spot);
 
+    const { months, features } = spotDTO;
+    if (months?.length || features?.length) {
+      const featureReps = await this;
+      // const spotFM = await this.relateFM(spotDTO);
+      // spot.spotMonths = spotFM.spotMonths;
+      // spot.spotFeatures = spotFM.spotFeatures;
+    }
+    
     Assert.isNotZero(affected, '景点更新失败');
     return this.findSpotById(id);
   }
