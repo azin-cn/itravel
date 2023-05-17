@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Article } from 'src/entities/article.entity';
 import { Comment } from 'src/entities/comment.entity';
 import { Spot } from 'src/entities/spot.entity';
-import { Between, MoreThanOrEqual, Repository } from 'typeorm';
+import { Between, MoreThanOrEqual, Repository, UpdateResult } from 'typeorm';
 import * as dayjs from 'dayjs';
 import { ARTICLE_STATUS } from 'src/shared/constants/article.constant';
 import { WorkspaceCounterVO, WorkspaceVO } from './vo/admin.vo';
@@ -13,6 +13,7 @@ import {
   paginate,
 } from 'nestjs-typeorm-paginate';
 import { ArticleSearchDTO, SpotSearchDTO } from './dto/admin.dto';
+import { Assert } from 'src/utils/Assert';
 
 @Injectable()
 export class AdminService {
@@ -268,5 +269,10 @@ export class AdminService {
     const articles = paginate(qb, options);
 
     return articles;
+  }
+
+  async updateArticleStatus(id: string, status: number): Promise<UpdateResult> {
+    Assert.isArticleStatus(status);
+    return this.articleRepository.update(id, { status });
   }
 }
