@@ -220,6 +220,18 @@ export class AdminService {
       });
     }
 
+    if (conditions.update_date_after) {
+      qb.andWhere('article.createdTime >= :startUpdateDate', {
+        startUpdateDate: conditions.create_date_after,
+      });
+    }
+
+    if (conditions.update_date_before) {
+      qb.andWhere('article.createdTime <= :endUpdateDate', {
+        endUpdateDate: conditions.update_date_before,
+      });
+    }
+
     const articles = paginate(qb, options);
 
     return articles;
