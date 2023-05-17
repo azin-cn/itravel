@@ -2,7 +2,14 @@ import {
   TransformAdminSearchArticleConditionsPipe,
   TransformAdminSearchSpotConditionsPipe,
 } from '../../shared/pipes/admin-search-condition.pipe';
-import { Controller, Get, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Patch,
+  Query,
+} from '@nestjs/common';
 import {
   ApiBody,
   ApiOperation,
@@ -15,6 +22,8 @@ import { AdminService } from './admin.service';
 import { TransformPaginationPipe } from 'src/shared/pipes/pagination.pipe';
 import { PaginationOptions } from 'src/shared/dto/pagination.dto';
 import { ArticleSearchDTO, SpotSearchDTO } from './dto/admin.dto';
+import { TransformUUIDPipe } from 'src/shared/pipes/uuid.pipe';
+import { Assert } from 'src/utils/Assert';
 
 @ApiTags('Admin')
 @Controller('admin')
@@ -60,5 +69,19 @@ export class AdminController {
       meta: { totalItems },
     } = await this.adminService.findArticlesByConditions(conditions, options);
     return ResultVO.list(items, totalItems);
+  }
+
+  @ApiOperation({ summary: '更新文章状态' })
+  @Patch('article_status/:id/:status')
+  async updateArticleStatus(
+    @Param(TransformUUIDPipe) id: string,
+    @Param(ParseIntPipe) status: number,
+  ): Promise<ResultVO> {
+    const { affected } = await this.adminService.updateArticleStatus(
+      id,
+      status,
+    );
+    Assert.isNotZero(affected, '更新文章状态失败');
+    return ResultVO.success();
   }
 }
