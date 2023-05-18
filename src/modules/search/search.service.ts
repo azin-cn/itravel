@@ -100,7 +100,7 @@ export class SearchService {
       )
       .andWhere('article.isDeleted = false')
       .andWhere('article.status = :status', { status: ARTICLE_STATUS.PUBLISH })
-      .orderBy('article.updatedTime')
+      .orderBy('article.updatedTime', 'DESC')
       .groupBy('article.id')
       .addGroupBy('tags.id');
 
@@ -138,7 +138,7 @@ export class SearchService {
       )
       .andWhere('user.status = :status', { status: USER_STATUS.ACTIVE })
       .andWhere('user.isDeleted = false')
-      .orderBy('user.updatedTime');
+      .orderBy('user.updatedTime', 'DESC');
 
     const users = await paginate<User>(userHandler, options);
     return users;
@@ -158,7 +158,7 @@ export class SearchService {
       .orWhere('LOWER(article.summary) LIKE LOWER(:keywords)', { keywords })
       .orWhere('LOWER(article.content) LIKE LOWER(:keywords)', { keywords })
       .orWhere('LOWER(province.name) LIKE LOWER(:keywords)', { keywords })
-      .orderBy('spot.updatedTime');
+      .orderBy('spot.updatedTime', 'DESC');
     qb.select('spot.id, spot.name, spot.description, spot.thumb_url thumbUrl')
       .addSelect('province.name', 'region')
       .addSelect('province.id', 'regionId')
