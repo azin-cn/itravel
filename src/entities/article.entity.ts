@@ -140,7 +140,7 @@ export class Article {
   /**
    * 发布时间
    */
-  @Column({ nullable: true, type: 'timestamp', comment: '发布时间' })
+  @CreateDateColumn({ type: 'timestamp', comment: '发布时间' })
   publishTime: Date;
 
   /**
